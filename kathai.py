@@ -6,6 +6,7 @@ from discord.ext import commands
 import platform
 
 import random
+import emoji
 import re
 from time import sleep
 
@@ -155,6 +156,43 @@ def list_functions():
 	print("Found " + str(len(f_list)) + " functions total, summarised probability: " + str(prob_total))
 	print('--------')
 
+@asyncio.coroutine
+def trigger_reactions(message):
+	slept = False
+	
+	r_list = [
+		{"regex" : r'pizz.*(ananas|hawa)|(ananas|hawa).*pizz', "reaction" : ["\U0001F355", "\U0001F34D"], "extra_check" : False, "probability" : 1},
+		{"regex" : r'vkPCjJM.jpg', "reaction" : ["\U0001F922"], "extra_check" : False, "probability" : 1},
+		{"regex" : r'nerv', "reaction" : ["\U0001F354"], "extra_check" : False, "probability" : prob_react},
+		{"regex" : r'kat(h|ai|aj)', "reaction" : ["\U0001F44D"], "extra_check" : is_mentioned(message), "probability" : prob_react},
+		{"regex" : r'artius', "reaction" : ["\U0001F942"], "extra_check" : is_mentioned(message, "SirAleksanderHeim#6341"), "probability" : prob_react},
+		{"regex" : r'rysi|rankin', "reaction" : [random.choice(["\U0001F431", "\U0001F408"])], "extra_check" : is_mentioned(message, "Rysia#1973") or is_mentioned(message, "rane#2794"), "probability" : prob_react},
+		{"regex" : r'teb', "reaction" : [random.choice(["\U0001F436", "\U0001F415"])], "extra_check" : is_mentioned(message, "Teb#2096"), "probability" : prob_react},
+		{"regex" : r'kice|kick', "reaction" : [random.choice(["🏳️‍🌈", "\U0001F308", "\U0001F407", "\U0001F430"])], "extra_check" : is_mentioned(message, "kiceg#1555"), "probability" : prob_react},
+		{"regex" : r'pewker|palker|pałker', "reaction" : ["\U0001F4A9"], "extra_check" : is_mentioned(message, "Pewker#3465"), "probability" : prob_react},
+		{"regex" : r'papie(z|ż)|jp2|wojty(l|ł)a|krem(o|ó)wk|watykan|vatican', "reaction" : ["🇻🇦"], "extra_check" : False, "probability" : prob_react},
+		{"regex" : r'bryl|brwi', "reaction" : ["brwinow:349219149614022666"], "extra_check" : is_mentioned(message, "brylant#7668"), "probability" : prob_react},
+		{"regex" : r'podbiel', "reaction" : ["podbiel:326424787121602560"], "extra_check" : is_mentioned(message, "podbiel#4486"), "probability" : prob_react},
+		{"regex" : r'waz|wąż|wonsz|snake|snek', "reaction" : ["\U0001F40D"], "extra_check" : False, "probability" : prob_react},
+		{"regex" : r'p_?aul', "reaction" : ["\U0001F4A3"], "extra_check" : is_mentioned(message, "P_aul#1696"), "probability" : prob_react},
+		{"regex" : r'm[mh]{1,}m', "reaction" : ["mhhhmm:256873687871913984"], "extra_check" : False, "probability" : prob_react}
+	]
+	
+	for r in r_list:
+		if (re.search(r["regex"], message.content, re.IGNORECASE) or r["extra_check"]) and (is_private_msg(message) or random.random() < r["probability"]):
+			if not slept:
+				sleep(1)
+				slept = True
+			
+			for e in r["reaction"]:
+				try:
+					yield from client.add_reaction(message, e)
+					print("Success: {}, {}, {}".format(message.channel, message.author, e.encode('raw_unicode_escape')))
+				except Exception:
+					print("Failure: {}, {}, {}".format(message.channel, message.author, e.encode('raw_unicode_escape')))
+					continue
+
+
 
 # Execute on every reaction
 @client.event
@@ -183,42 +221,14 @@ def on_message(message):
 		yield from client.change_presence(game=discord.Game(name=random.choice(game_list)))
 	
 	# Add a reaction
-	if re.match(r'pizz.*(ananas|hawaj)|(ananas|hawaj).*pizz', message.content, re.IGNORECASE):
-		sleep(1)
-		yield from client.add_reaction(message, "\U0001F355")
-		yield from client.add_reaction(message, "\U0001F34D")
-		
-	if re.match(r'vkPCjJM.jpg', message.content, re.IGNORECASE):
-		sleep(1)
-		yield from client.add_reaction(message, "\U0001F922")
+	yield from trigger_reactions(message)
 	
-	if (re.match(r'kat(h|ai|aj)', message.content, re.IGNORECASE) or is_mentioned(message)) and (is_private_msg(message) or random.random() < prob_react):
+	# Repeat emoji from post
+	emoji_list = list(c for c in message.clean_content if c in emoji.UNICODE_EMOJI) or []
+	custom_emoji_list = re.findall(r"(?<=:)\S+?:\d+", message.clean_content, re.IGNORECASE) or []
+	if len(emoji_list+custom_emoji_list) > 0 and (is_private_msg(message) or random.random() < prob_react):
 		sleep(1)
-		yield from client.add_reaction(message, "\U0001F44D")
-		
-	if (re.match(r'nerv', message.content, re.IGNORECASE) or is_mentioned(message, "nerv0#5242")) and (is_private_msg(message) or random.random() < prob_react):
-		sleep(1)
-		yield from client.add_reaction(message, "\U0001F354")
-		
-	if (re.match(r'artius', message.content, re.IGNORECASE) or is_mentioned(message, "SirAleksanderHeim#6341")) and (is_private_msg(message) or random.random() < prob_react):
-		sleep(1)
-		yield from client.add_reaction(message, "\U0001F942")
-		
-	if (re.match(r'rysi|rankin', message.content, re.IGNORECASE) or is_mentioned(message, "Rysia#1973") or is_mentioned(message, "rane#2794")) and (is_private_msg(message) or random.random() < prob_react):
-		sleep(1)
-		yield from client.add_reaction(message, random.choice(["\U0001F431", "\U0001F408"]))
-		
-	if (re.match(r'pewker|palker|pałker', message.content, re.IGNORECASE) or is_mentioned(message, "Pewker#3465")) and (is_private_msg(message) or random.random() < prob_react):
-		sleep(1)
-		yield from client.add_reaction(message, "\U0001F4A9")
-		
-	if re.match(r'papiez|papież|jp2|wojtyła|wojtyla|kremowk|kremówk|watykan|vatican', message.content, re.IGNORECASE) and (is_private_msg(message) or random.random() < prob_react):
-		sleep(1)
-		yield from client.add_reaction(message, "🇻🇦")
-		
-	if (re.match(r'bryl', message.content, re.IGNORECASE) or is_mentioned(message, "brylant#7668")) and (is_private_msg(message) or random.random() < prob_react):
-		sleep(1)
-		yield from client.add_reaction(message, "brwinow:349219149614022666")
+		yield from client.add_reaction(message, random.choice(emoji_list+custom_emoji_list))
 	
 	# Lie
 	
