@@ -1,4 +1,4 @@
-# These are the dependecies. The bot depends on these to function, hence the name. Please do not change these unless your adding to them, because they can break the bot.
+﻿# These are the dependecies. The bot depends on these to function, hence the name. Please do not change these unless your adding to them, because they can break the bot.
 import discord
 import asyncio
 from discord.ext.commands import Bot
@@ -9,6 +9,8 @@ import random
 import emoji
 import re
 from time import sleep
+
+from keys import kathai_key
 
 client = Bot(description="xD", command_prefix= "dupa", pm_help = True)
 
@@ -164,7 +166,7 @@ def trigger_reactions(message):
 		{"regex" : r'pizz.*(ananas|hawa)|(ananas|hawa).*pizz', "reaction" : ["\U0001F355", "\U0001F34D"], "extra_check" : False, "probability" : 1},
 		{"regex" : r'vkPCjJM.jpg', "reaction" : ["\U0001F922"], "extra_check" : False, "probability" : 1},
 		{"regex" : r'nerv', "reaction" : ["\U0001F354"], "extra_check" : False, "probability" : prob_react},
-		{"regex" : r'kat(h|ai|aj)', "reaction" : [random.choice(["\U0001F44D", "\U00002764"])], "extra_check" : is_mentioned(message), "probability" : prob_react},
+		{"regex" : r'kat(h|ai|aj|owic)', "reaction" : [random.choice(["\U0001F44D", "\U00002764"])], "extra_check" : is_mentioned(message), "probability" : prob_react},
 		{"regex" : r'artius', "reaction" : ["\U0001F942"], "extra_check" : is_mentioned(message, "SirAleksanderHeim#6341"), "probability" : prob_react},
 		{"regex" : r'rysi|rankin', "reaction" : [random.choice(["\U0001F431", "\U0001F408"])], "extra_check" : is_mentioned(message, "Rysia#1973") or is_mentioned(message, "rane#2794"), "probability" : prob_react},
 		{"regex" : r'teb', "reaction" : [random.choice(["\U0001F436", "\U0001F415"])], "extra_check" : is_mentioned(message, "Teb#2096"), "probability" : prob_react},
@@ -288,4 +290,4 @@ list_functions()
 
 
 # Start
-client.run('token')
+client.run(kathai_key)
