@@ -164,7 +164,7 @@ def trigger_reactions(message):
 		{"regex" : r'pizz.*(ananas|hawa)|(ananas|hawa).*pizz', "reaction" : ["\U0001F355", "\U0001F34D"], "extra_check" : False, "probability" : 1},
 		{"regex" : r'vkPCjJM.jpg', "reaction" : ["\U0001F922"], "extra_check" : False, "probability" : 1},
 		{"regex" : r'nerv', "reaction" : ["\U0001F354"], "extra_check" : False, "probability" : prob_react},
-		{"regex" : r'kat(h|ai|aj)', "reaction" : ["\U0001F44D"], "extra_check" : is_mentioned(message), "probability" : prob_react},
+		{"regex" : r'kat(h|ai|aj)', "reaction" : [random.choice(["\U0001F44D", "\U00002764"])], "extra_check" : is_mentioned(message), "probability" : prob_react},
 		{"regex" : r'artius', "reaction" : ["\U0001F942"], "extra_check" : is_mentioned(message, "SirAleksanderHeim#6341"), "probability" : prob_react},
 		{"regex" : r'rysi|rankin', "reaction" : [random.choice(["\U0001F431", "\U0001F408"])], "extra_check" : is_mentioned(message, "Rysia#1973") or is_mentioned(message, "rane#2794"), "probability" : prob_react},
 		{"regex" : r'teb', "reaction" : [random.choice(["\U0001F436", "\U0001F415"])], "extra_check" : is_mentioned(message, "Teb#2096"), "probability" : prob_react},
@@ -173,8 +173,11 @@ def trigger_reactions(message):
 		{"regex" : r'papie(z|ż)|jp2|wojty(l|ł)a|krem(o|ó)wk|watykan|vatican', "reaction" : ["🇻🇦"], "extra_check" : False, "probability" : prob_react},
 		{"regex" : r'bryl|brwi', "reaction" : ["brwinow:349219149614022666"], "extra_check" : is_mentioned(message, "brylant#7668"), "probability" : prob_react},
 		{"regex" : r'podbiel', "reaction" : ["podbiel:326424787121602560"], "extra_check" : is_mentioned(message, "podbiel#4486"), "probability" : prob_react},
-		{"regex" : r'waz|wąż|wonsz|snake|snek', "reaction" : ["\U0001F40D"], "extra_check" : False, "probability" : prob_react},
+		{"regex" : r'wąż|wonsz|snake|snek', "reaction" : ["\U0001F40D"], "extra_check" : False, "probability" : prob_react},
 		{"regex" : r'p_?aul', "reaction" : ["\U0001F4A3"], "extra_check" : is_mentioned(message, "P_aul#1696"), "probability" : prob_react},
+		{"regex" : r'hrabul', "reaction" : [random.choice(["\U0001F4B2", "\U0001F4B5"])], "extra_check" : is_mentioned(message, "hrabula#4726"), "probability" : prob_react},
+		{"regex" : r'@everyone', "reaction" : ["angery:325368048640983052"], "extra_check" : message.mention_everyone, "probability" : prob_react},
+		{"regex" : r'org(u|iel|ieł)', "reaction" : ["coolczesc:325367097125502989"], "extra_check" : is_mentioned(message, "orgiele#8308"), "probability" : prob_react},
 		{"regex" : r'm[mh]{1,}m', "reaction" : ["mhhhmm:256873687871913984"], "extra_check" : False, "probability" : prob_react}
 	]
 	
@@ -185,12 +188,12 @@ def trigger_reactions(message):
 				slept = True
 			
 			for e in r["reaction"]:
-				try:
-					yield from client.add_reaction(message, e)
-					print("Success: {}, {}, {}".format(message.channel, message.author, e.encode('raw_unicode_escape')))
-				except Exception:
-					print("Failure: {}, {}, {}".format(message.channel, message.author, e.encode('raw_unicode_escape')))
-					continue
+			#try:
+				yield from client.add_reaction(message, e)
+				#print("Success: {}, {}, {}".format(message.channel, message.author, e.encode('raw_unicode_escape')))
+			#except Exception:
+				#print("Failure: {}, {}, {}".format(message.channel, message.author, e.encode('raw_unicode_escape')))
+				#continue
 
 
 
@@ -221,7 +224,8 @@ def on_message(message):
 		yield from client.change_presence(game=discord.Game(name=random.choice(game_list)))
 	
 	# Add a reaction
-	yield from trigger_reactions(message)
+	if (not message.author.bot and not re.match(r"^[!\.,\/\\\\]", message.content.strip())):
+		yield from trigger_reactions(message)
 	
 	# Repeat emoji from post
 	emoji_list = list(c for c in message.clean_content if c in emoji.UNICODE_EMOJI) or []
