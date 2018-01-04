@@ -3,9 +3,10 @@
 Pakiet dwóch botów pod Discorda, napisanych w Pythonie na bazie [BasicBot](https://github.com/Habchy/BasicBot)a.
 
 Billy Mays (*billy.py*) jest kontynuacją Mariusza_Stefana, stworzonego na potrzeby #nfaircc7 na bazie IRCowego bota Phenny (obecnie Sopel). 
+
 KatajNapsika (*kathai.py*) to tak naprawdę nie jest bot, tylko bardzo zaawansowana sztuczna inteligencja.
 
-Boty są od siebie niezależne, aczkolwiek współdzielony jest plik *kathai.py*.
+Boty są od siebie niezależne, aczkolwiek współdzielony jest plik *keys.py*.
 
 ## Wymagania
 
