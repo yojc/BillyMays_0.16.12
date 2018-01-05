@@ -188,7 +188,14 @@ def c_wybierz(client, message):
 	else:
 		delimiter = " "
 	
-	yield from client.send_message(message.channel, sh.mention(message) + random.choice(list(filter(None, msg.split(delimiter)))).strip())
+	tmp = list(filter(None, map(str.strip, msg.split(delimiter))))
+	
+	if len(tmp) > 0:
+		ret = random.choice(tmp)
+	else: 
+		ret = "nie mam nic do wyboru tłumoku"
+	
+	yield from client.send_message(message.channel, sh.mention(message) + ret)
 
 c_wybierz.command = r"wybierz"
 c_wybierz.params = ["opcja, opcja, opcja..."]
@@ -628,7 +635,7 @@ f_smh.prob = 1.0
 
 @asyncio.coroutine
 def f_jakisgolas(client, message):
-	yield from client.send_message(message.channel, "USUŃ TO")
+	yield from client.send_message(message.channel,  random.choice(["USUŃ TO", "życie ci niemiłe?", "boga w sercu nie masz?", "jezus maria...", "całe życie z debilami", "a bana to byś nie chciał?", "<rzygi>"]))
 
 f_jakisgolas.command = r"vkPCjJM.jpg"
 f_jakisgolas.prob = 1.0

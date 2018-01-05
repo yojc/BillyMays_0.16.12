@@ -9,7 +9,7 @@ from cleverwrap import CleverWrap
 
 import billy_shared as sh
 from billy_c_yojc import c_rimshot as rimshot
-from keys import wolfram_key, cleverbot_key
+from config import wolfram_key, cleverbot_key
 
 headers_Get = {
 	'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:49.0) Gecko/20100101 Firefox/49.0',

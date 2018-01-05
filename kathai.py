@@ -10,7 +10,7 @@ import emoji
 import re
 from time import sleep
 
-from keys import kathai_key
+from config import kathai_key
 
 client = Bot(description="xD", command_prefix= "dupa", pm_help = True)
 
@@ -164,7 +164,7 @@ def trigger_reactions(message):
 	
 	r_list = [
 		{"regex" : r'pizz.*(ananas|hawa)|(ananas|hawa).*pizz', "reaction" : ["\U0001F355", "\U0001F34D"], "extra_check" : False, "probability" : 1},
-		{"regex" : r'vkPCjJM.jpg', "reaction" : ["\U0001F922"], "extra_check" : False, "probability" : 1},
+		{"regex" : r'vkPCjJM.jpg', "reaction" : [random.choice(["\U0001F922", "\U0001F645", "\U0001F6AB"])], "extra_check" : False, "probability" : 1},
 		{"regex" : r'nerv', "reaction" : ["\U0001F354"], "extra_check" : False, "probability" : prob_react},
 		{"regex" : r'kat(h|ai|aj|owic)', "reaction" : [random.choice(["\U0001F44D", "\U00002764"])], "extra_check" : is_mentioned(message), "probability" : prob_react},
 		{"regex" : r'artius', "reaction" : ["\U0001F942"], "extra_check" : is_mentioned(message, "SirAleksanderHeim#6341"), "probability" : prob_react},
@@ -180,6 +180,9 @@ def trigger_reactions(message):
 		{"regex" : r'hrabul', "reaction" : [random.choice(["\U0001F4B2", "\U0001F4B5"])], "extra_check" : is_mentioned(message, "hrabula#4726"), "probability" : prob_react},
 		{"regex" : r'@everyone', "reaction" : ["angery:325368048640983052"], "extra_check" : message.mention_everyone, "probability" : prob_react},
 		{"regex" : r'org(u|iel|ieł)', "reaction" : ["coolczesc:325367097125502989"], "extra_check" : is_mentioned(message, "orgiele#8308"), "probability" : prob_react},
+		{"regex" : r'fel', "reaction" : ["\U0001F388"], "extra_check" : is_mentioned(message, "Fel#6728"), "probability" : prob_react},
+		{"regex" : r'xd', "reaction" : ["\U0001F1FD", "\U0001F1E9"], "extra_check" : False, "probability" : prob_react},
+		{"regex" : r'vod(a|ę|zi|e)|tarkin', "reaction" : ["cyka:369039064533303318"], "extra_check" : is_mentioned(message, "Tarkin#6128"), "probability" : prob_react},
 		{"regex" : r'm[mh]{1,}m', "reaction" : ["mhhhmm:256873687871913984"], "extra_check" : False, "probability" : prob_react}
 	]
 	
@@ -190,12 +193,13 @@ def trigger_reactions(message):
 				slept = True
 			
 			for e in r["reaction"]:
-			#try:
-				yield from client.add_reaction(message, e)
-				#print("Success: {}, {}, {}".format(message.channel, message.author, e.encode('raw_unicode_escape')))
-			#except Exception:
-				#print("Failure: {}, {}, {}".format(message.channel, message.author, e.encode('raw_unicode_escape')))
-				#continue
+				try:
+					yield from client.add_reaction(message, e)
+					#print("Success: {}, {}, {}".format(message.channel, message.author, e.encode('raw_unicode_escape')))
+				except Exception:
+					print("Failure: {}, {}, {}, {}".format(message.channel, message.author, e.encode('raw_unicode_escape'), r["regex"]))
+					raise
+					continue
 
 
 

@@ -6,7 +6,7 @@ from discord.ext import commands
 import platform
 
 # App keys
-from keys import discord_key
+from config import billy_key
 
 # Import logging
 import random
