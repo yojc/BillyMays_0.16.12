@@ -91,6 +91,18 @@ def on_ready():
 	print('--------')
 
 
+# Execute on every reaction
+@client.event
+@asyncio.coroutine
+def on_reaction_add(reaction, user):
+	if reaction.me:
+		return
+	
+	if random.random() < 0.25:
+		sleep(4)
+		yield from client.add_reaction(reaction.message, reaction.emoji)
+
+
 # Execute on every msg
 @client.event
 @asyncio.coroutine
@@ -99,6 +111,13 @@ def on_message(message):
 	
 	if message.author == client.user:
 		return
+	
+	# Sync game
+	
+	#if message.server and message.server.get_member_named("yojc#2359") and message.server.get_member_named("yojc#2359").game and re.search(r"borderlands", message.server.get_member_named("yojc#2359").game.name, re.IGNORECASE):
+	#	yield from client.change_presence(game=message.server.get_member_named("yojc#2359").game)
+	#else:
+	#	yield from client.change_presence(game=None)
 	
 	perm = af.check_channel_whitelist(client, message)
 	
