@@ -118,7 +118,7 @@ def cytat():
 
 @asyncio.coroutine
 def c_google(client, message):
-	result = google(sh.get_args(message))
+	result = google(sh.get_args(message, True))
 	
 	if not result:
 		yield from client.send_message(message.channel, sh.mention(message) + "brak wyników, albo Google się zesrało.")
@@ -127,11 +127,11 @@ def c_google(client, message):
 
 c_google.command = r"(g|google)"
 c_google.params = ["zapytanie"]
-c_google.desc = "szukaj w Google (nie dawać @mentionów)"
+c_google.desc = "szukaj w Google"
 
 @asyncio.coroutine
 def c_wyjasnij(client, message):
-	result = google(sh.get_args(message))
+	result = google(sh.get_args(message, True))
 	
 	if not result:
 		yield from client.send_message(message.channel, sh.mention(message) + "brak wyników, albo Google się zesrało.")
@@ -140,11 +140,11 @@ def c_wyjasnij(client, message):
 
 c_wyjasnij.command = r"(wyjasnij|wyjaśnij|explain)"
 c_wyjasnij.params = ["zapytanie"]
-c_wyjasnij.desc = "szukaj w Google, podaje treść (nie dawać @mentionów)"
+c_wyjasnij.desc = "szukaj w Google, podaje treść"
 
 @asyncio.coroutine
 def c_google_image(client, message):
-	result = google(sh.get_args(message), "isch")
+	result = google(sh.get_args(message, True), "isch")
 	
 	if not result:
 		yield from client.send_message(message.channel, sh.mention(message) + "brak wyników, albo Google się zesrało.")
@@ -153,12 +153,12 @@ def c_google_image(client, message):
 
 c_google_image.command = r"(i|img)"
 c_google_image.params = ["zapytanie"]
-c_google_image.desc = "szukaj obrazków w Google (nie dawać @mentionów)"
+c_google_image.desc = "szukaj obrazków w Google"
 
 
 @asyncio.coroutine
 def c_google_image_clipart(client, message):
-	result = google(sh.get_args(message), "itp:clipart")
+	result = google(sh.get_args(message, True), "itp:clipart")
 	
 	if not result:
 		yield from client.send_message(message.channel, sh.mention(message) + "brak wyników, albo Google się zesrało.")
@@ -167,12 +167,12 @@ def c_google_image_clipart(client, message):
 
 c_google_image_clipart.command = r"clipart"
 c_google_image_clipart.params = ["zapytanie"]
-c_google_image_clipart.desc = "szukaj clipartów (nie dawać @mentionów)"
+c_google_image_clipart.desc = "szukaj clipartów"
 
 
 @asyncio.coroutine
 def c_google_image_face(client, message):
-	result = google(sh.get_args(message), "itp:face")
+	result = google(sh.get_args(message, True), "itp:face")
 	
 	if not result:
 		yield from client.send_message(message.channel, sh.mention(message) + "brzydal")
@@ -181,12 +181,12 @@ def c_google_image_face(client, message):
 
 c_google_image_face.command = r"(face|twarz)"
 c_google_image_face.params = ["zapytanie"]
-c_google_image_face.desc = "szukaj obrazków zawierających twarz (nie dawać @mentionów)"
+c_google_image_face.desc = "szukaj obrazków zawierających twarz"
 
 
 @asyncio.coroutine
 def c_google_image_gif(client, message):
-	result = google(sh.get_args(message), "itp:animated")
+	result = google(sh.get_args(message, True), "itp:animated")
 	
 	if not result:
 		yield from client.send_message(message.channel, sh.mention(message) + "brak wyników, albo Google się zesrało.")
@@ -195,12 +195,12 @@ def c_google_image_gif(client, message):
 
 c_google_image_gif.command = r"gif"
 c_google_image_gif.params = ["zapytanie"]
-c_google_image_gif.desc = "szukaj animowanych obrazków (nie dawać @mentionów)"
+c_google_image_gif.desc = "szukaj animowanych obrazków"
 
 
 @asyncio.coroutine
 def c_youtube(client, message):
-	result = yt(sh.get_args(message))
+	result = yt(sh.get_args(message, True))
 	
 	if not result:
 		yield from client.send_message(message.channel, sh.mention(message) + "brak wyników, albo jutub się zesrał.")
@@ -215,7 +215,7 @@ c_youtube.desc = "szukaj filmików na YT"
 @asyncio.coroutine
 def c_wolfram(client, message):
 	cw = wolframalpha.Client(wolfram_key)
-	res = cw.query(sh.get_args(message))
+	res = cw.query(sh.get_args(message, True))
 	
 	if not hasattr(res, "results"):
 		yield from client.send_message(message.channel, sh.mention(message) + "nie ma takich rzeczy")
@@ -258,7 +258,7 @@ c_cytat.desc = "życiowe maksymy"
 @asyncio.coroutine
 def c_cleverbot(client, message):
 	cw = CleverWrap(cleverbot_key)
-	yield from client.send_message(message.channel, sh.mention(message) + cw.say(sh.get_args(message)))
+	yield from client.send_message(message.channel, sh.mention(message) + cw.say(sh.get_args(message, True)))
 
 c_cleverbot.command = r"(cb|cleverbot|(od)?powiedz)"
 c_cleverbot.params = ["zapytanie"]

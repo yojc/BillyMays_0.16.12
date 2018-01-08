@@ -20,8 +20,11 @@ def check_dest(msg):
 def mention(msg):
 	return msg.author.mention + ": "
 
-def rm_leading_quotes(msg):
-	content = msg.content
+def rm_leading_quotes(msg, clean = False):
+	if clean:
+		content = msg.clean_content
+	else:
+		content = msg.content
 	
 	while re.match(r"^[`'\"<]", content):
 		oldcontent = content
@@ -38,8 +41,8 @@ def rm_leading_quotes(msg):
 	
 	return content
 
-def get_args(msg):
-	tmp = rm_leading_quotes(msg).split(None, 1)
+def get_args(msg, clean = False):
+	tmp = rm_leading_quotes(msg, clean).split(None, 1)
 	if len(tmp) > 1:
 		return tmp[1]
 	else:

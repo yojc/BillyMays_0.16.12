@@ -330,6 +330,14 @@ def c_bkc(client, message):
 c_bkc.command = r"bkc"
 
 
+@asyncio.coroutine
+def c_zgadzam(client, message):
+	yield from client.send_file(message.channel, sh.file_path("img/nargogh wins.png"))
+
+c_zgadzam.command = r"zgadzam"
+c_zgadzam.desc = "Się zgadzam z Nargogiem"
+
+
 # -------------------------------------
 # funkcje używające seed
 # -------------------------------------
@@ -358,7 +366,7 @@ def c_ocen(client, message):
 	if ocena < 10 and ocena > 0:
 		doda = random.choice(["", ",5", "-", "+"])
 	if ocena > 7:
-		znak = random.choice(["", "+ znak jakości CD-Action", "- Berlin poleca", ""])
+		znak = random.choice(["", "+ :znak:", "- Berlin poleca", ""])
 	
 	yield from client.send_message(message.channel, sh.mention(message) + str(ocena) + doda + "/10 " + znak)
 
@@ -597,7 +605,7 @@ f_rucha.prob = 0.05
 
 @asyncio.coroutine
 def f_wulg(client, message):
-	yield from client.send_message(message.channel, random.choice(["może byś tak kurwa nie przeklinał", "co?", "bez wulgaryzmów proszę", "na ten kanał zaglądają dzieci", "ostrożniej z językiem", "to kanał PG13", "czy mam ci język uciąć?", "przestań przeklinać pedale bo cię stąd wypierdolę dyscyplinarnie", "pambuk płacze jak przeklinasz", "mów do mnie brzydko", "Kath bączy jak przeklinasz", "proszę tu nie przeklinać to porządna knajpa", "nie ma takiego przeklinania chuju", "блять))))))))))"]))
+	yield from client.send_message(message.channel, random.choice(["może byś tak kurwa nie przeklinał", "co?", "bez wulgaryzmów proszę", "na ten kanał zaglądają dzieci", "ostrożniej z językiem", "to kanał PG13", "czy mam ci język uciąć?", "przestań przeklinać pedale bo cię stąd wypierdolę dyscyplinarnie", "pambuk płacze jak przeklinasz", "mów do mnie brzydko", "Kath bączy jak przeklinasz", "proszę tu nie przeklinać, to porządna knajpa", "nie ma takiego przeklinania chuju", "блять))))))))))", "zamknij pizdę"]))
 
 f_wulg.command = r'(kurw|chuj|pierdol|pierdal|jeb)'
 f_wulg.prob = 0.05
@@ -635,7 +643,13 @@ f_smh.prob = 1.0
 
 @asyncio.coroutine
 def f_jakisgolas(client, message):
-	yield from client.send_message(message.channel,  random.choice(["USUŃ TO", "życie ci niemiłe?", "boga w sercu nie masz?", "jezus maria...", "całe życie z debilami", "a bana to byś nie chciał?", "<rzygi>"]))
+	replies = ["USUŃ TO", "boga w sercu nie masz?", "jezus maria...", "całe życie z debilami", "a bana to byś nie chciał?", "<rzygi>"]
+	
+	if random.random() < 1/(len(replies)+1):
+		yield from client.send_typing(message.channel)
+		yield from c_wypierdalaj(client, message)
+	else:
+		yield from client.send_message(message.channel,  random.choice(replies))
 
 f_jakisgolas.command = r"vkPCjJM.jpg"
 f_jakisgolas.prob = 1.0

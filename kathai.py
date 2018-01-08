@@ -13,10 +13,11 @@ from time import sleep
 from config import kathai_key
 
 client = Bot(description="xD", command_prefix= "dupa", pm_help = True)
+game_synced = None
 
 # Games to play
 
-game_list = ["Borderlands", "Borderlands 2", "Borderlands 3", "Borderlands: the Pre-Sequel!", "Dragon Age: Origins", "Tales from the Borderlands", "Genital Jousting", "Team Fortress 2", "Crusaders of the Lost Idols", "Mining Industry Simulator", "Plush", "Chamsko: The Rift"]
+game_list = ["Borderlands", "Borderlands 2", "Borderlands 3", "Borderlands: the Pre-Sequel!", "Dragon Age: Origins", "Tales from the Borderlands", "Genital Jousting", "Team Fortress 2", "Crusaders of the Lost Idols", "Mining Industry Simulator", "Plush", "Chamsko: The Rift", "Overwatch"]
 
 
 # Action probability
@@ -67,13 +68,13 @@ def f_chamsko():
 	
 	return reply
 
-f_chamsko.prob = 0.15
+f_chamsko.prob = 0.14
 
 
 def f_pac():
 	return "\*pac*"
 
-f_pac.prob = 0.08
+f_pac.prob = 0.06
 
 
 def f_pff():
@@ -114,6 +115,14 @@ def f_czo():
 f_czo.prob = 0.06
 
 
+def f_trzy():
+	reply = random.choice([":3", ":D"])
+	
+	return reply
+
+f_trzy.prob = 0.03
+
+
 # Helper functions
 
 def is_private_msg(message):
@@ -123,7 +132,7 @@ def is_mentioned(message, user=None):
 	if user:
 		return (message.server and message.server.get_member_named(user) in message.mentions)
 	else:
-		return (message.server and (message.server.get_member_named("Kath#8040") in message.mentions or message.server.get_member_named("KatajNapsika#5915") in message.mentions))
+		return (message.server and (message.server.get_member_named("Kath#8040") in message.mentions or message.server.me in message.mentions))
 
 def choose_reply():
 	prob_weight = 1.0/prob_total
@@ -178,12 +187,13 @@ def trigger_reactions(message):
 		{"regex" : r'wąż|wonsz|snake|snek', "reaction" : ["\U0001F40D"], "extra_check" : False, "probability" : prob_react},
 		{"regex" : r'p_?aul', "reaction" : ["\U0001F4A3"], "extra_check" : is_mentioned(message, "P_aul#1696"), "probability" : prob_react},
 		{"regex" : r'hrabul', "reaction" : [random.choice(["\U0001F4B2", "\U0001F4B5"])], "extra_check" : is_mentioned(message, "hrabula#4726"), "probability" : prob_react},
-		{"regex" : r'@everyone', "reaction" : ["angery:325368048640983052"], "extra_check" : message.mention_everyone, "probability" : prob_react},
+		{"regex" : r'@everyone|@here', "reaction" : ["angery:325368048640983052"], "extra_check" : message.mention_everyone, "probability" : prob_react},
 		{"regex" : r'org(u|iel|ieł)', "reaction" : ["coolczesc:325367097125502989"], "extra_check" : is_mentioned(message, "orgiele#8308"), "probability" : prob_react},
 		{"regex" : r'fel', "reaction" : ["\U0001F388"], "extra_check" : is_mentioned(message, "Fel#6728"), "probability" : prob_react},
 		{"regex" : r'xd', "reaction" : ["\U0001F1FD", "\U0001F1E9"], "extra_check" : False, "probability" : prob_react},
 		{"regex" : r'vod(a|ę|zi|e)|tarkin', "reaction" : ["cyka:369039064533303318"], "extra_check" : is_mentioned(message, "Tarkin#6128"), "probability" : prob_react},
-		{"regex" : r'm[mh]{1,}m', "reaction" : ["mhhhmm:256873687871913984"], "extra_check" : False, "probability" : prob_react}
+		{"regex" : r'czekolad|chocolat', "reaction" : ["\U0001F36B"], "extra_check" : False, "probability" : prob_react},
+		{"regex" : r'm[mh]{1,}m|dup(a|ą|ie|ię)|penis|kutas|cycek|cyck|piersi|tyłek|tylek', "reaction" : ["mhhhmm:256873687871913984"], "extra_check" : False, "probability" : prob_react}
 	]
 	
 	for r in r_list:
@@ -222,11 +232,19 @@ def on_reaction_add(reaction, user):
 @client.event
 @asyncio.coroutine
 def on_message(message):
+	global game_synced
+	
 	if message.author == client.user:
 		return
 	
-	# Change the game
-	if random.random() < prob_game:
+	# Sync game
+	
+	if message.server and message.server.get_member_named("Kath#8040") and message.server.get_member_named("Kath#8040").game and game_synced != message.server.get_member_named("Kath#8040").game:
+	#and re.search(r"borderlands", message.server.get_member_named("Kath#8040").game.name, re.IGNORECASE):
+		game_synced = message.server.get_member_named("Kath#8040").game;
+		yield from client.change_presence(game=message.server.get_member_named("Kath#8040").game)
+	elif not is_private_msg(message) and random.random() < prob_game:
+		game_synced = None;
 		yield from client.change_presence(game=discord.Game(name=random.choice(game_list)))
 	
 	# Add a reaction
@@ -236,9 +254,16 @@ def on_message(message):
 	# Repeat emoji from post
 	emoji_list = list(c for c in message.clean_content if c in emoji.UNICODE_EMOJI) or []
 	custom_emoji_list = re.findall(r"(?<=:)\S+?:\d+", message.clean_content, re.IGNORECASE) or []
+	custom_emoji_list_raw = re.findall(r"<:\S+?:\d+>", message.clean_content, re.IGNORECASE) or []
 	if len(emoji_list+custom_emoji_list) > 0 and (is_private_msg(message) or random.random() < prob_react):
-		sleep(1)
-		yield from client.add_reaction(message, random.choice(emoji_list+custom_emoji_list))
+		if (is_private_msg(message) or str(message.channel) in channels) and random.random() < 0.4:
+			yield from client.send_typing(message.channel)
+			sleep(1)
+			yield from client.send_message(message.channel, random.choice(emoji_list+custom_emoji_list_raw))
+			return
+		else:
+			sleep(1)
+			yield from client.add_reaction(message, random.choice(emoji_list+custom_emoji_list))
 	
 	# Lie
 	

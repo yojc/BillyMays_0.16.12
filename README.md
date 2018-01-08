@@ -6,7 +6,7 @@ Billy Mays (*billy.py*) jest kontynuacją Mariusza_Stefana, stworzonego na potrz
 
 KatajNapsika (*kathai.py*) to tak naprawdę nie jest bot, tylko bardzo zaawansowana sztuczna inteligencja.
 
-Boty są od siebie niezależne, aczkolwiek współdzielony jest plik *keys.py*.
+Boty są od siebie niezależne, aczkolwiek współdzielony jest plik *config.py*.
 
 ## Wymagania
 
@@ -14,7 +14,7 @@ Ten projekt do uruchomienia wymaga Pythona 3 wraz z jakimiś doinstalowanymi pak
 
 ## Klucze do aplikacji
 
-Utwórz plik *keys.py* o następującej zawartości:
+Utwórz plik *config.py* o następującej zawartości:
 
 ```
 billy_key = ""
