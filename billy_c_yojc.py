@@ -2,9 +2,13 @@ import random
 import asyncio
 import itertools
 import re
+import datetime
 
 import billy_shared as sh
 from billy_antiflood import check_uptime
+
+# used to check 21:37 once a day
+current_day = 0
 
 boruc = "Artur Boruc"
 
@@ -95,7 +99,7 @@ c_balls.desc = "I've got balls of steel"
 
 @asyncio.coroutine
 def c_boruc(client, message):
-	yield from client.send_message(message.channel, "brawo Artur Boruc")
+	yield from client.send_message(message.channel, "brawo " + boruc)
 
 c_boruc.command = r"(brawo|boruc)"
 c_boruc.desc = "BRAWO ARTUR BORUC"
@@ -366,7 +370,7 @@ def c_ocen(client, message):
 	if ocena < 10 and ocena > 0:
 		doda = random.choice(["", ",5", "-", "+"])
 	if ocena > 7:
-		znak = random.choice(["", "+ :znak:", "- Berlin poleca", ""])
+		znak = random.choice(["", "+ <:znak:400312259328606214>", "- Berlin poleca", ""])
 	
 	yield from client.send_message(message.channel, sh.mention(message) + str(ocena) + doda + "/10 " + znak)
 
@@ -643,7 +647,7 @@ f_smh.prob = 1.0
 
 @asyncio.coroutine
 def f_jakisgolas(client, message):
-	replies = ["USUŃ TO", "boga w sercu nie masz?", "jezus maria...", "całe życie z debilami", "a bana to byś nie chciał?", "<rzygi>"]
+	replies = ["USUŃ TO", "boga w sercu nie masz?", "jezus maria...", "całe życie z debilami", "a bana to byś nie chciał?", "<rzygi>", "ty bamboclu"]
 	
 	if random.random() < 1/(len(replies)+1):
 		yield from client.send_typing(message.channel)
@@ -742,3 +746,28 @@ def rollDice(diceroll):
 			#if it's not the last sign, add a plus sign.
 			result += "+"
 	return "("+result+")" #feed it back to the formula parser... add some parentheses so we know this is 1 roll.
+
+
+@asyncio.coroutine
+def pope_time(client, channel):
+	global current_day
+	yield from client.wait_until_ready()
+	replies = ["zapraszam wszystkich na kremówki", "wybiła godzina papieska", "Jan Paweł 2, w moim sercu zawsze 1", "Jan Paweł II był wielkim człowiekiem", "JP2GMD"]
+	barka = ("Pan kiedyś stanął nad brzegiem,\n" +
+		"Szukał ludzi gotowych pójść za Nim;\n" +
+		"By łowić serca\n" +
+		"Słów Bożych prawdą.\n\n" +
+		"Ref.: \n" +
+		"O Panie, to Ty na mnie spojrzałeś,\n" +
+		"Twoje usta dziś wyrzekły me imię.\n" +
+		"Swoją barkę pozostawiam na brzegu,\n" +
+		"Razem z Tobą nowy zacznę dziś łów.")
+	
+	while not client.is_closed:
+		now = datetime.datetime.now()
+		
+		if current_day != now.day and now.hour == 21 and now.minute == 37:
+			current_day = now.day
+			yield from client.send_message(channel, random.choice([random.choice(replies), barka]))
+		
+		yield from asyncio.sleep(30)

@@ -8,7 +8,7 @@ import platform
 import random
 import emoji
 import re
-from time import sleep
+#from time import sleep
 
 from config import kathai_key
 
@@ -177,7 +177,8 @@ def trigger_reactions(message):
 		{"regex" : r'nerv', "reaction" : ["\U0001F354"], "extra_check" : False, "probability" : prob_react},
 		{"regex" : r'kat(h|ai|aj|owic)', "reaction" : [random.choice(["\U0001F44D", "\U00002764"])], "extra_check" : is_mentioned(message), "probability" : prob_react},
 		{"regex" : r'artius', "reaction" : ["\U0001F942"], "extra_check" : is_mentioned(message, "SirAleksanderHeim#6341"), "probability" : prob_react},
-		{"regex" : r'rysi|rankin', "reaction" : [random.choice(["\U0001F431", "\U0001F408"])], "extra_check" : is_mentioned(message, "Rysia#1973") or is_mentioned(message, "rane#2794"), "probability" : prob_react},
+		{"regex" : r'rysi', "reaction" : [random.choice(["\U0001F431", "\U0001F408"])], "extra_check" : is_mentioned(message, "Rysia#1973"), "probability" : prob_react},
+		{"regex" : r'rankin', "reaction" : ["blini:256876147810369556"], "extra_check" : is_mentioned(message, "rane#2794"), "probability" : prob_react},
 		{"regex" : r'teb', "reaction" : [random.choice(["\U0001F436", "\U0001F415"])], "extra_check" : is_mentioned(message, "Teb#2096"), "probability" : prob_react},
 		{"regex" : r'kice|kick', "reaction" : [random.choice(["🏳️‍🌈", "\U0001F308", "\U0001F407", "\U0001F430"])], "extra_check" : is_mentioned(message, "kiceg#1555"), "probability" : prob_react},
 		{"regex" : r'pewker|palker|pałker', "reaction" : ["\U0001F4A9"], "extra_check" : is_mentioned(message, "Pewker#3465"), "probability" : prob_react},
@@ -199,7 +200,7 @@ def trigger_reactions(message):
 	for r in r_list:
 		if (re.search(r["regex"], message.content, re.IGNORECASE) or r["extra_check"]) and (is_private_msg(message) or random.random() < r["probability"]):
 			if not slept:
-				sleep(1)
+				yield from asyncio.sleep(1)
 				slept = True
 			
 			for e in r["reaction"]:
@@ -224,7 +225,7 @@ def on_reaction_add(reaction, user):
 	#	yield from client.send_message(reaction.message.channel, choose_reply())
 	
 	if is_private_msg(reaction.message) or random.random() < prob_react:
-		sleep(4)
+		yield from asyncio.sleep(4)
 		yield from client.add_reaction(reaction.message, reaction.emoji)
 
 
@@ -258,11 +259,11 @@ def on_message(message):
 	if len(emoji_list+custom_emoji_list) > 0 and (is_private_msg(message) or random.random() < prob_react):
 		if (is_private_msg(message) or str(message.channel) in channels) and random.random() < 0.4:
 			yield from client.send_typing(message.channel)
-			sleep(1)
+			yield from asyncio.sleep(1)
 			yield from client.send_message(message.channel, random.choice(emoji_list+custom_emoji_list_raw))
 			return
 		else:
-			sleep(1)
+			yield from asyncio.sleep(1)
 			yield from client.add_reaction(message, random.choice(emoji_list+custom_emoji_list))
 	
 	# Lie
@@ -283,12 +284,12 @@ def on_message(message):
 	
 	iksde = choose_reply()
 	yield from client.send_typing(message.channel)
-	sleep(1)
+	yield from asyncio.sleep(1)
 	yield from client.send_message(message.channel, iksde)
 	
 	if iksde.lower().startswith("x") and random.random() < 0.05:
 		yield from client.send_typing(message.channel)
-		sleep(1)
+		yield from asyncio.sleep(1)
 		if random.random() < 0.5:
 			yield from client.send_message(message.channel, "tak")
 		else:

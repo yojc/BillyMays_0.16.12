@@ -99,7 +99,7 @@ def on_reaction_add(reaction, user):
 		return
 	
 	if random.random() < 0.25:
-		sleep(4)
+		yield from asyncio.sleep(4)
 		yield from client.add_reaction(reaction.message, reaction.emoji)
 
 
@@ -220,7 +220,8 @@ def on_message(message):
 					break
 		
 		return
-	
+
+client.loop.create_task(billy_c_yojc.pope_time(client, discord.Object(id="174449535811190785")))
 
 # Bot ID
 client.run(billy_key)
