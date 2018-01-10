@@ -12,6 +12,7 @@ from config import billy_key
 import random
 import re
 import sys
+import datetime
 
 # Shared functions
 
@@ -32,6 +33,9 @@ import billy_c_rhymes
 # Here you can modify the bot's prefix and description and wether it sends help in direct messages or not.
 client = Bot(description="Hi, Billy Mays here", command_prefix= r"^[!\.,\/\\\\]", pm_help = True)
 
+# Used to run timer-based function once a day
+current_day = 0
+
 def compile_command(regex):
 	return client.command_prefix + regex + r"\b"
 
@@ -39,6 +43,7 @@ def compile_command(regex):
 
 c_functions = [] # commands
 f_functions = [] # fulltext
+t_functions = [] # timer-based
 
 modules = list(set(sys.modules) & set(globals()))
 
@@ -48,77 +53,81 @@ for module_name in modules:
 		module = sys.modules[module_name]
 		
 		for name, val in module.__dict__.items():
-			if callable(val) and name.startswith(("c_", "f_")):
-				if not hasattr(val, "command"):
+			if callable(val) and name.startswith(("c_", "f_", "t_")):
+				if name.startswith("t_"):
+					if hasattr(val, "time") and not re.match(r"([0-9]|[0-1][0-9]|2[0-3])\:[0-5][0-9]", getattr(val, "time")):
+						print("Invalid specified time: " + name)
+						continue
+					elif not hasattr(val, "channels"):
+						print("No channels specified: " + name)
+						continue
+					else:
+						# Timer functions functions
+						sh.debug("Imported timer: " + name)
+						t_functions.append(val)
+						i += 1
+				
+				elif not hasattr(val, "command"):
 					# Omit functions without specified .command
 					print("Missing command regex: " + name)
 					continue
+				
 				elif name.startswith("f_") and not hasattr(val, "prob"):
 					# Omit fulltext without specified .prob
 					print("Missing fulltext probability: " + name)
 					continue
-				else:
-					if name.startswith("c_"):
-						# Called functions
-						sh.debug("Imported command: " + name)
-						c_functions.append(val)
-						i += 1
-					elif name.startswith("f_"):
-						# Fulltext search
-						sh.debug("Imported fulltext: " + name)
-						f_functions.append(val)
-						i += 1
+				
+				elif name.startswith("c_"):
+					# Called functions
+					sh.debug("Imported command: " + name)
+					c_functions.append(val)
+					i += 1
+				
+				elif name.startswith("f_"):
+					# Fulltext search
+					sh.debug("Imported fulltext: " + name)
+					f_functions.append(val)
+					i += 1
 			
 		print("Loaded " + str(i) + " functions from module " + module_name)
 	else:
 		sh.debug("Probably not a module: " + module_name)
 
-# Sort functions alphabetically (for .help)
-c_functions.sort(key=lambda x: x.__name__)
-print("--------")
+# Start timer tasks
 
-# This is what happens everytime the bot launches. In this case, it prints information like server count, user count the bot is connected to, and the bot id in the console.
-# Do not mess with it because the bot can break, if you wish to do so, please consult me or someone trusted.
-@client.event
+for e in t_functions:
+	def f(fun):
+		global client
+		global current_day
+		yield from client.wait_until_ready()
+		
+		if hasattr(fun, "time"):
+			t = list(map(int, getattr(fun, "time").split(":")))
+		else:
+			t = False
+		
+		channels = []
+		tmp = getattr(fun, "channels")
+		for e in tmp:
+			channels.append(discord.Object(id=e))
+		
+		interval = getattr(fun, "interval", 30)
+		
+		while not client.is_closed:
+			now = datetime.datetime.now()
+			
+			if current_day != now.day and (not t or (t[0] == now.hour and t[1] == now.minute)):
+				current_day = now.day
+				yield from fun(client, channels)
+			
+			yield from asyncio.sleep(interval)
+	
+	client.loop.create_task(f(e))
+
+# Parse message and execute functions
+
 @asyncio.coroutine
-def on_ready():
-	print('Logged in as '+client.user.name+' (ID:'+client.user.id+') | Connected to '+str(len(client.servers))+' servers | Connected to '+str(len(set(client.get_all_members())))+' users')
-	print('--------')
-	print('Current Discord.py Version: {} | Current Python Version: {}'.format(discord.__version__, platform.python_version()))
-	print('--------')
-	print('Use this link to invite {}:'.format(client.user.name))
-	print('https://discordapp.com/oauth2/authorize?client_id={}&scope=bot&permissions=8'.format(client.user.id))
-	print('--------')
-
-
-# Execute on every reaction
-@client.event
-@asyncio.coroutine
-def on_reaction_add(reaction, user):
-	if reaction.me:
-		return
-	
-	if random.random() < 0.25:
-		yield from asyncio.sleep(4)
-		yield from client.add_reaction(reaction.message, reaction.emoji)
-
-
-# Execute on every msg
-@client.event
-@asyncio.coroutine
-def on_message(message):
-	#ignore bot messages
-	
-	if message.author == client.user:
-		return
-	
-	# Sync game
-	
-	#if message.server and message.server.get_member_named("yojc#2359") and message.server.get_member_named("yojc#2359").game and re.search(r"borderlands", message.server.get_member_named("yojc#2359").game.name, re.IGNORECASE):
-	#	yield from client.change_presence(game=message.server.get_member_named("yojc#2359").game)
-	#else:
-	#	yield from client.change_presence(game=None)
-	
+def parse_message(message, fulltext=True):
 	perm = af.check_channel_whitelist(client, message)
 	
 	# channel blacklisted
@@ -130,7 +139,7 @@ def on_message(message):
 	content = sh.rm_leading_quotes(message)
 	
 	
-	if perm["fulltext"]:
+	if fulltext and perm["fulltext"]:
 		# fulltext search
 		for f in f_functions:
 			c = getattr(f, "command", False)
@@ -218,11 +227,62 @@ def on_message(message):
 						raise
 						continue
 					break
-		
-		return
 
-client.loop.create_task(billy_c_yojc.pope_time(client, discord.Object(id="174449535811190785")))
-client.loop.create_task(billy_c_yojc.trzytrzytrzy(client, discord.Object(id="174449535811190785")))
+# Sort functions alphabetically (for .help)
+c_functions.sort(key=lambda x: x.__name__)
+print("--------")
+
+# This is what happens everytime the bot launches. In this case, it prints information like server count, user count the bot is connected to, and the bot id in the console.
+# Do not mess with it because the bot can break, if you wish to do so, please consult me or someone trusted.
+@client.event
+@asyncio.coroutine
+def on_ready():
+	print('Logged in as '+client.user.name+' (ID:'+client.user.id+') | Connected to '+str(len(client.servers))+' servers | Connected to '+str(len(set(client.get_all_members())))+' users')
+	print('--------')
+	print('Current Discord.py Version: {} | Current Python Version: {}'.format(discord.__version__, platform.python_version()))
+	print('--------')
+	print('Use this link to invite {}:'.format(client.user.name))
+	print('https://discordapp.com/oauth2/authorize?client_id={}&scope=bot&permissions=8'.format(client.user.id))
+	print('--------')
+
+
+# Execute on every reaction
+@client.event
+@asyncio.coroutine
+def on_reaction_add(reaction, user):
+	if reaction.me:
+		return
+	
+	if random.random() < 0.1:
+		yield from asyncio.sleep(4)
+		yield from client.add_reaction(reaction.message, reaction.emoji)
+
+
+# Execute on every msg edit
+
+@client.event
+@asyncio.coroutine
+def on_message_edit(before, after):
+	
+	# ignore bot messages
+	
+	if after.author == client.user or before.content == after.content:
+		return
+	
+	yield from parse_message(after, False)
+
+# Execute on every msg
+
+@client.event
+@asyncio.coroutine
+def on_message(message):
+	
+	# ignore bot messages
+	
+	if message.author == client.user:
+		return
+	
+	yield from parse_message(message)
 
 # Bot ID
 client.run(billy_key)
