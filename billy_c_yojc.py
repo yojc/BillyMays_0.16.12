@@ -771,3 +771,19 @@ def pope_time(client, channel):
 			yield from client.send_message(channel, random.choice([random.choice(replies), barka]))
 		
 		yield from asyncio.sleep(30)
+
+
+@asyncio.coroutine
+def trzytrzytrzy(client, channel):
+	global current_day
+	yield from client.wait_until_ready()
+	replies = ["3:33, KATH POBUDKA"]
+	
+	while not client.is_closed:
+		now = datetime.datetime.now()
+		
+		if current_day != now.day and now.hour == 3 and now.minute == 33:# and random.random() < (1/3):
+			current_day = now.day
+			yield from client.send_message(channel, random.choice(replies))
+		
+		yield from asyncio.sleep(30)

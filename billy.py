@@ -222,6 +222,7 @@ def on_message(message):
 		return
 
 client.loop.create_task(billy_c_yojc.pope_time(client, discord.Object(id="174449535811190785")))
+client.loop.create_task(billy_c_yojc.trzytrzytrzy(client, discord.Object(id="174449535811190785")))
 
 # Bot ID
 client.run(billy_key)
