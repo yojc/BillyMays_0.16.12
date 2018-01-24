@@ -2,6 +2,7 @@ import requests
 import asyncio
 import json
 import re
+import random
 
 import billy_shared as sh
 
@@ -63,6 +64,28 @@ def translate(text, in_lang='auto', out_lang='en', verify_ssl=True):
 	return ''.join(x[0] for x in data[0]), language
 
 
+@asyncio.coroutine
+def mangle(client, channel, text, dest="en", randomize=False):
+	langs = ['auto']
+	
+	if randomize:
+		lang_list = "af sq am ar hy az eu bn bs bg ca zh co hr cs da nl eo et fi fr fy gl ka de el gu ht ha iw hi hu is ig id ga it ja jw kn kk km ko ku lo lv lt lb mk mg ms ml mt mi mr mn ne no ny ps fa pt pa ro ru sm gd sr st sn sd si sk sl so es sw sv tl tg ta te th tr uk ur uz vi cy xh yi yo zu".split(" ")
+		langs.extend(random.sample(lang_list, 8))
+	else:
+		langs.extend(['fr', 'de', 'es', 'it', 'no', 'he', 'la', 'ja'])
+	
+	langs.append(dest)
+	
+	i = 1
+	
+	while i < len(langs):
+		text = translate(text, langs[i-1], langs[i])[0]
+		yield from client.send_typing(channel)
+		i += 1
+	
+	return text
+
+
 # ---------
 
 @asyncio.coroutine
@@ -94,20 +117,7 @@ c_trp.desc = "tłumaczenie na j. polski"
 
 @asyncio.coroutine
 def c_mangle(client, message):
-	args = parse_args(sh.get_args(message))
-	text = args["msg"]
-	langs = [args["in_lang"], 'fr', 'de', 'es', 'it', 'no', 'he', 'la', 'ja', args["out_lang"]]
-	i = 1
-	
-	while i < len(langs):
-		text = translate(text, langs[i-1], langs[i])[0]
-		yield from client.send_typing(message.channel)
-		i += 1
-	
-	if text is None:
-		yield from client.send_message(message.channel, sh.mention(message) + "brak wyników, albo Google się zesrało.")
-	else:
-		yield from client.send_message(message.channel, sh.mention(message) + text)
+	yield from client.send_message(message.channel, sh.mention(message) + (yield from mangle(client, message.channel, sh.get_args(message), "en")))
 
 c_mangle.command = r"mangle"
 c_mangle.params = [":jęz_wej", ":jęz_wyj", "tekst"]
@@ -115,20 +125,25 @@ c_mangle.desc = "najlepsze tłumaczenie (domyślnie auto => en)"
 
 @asyncio.coroutine
 def c_manglep(client, message):
-	text = sh.get_args(message)
-	langs = ['auto', 'fr', 'de', 'es', 'it', 'no', 'he', 'la', 'ja', 'en', 'pl']
-	i = 1
-	
-	while i < len(langs):
-		text = translate(text, langs[i-1], langs[i])[0]
-		yield from client.send_typing(message.channel)
-		i += 1
-	
-	if text is None:
-		yield from client.send_message(message.channel, sh.mention(message) + "brak wyników, albo Google się zesrało.")
-	else:
-		yield from client.send_message(message.channel, sh.mention(message) + text)
+	yield from client.send_message(message.channel, sh.mention(message) + (yield from mangle(client, message.channel, sh.get_args(message), "pl")))
 
 c_manglep.command = r"manglep"
 c_manglep.params = ["tekst"]
 c_manglep.desc = "najlepsze tłumaczenie na polski"
+
+@asyncio.coroutine
+def c_mangler(client, message):
+	yield from client.send_message(message.channel, sh.mention(message) + (yield from mangle(client, message.channel, sh.get_args(message), "pl", True)))
+
+c_mangler.command = r"mangler"
+c_mangler.params = ["tekst"]
+c_mangler.desc = "najlepsze tłumaczenie na polski (losowo dobierana kolejność tłumaczeń)"
+
+@asyncio.coroutine
+def c_hakan(client, message):
+	text = sh.insert_word("hakan", sh.get_args(message))
+	yield from client.send_message(message.channel, sh.mention(message) + (yield from mangle(client, message.channel, text, "pl")))
+
+c_hakan.command = r"(al)?haka(n|m)"
+c_hakan.params = ["zdanie"]
+c_hakan.desc = "manglep z podwójnym Hakkenem na cienkim cieście"

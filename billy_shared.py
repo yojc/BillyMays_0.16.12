@@ -1,5 +1,6 @@
 import os
 import re
+import random
 
 testing = False
 
@@ -61,3 +62,31 @@ def replace_all(text, dic):
 	for i, j in iter(dic.items()):
 		text = text.replace(i, j)
 	return text
+
+def insert_word(c, text):
+	e = text.split(" ")
+	ret = ""
+	dot = True
+	
+	for t in e:
+		changecase = False
+		
+		if random.random() < 0.2:
+			if dot and t[0].isupper():
+				ret += c.title() + " "
+				if t.istitle():
+					changecase = True
+			else:
+				ret += c + " "
+		
+		if t.endswith("."):
+			dot = True
+		else:
+			dot = False
+		
+		if changecase:
+			ret += t.lower() + " "
+		else:
+			ret += t + " "
+	
+	return ret

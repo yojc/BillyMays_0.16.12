@@ -26,6 +26,7 @@ import billy_c_yojc
 import billy_c_web
 import billy_c_translate
 import billy_c_rhymes
+#import billy_c_sopel
 
 # Error log location
 #logging.basicConfig(filename="billy_err.log", level=logging.DEBUG)
@@ -128,6 +129,11 @@ for e in t_functions:
 
 @asyncio.coroutine
 def parse_message(message, fulltext=True):
+	# ignore bot messages
+	
+	if message.author == client.user:
+		return
+	
 	perm = af.check_channel_whitelist(client, message)
 	
 	# channel blacklisted
@@ -195,7 +201,15 @@ def parse_message(message, fulltext=True):
 			ret += "\nRymy i inne bzdety: .rymy"
 			ret += "\nZadzwoń teraz, a podwoimy ofertę!"
 			
-			yield from client.send_message(message.channel, ret)
+			if len(ret) > 2000:
+				n = 40
+				groups = ret.split("\n")
+				help = ["\n".join(groups[:n]), "\n".join(groups[n:])]
+			else:
+				help = [ret]
+			
+			for m in help:
+				yield from client.send_message(message.channel, m)
 		
 		elif re.match(compile_command(r"(rymy|rhymes)"), content, re.IGNORECASE):
 			sh.debug("What an utter pillock")
@@ -253,7 +267,7 @@ def on_reaction_add(reaction, user):
 	if reaction.me:
 		return
 	
-	if random.random() < 0.1:
+	if random.random() < 0.025:
 		yield from asyncio.sleep(4)
 		yield from client.add_reaction(reaction.message, reaction.emoji)
 
@@ -263,10 +277,7 @@ def on_reaction_add(reaction, user):
 @client.event
 @asyncio.coroutine
 def on_message_edit(before, after):
-	
-	# ignore bot messages
-	
-	if after.author == client.user or before.content == after.content:
+	if before.content == after.content:
 		return
 	
 	yield from parse_message(after, False)
@@ -276,13 +287,30 @@ def on_message_edit(before, after):
 @client.event
 @asyncio.coroutine
 def on_message(message):
+	yield from parse_message(message)
+
+# Handle reponse deletion
+
+@client.event
+@asyncio.coroutine
+def on_message_delete(message):
+	content = sh.rm_leading_quotes(message)
 	
-	# ignore bot messages
-	
-	if message.author == client.user:
+	if message.author == client.user or not message.server or not re.match(client.command_prefix, content):
 		return
 	
-	yield from parse_message(message)
+	sh.debug("User message deleted: " + message.content, message)
+	
+	for log in reversed(list((yield from client.logs_from(message.channel, limit=50, after=message)))):
+		if log.author != client.user or not log.content.startswith("<@!" + message.author.id + ">:"):
+			continue
+		
+		sh.debug("Found a message to delete: " + log.content, message)
+		
+		yield from client.delete_message(log)
+		return
+	
+	sh.debug("No matching bot response found")
 
 # Bot ID
 client.run(billy_key)

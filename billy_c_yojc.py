@@ -210,38 +210,33 @@ c_ym.desc = "Your mom"
 
 
 @asyncio.coroutine
+def c_esad(client, message):
+	yield from client.send_message(message.channel, "Eat shit and die")
+
+c_esad.command = r"esad"
+c_esad.desc = "Eat shit and die"
+
+
+@asyncio.coroutine
 def c_kurwa(client, message):
 	c = sh.get_command(message).lower()[1:]
-	e = sh.get_args(message).split(" ")
-	ret = ""
-	dot = True
-	
-	for t in e:
-		changecase = False
-		
-		if random.random() < 0.2:
-			if dot and t[0].isupper():
-				ret += c.title() + " "
-				if t.istitle():
-					changecase = True
-			else:
-				ret += c + " "
-		
-		if t.endswith("."):
-			dot = True
-		else:
-			dot = False
-		
-		if changecase:
-			ret += t.lower() + " "
-		else:
-			ret += t + " "
+	yield from client.send_message(message.channel, sh.mention(message) + sh.insert_word(c, sh.get_args(message)))
+
+c_kurwa.command = r"(kurwa|fucking)"
+c_kurwa.params = ["zdanie"]
+c_kurwa.desc = "Okrasz wypowiedź wyrafinowanym słownictwem!"
+
+
+@asyncio.coroutine
+def c_wstaw(client, message):
+	tmp = sh.get_args(message).split(" ", 1)
+	ret = sh.insert_word(tmp[0], tmp[1])
 	
 	yield from client.send_message(message.channel, sh.mention(message) + ret)
 
-c_kurwa.command = r"(kurwa|fucking|jeban(y|ym|ymi|i|ą|ych)|pierdol(ony|ona|eni|onych|onymi))"
-c_kurwa.params = ["zdanie"]
-c_kurwa.desc = "Okrasz wypowiedź wyrafinowanym słownictwem!"
+c_wstaw.command = r"(wstaw|insert)"
+c_wstaw.params = ["słowo", "zdanie"]
+c_wstaw.desc = "Wstaw słowo w dowolne miejsca zdania"
 
 
 @asyncio.coroutine
@@ -336,6 +331,14 @@ def c_zgadzam(client, message):
 
 c_zgadzam.command = r"zgadzam"
 c_zgadzam.desc = "Się zgadzam z Nargogiem"
+
+
+@asyncio.coroutine
+def c_wish(client, message):
+	yield from client.send_file(message.channel, sh.file_path("img/THATSME.jpg"))
+
+c_wish.command = r"wish"
+c_wish.desc = "god I wish it was me"
 
 
 # -------------------------------------
@@ -573,14 +576,14 @@ def f_cogowno(client, message):
 	yield from client.send_message(message.channel, "gówno 1:0")
 
 f_cogowno.command = r'^(co|czo)\b'
-f_cogowno.prob = 0.05
+f_cogowno.prob = 0.025
 
 @asyncio.coroutine
 def f_czyzby(client, message):
 	yield from client.send_message(message.channel, "chyba ty")
 
 f_czyzby.command = r'(czyzby|czyżby)'
-f_czyzby.prob = 0.25
+f_czyzby.prob = 0.05
 
 @asyncio.coroutine
 def f_guten(client, message):
@@ -601,21 +604,21 @@ def f_rucha(client, message):
 	yield from client.send_message(message.channel, "ruchasz psa jak sra")
 
 f_rucha.command = r'\.\.\.'
-f_rucha.prob = 0.05
+f_rucha.prob = 0.025
 
 @asyncio.coroutine
 def f_wulg(client, message):
-	yield from client.send_message(message.channel, random.choice(["może byś tak kurwa nie przeklinał", "co?", "bez wulgaryzmów proszę", "na ten kanał zaglądają dzieci", "ostrożniej z językiem", "to kanał PG13", "czy mam ci język uciąć?", "przestań przeklinać pedale bo cię stąd wypierdolę dyscyplinarnie", "pambuk płacze jak przeklinasz", "mów do mnie brzydko", "Kath bączy jak przeklinasz", "proszę tu nie przeklinać, to porządna knajpa", "nie ma takiego przeklinania chuju", "блять))))))))))", "zamknij pizdę"]))
+	yield from client.send_message(message.channel, random.choice(["może byś tak kurwa nie przeklinał", "co?", "bez wulgaryzmów proszę", "na ten kanał zaglądają dzieci", "ostrożniej z językiem", "to kanał PG13", "czy mam ci język uciąć?", "przestań przeklinać gejasie bo cię stąd wypierdolę dyscyplinarnie", "pambuk płacze jak przeklinasz", "mów do mnie brzydko", "Kath bączy jak przeklinasz", "proszę tu nie przeklinać, to porządna knajpa", "nie ma takiego przeklinania chuju", "блять))))))))))", "zamknij pizdę"]))
 
 f_wulg.command = r'(kurw|chuj|pierdol|pierdal|jeb)'
-f_wulg.prob = 0.05
+f_wulg.prob = 0.025
 
 @asyncio.coroutine
 def f_witam(client, message):
 	yield from client.send_message(message.channel, random.choice(["witam na kanale i życzę miłej zabawy", "cześć, kopę lat", "siemanko witam na moim kanale", "witam witam również", "no elo", "salam alejkum", "привет", "dzińdybry", "siemaszki", "serwus", "gitara siema", "dobrý den", "pozdrawiam, Mariusz " + random.choice(["Gambal", "Handzlik"]), "feedlysiemka " + str(message.author).split("#")[0].lower() + "ox"]))
 
 f_witam.command = r'(witam|cześć|czesc|siema|szalom|joł|shalom|dzi(n|ń)dybry|dzie(n|ń) dobry|siemka)'
-f_witam.prob = 0.5
+f_witam.prob = 0.25
 
 @asyncio.coroutine
 def f_opti(client, message):
@@ -655,6 +658,14 @@ f_jakisgolas.command = r"vkPCjJM.jpg"
 f_jakisgolas.prob = 1.0
 
 
+@asyncio.coroutine
+def f_takiezycie(client, message):
+	yield from client.send_message(message.channel, "takie życie")
+
+f_takiezycie.command = r"^chamsko"
+f_takiezycie.prob = 0.05
+
+
 #@asyncio.coroutine
 #def f_nawzajem(client, message):
 #	yield from client.send_message(message.channel, "nawzajem")
@@ -664,7 +675,64 @@ f_jakisgolas.prob = 1.0
 
 
 # -------------------------------------
-# rzut koscia
+# do wykonania o określonych godzinach
+# -------------------------------------
+
+
+@asyncio.coroutine
+def t_pope_time(client, channels):
+	choices = ["zapraszam wszystkich na kremówki", "wybiła godzina papieska", "Jan Paweł 2, w moim sercu zawsze 1", "Jan Paweł II był wielkim człowiekiem", "Jan Paweł 2 Gloria Matki Dziewicy"]
+	barka = [("Pan kiedyś stanął nad brzegiem,\n" +
+		"Szukał ludzi gotowych pójść za Nim;\n" +
+		"By łowić serca\n" +
+		"Słów Bożych prawdą.\n\n" +
+		"Ref.: \n" +
+		"O Panie, to Ty na mnie spojrzałeś,\n" +
+		"Twoje usta dziś wyrzekły me imię.\n" +
+		"Swoją barkę pozostawiam na brzegu,\n" +
+		"Razem z Tobą nowy zacznę dziś łów."), (("O"*random.randint(3, 10)) + " P" + ("A"*random.randint(5,15)) + "NI" + ("E"*random.randint(5,15)))]
+	
+	reply = random.choice([random.choice(choices), random.choice(barka)])
+	
+	for ch in channels:
+		yield from client.send_message(ch, reply)
+
+t_pope_time.channels = ["174449535811190785"]
+t_pope_time.time = "21:37"
+
+
+@asyncio.coroutine
+def t_trzytrzytrzy(client, channels):
+	img_count = 5
+	choices = ["3:33, KATH POBUDKA", "https://www.youtube.com/watch?v=WX8ZeZJqOE0"]
+	images = []
+	
+	for i in range(0, img_count):
+		images.append("kath" + str(i+1) + ".jpg")
+	
+	if random.random() < (len(choices)/float(len(choices)+ len(images))):
+		reply = random.choice(choices)
+		for ch in channels:
+			yield from client.send_message(ch, reply)
+	else:
+		reply = random.choice(images)
+		for ch in channels:
+			yield from client.send_file(ch, sh.file_path("img/" + reply))
+
+t_trzytrzytrzy.channels = ["174449535811190785"]
+t_trzytrzytrzy.time = "3:33"
+
+
+#@asyncio.coroutine
+#def t_test(client, channels):
+#	yield from client.send_message(channels[0], "test")
+#
+#t_test.channels = ["174449535811190785"]
+#t_test.time = "16:25"
+
+
+# -------------------------------------
+# dice.py
 # -------------------------------------
 
 
@@ -742,51 +810,3 @@ def rollDice(diceroll):
 			#if it's not the last sign, add a plus sign.
 			result += "+"
 	return "("+result+")" #feed it back to the formula parser... add some parentheses so we know this is 1 roll.
-
-
-# -------------------------------------
-# do wykonania o określonych godzinach
-# -------------------------------------
-
-
-@asyncio.coroutine
-def t_pope_time(client, channels):
-	choices = ["zapraszam wszystkich na kremówki", "wybiła godzina papieska", "Jan Paweł 2, w moim sercu zawsze 1", "Jan Paweł II był wielkim człowiekiem", "JP2GMD"]
-	barka = ("Pan kiedyś stanął nad brzegiem,\n" +
-		"Szukał ludzi gotowych pójść za Nim;\n" +
-		"By łowić serca\n" +
-		"Słów Bożych prawdą.\n\n" +
-		"Ref.: \n" +
-		"O Panie, to Ty na mnie spojrzałeś,\n" +
-		"Twoje usta dziś wyrzekły me imię.\n" +
-		"Swoją barkę pozostawiam na brzegu,\n" +
-		"Razem z Tobą nowy zacznę dziś łów.")
-	
-	reply = random.choice([random.choice(choices), barka])
-	
-	for ch in channels:
-		yield from client.send_message(ch, reply)
-
-t_pope_time.channels = ["174449535811190785"]
-t_pope_time.time = "21:37"
-
-
-@asyncio.coroutine
-def t_trzytrzytrzy(client, channels):
-	choices = ["3:33, KATH POBUDKA"]
-	
-	reply = random.choice(choices)
-	
-	for ch in channels:
-		yield from client.send_message(ch, reply)
-
-t_trzytrzytrzy.channels = ["174449535811190785"]
-t_trzytrzytrzy.time = "3:33"
-
-
-#@asyncio.coroutine
-#def t_test(client, channels):
-#	yield from client.send_message(channels[0], "test")
-#
-#t_test.channels = ["174449535811190785"]
-#t_test.time = "16:25"

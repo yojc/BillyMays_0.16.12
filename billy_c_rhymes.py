@@ -144,7 +144,7 @@ c_lghoscie.rhyme = True
 def c_nargogu(client, message):
 	rhyme = rhymes.ogu
 	ret = "Nargogu Nargogu ty"
-	custom = ["pedale", "niemyty pierogu"]
+	custom = ["mentalny kucu", "niemyty pierogu"]
 	yield from client.send_message(message.channel, ret + rhymes.compose(rhyme, custom))
 
 c_nargogu.command = r"nargogh?u"
@@ -221,7 +221,7 @@ c_rysiu.rhyme = True
 def c_seekerze(client, message):
 	rhyme = rhymes.erze
 	ret = "Seekerze Seekerze ty"
-	custom = ["pedale przestań mnie dotykać w nocy", "najlepszy przyjacielu R1Pa", "lubisz macierze"]
+	custom = ["przestań mnie dotykać w nocy", "najlepszy przyjacielu R1Pa", "lubisz macierze", "białoruski drwalu"]
 	yield from client.send_message(message.channel, ret + rhymes.compose(rhyme, custom))
 
 c_seekerze.command = r"seekerze"

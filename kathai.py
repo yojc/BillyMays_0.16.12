@@ -188,13 +188,14 @@ def trigger_reactions(message):
 		{"regex" : r'wąż|wonsz|snake|snek', "reaction" : ["\U0001F40D"], "extra_check" : False, "probability" : prob_react},
 		{"regex" : r'p_?aul', "reaction" : ["\U0001F4A3"], "extra_check" : is_mentioned(message, "P_aul#1696"), "probability" : prob_react},
 		{"regex" : r'hrabul', "reaction" : [random.choice(["\U0001F4B2", "\U0001F4B5"])], "extra_check" : is_mentioned(message, "hrabula#4726"), "probability" : prob_react},
-		{"regex" : r'@everyone|@here', "reaction" : ["angery:325368048640983052"], "extra_check" : message.mention_everyone, "probability" : prob_react},
+		{"regex" : r'@(everyone|here)', "reaction" : ["angery:325368048640983052"], "extra_check" : message.mention_everyone, "probability" : prob_react},
 		{"regex" : r'org(u|iel|ieł)', "reaction" : ["coolczesc:325367097125502989"], "extra_check" : is_mentioned(message, "orgiele#8308"), "probability" : prob_react},
 		{"regex" : r'fel', "reaction" : ["\U0001F388"], "extra_check" : is_mentioned(message, "Fel#6728"), "probability" : prob_react},
 		{"regex" : r'xd', "reaction" : ["\U0001F1FD", "\U0001F1E9"], "extra_check" : False, "probability" : prob_react},
 		{"regex" : r'vod(a|ę|zi|e)|tarkin', "reaction" : ["cyka:369039064533303318"], "extra_check" : is_mentioned(message, "Tarkin#6128"), "probability" : prob_react},
 		{"regex" : r'czekolad|chocolat', "reaction" : ["\U0001F36B"], "extra_check" : False, "probability" : prob_react},
-		{"regex" : r'm[mh]{1,}m|dup(a|ą|ie|ię)|penis|kutas|cycek|cyck|piersi|tyłek|tylek', "reaction" : ["mhhhmm:256873687871913984"], "extra_check" : False, "probability" : prob_react}
+		{"regex" : r'm[mh]{1,}m|dup(a|ą|ie|y)|penis|kutas|cycek|cyck|piersi|tyłek|tylek', "reaction" : ["mhhhmm:256873687871913984"], "extra_check" : False, "probability" : prob_react},
+		{"regex" : r'dzik', "reaction" : ["\U0001F417"], "extra_check" : False, "probability" : prob_react}
 	]
 	
 	for r in r_list:

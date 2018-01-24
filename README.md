@@ -29,6 +29,22 @@ Wypełnij puste pola odpowiednimi wartościami. Może sobie poradzisz, może nie
 
 W pliku *billy_shared.py* przestaw wartość zmiennej *testing* na *True*, jeśli chcesz włączyć proste debugowe informacje zrzucane do konsoli. Może ci się przyda, może nie.
 
+## Automatyczny restart
+
+Z jakichś powodów boty czasem potrafią się wyłączyć, nie podając przy tym żadnego błędu. Zawsze można obejść problem uruchamiając je za pomocą shellowego skryptu, przykładowo:
+
+```
+while true
+do
+	python3 /sciezka/do/pliku.py
+	now="$(date)"
+	echo -e "\e[91m$now Script ended! Restarting in 10 secs...\e[39m"
+	sleep 10
+done
+```
+
+(przeklejając z Windowsa należy pamiętać o podmianie \r\n na \n...)
+
 ## Inne
 
 Projekt jest w fazie rozwoju, tylko mi się nie chce.

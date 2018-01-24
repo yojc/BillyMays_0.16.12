@@ -91,7 +91,7 @@ def check_flood_channel(client, message):
 
 def check_channel_whitelist(client, message):
 	deny_all = []
-	allow_all = ["politbiuro", "linki", "retro", "luzna_jazda"]
+	allow_all = ["politbiuro", "luzna_jazda"]
 	unlimited = ["japabocie", "japa_bocie"]
 	
 	# default: disallow fulltext, enable flood control, enable bot

@@ -1,6 +1,8 @@
 # Store all app keys here
 config.py
 
+# Startup scripts
+*.sh
 
 
 # Byte-compiled / optimized / DLL files
