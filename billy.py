@@ -8,11 +8,24 @@ import platform
 # App keys
 from config import billy_key
 
-# Import logging
+# import logging
 import random
 import re
 import sys
 import datetime
+
+from imp import find_module
+
+try:
+	find_module('colorama')
+	from colorama import Fore, Style, init as colorama_init
+	colorama_init()
+	def print_warning(text):
+		print(Fore.YELLOW + Style.BRIGHT + text + Style.RESET_ALL)
+except ImportError:
+	def print_warning(text):
+		print(text)
+	print("Colorama library not installed, errors won't be colorized")
 
 # Shared functions
 
@@ -26,6 +39,7 @@ import billy_c_yojc
 import billy_c_web
 import billy_c_translate
 import billy_c_rhymes
+import billy_c_img
 #import billy_c_sopel
 
 # Error log location
@@ -145,18 +159,18 @@ def parse_message(message, fulltext=True):
 	content = sh.rm_leading_quotes(message)
 	
 	
-	if fulltext and perm["fulltext"]:
+	if fulltext:
 		# fulltext search
 		for f in f_functions:
 			c = getattr(f, "command", False)
 			p = getattr(f, "prob", False)
 			
-			if c and p and re.search(c, content, re.IGNORECASE) and random.random() < p:
+			if c and p and re.search(c, content, re.IGNORECASE) and (p >= 1.0 or (perm["fulltext"] and random.random() < p)):
 				sh.debug("Triggered " + f.__name__ + "...")
 				try:
 					yield from f(client, message)
 				except Exception:
-					print("An error occured in " + f.__name__ + "!!! (" + content + ")")
+					print_warning("An error occured in " + f.__name__ + "!!! (" + content + ")")
 					raise
 					continue
 	
@@ -235,7 +249,7 @@ def parse_message(message, fulltext=True):
 						yield from f(client, message)
 					except Exception:
 						yield from client.send_message(message.channel, "Oho, chyba jakiś błąd w kodzie. <@307949259658100736> to kiedyś naprawi, jak się skończy bawić pociągami.")
-						print("An error occured in " + f.__name__ + "!!! (" + content + ")")
+						print_warning("An error occured in " + f.__name__ + "!!! (" + content + ")")
 						#CZEMU TY CHUJU NIE DZIALASZ
 						#logging.exception("An error occured in " + f.__name__ + "!!! (" + content + ")")
 						raise

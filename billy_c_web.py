@@ -74,6 +74,19 @@ def yt(q):
 	
 	return result
 
+def tumblr_random(q):
+	s = requests.Session()
+	url = 'http://'+q+'.tumblr.com/random'
+	
+	try:
+		r = s.get(url, headers=headers_Get)
+		if r.url == url:
+			return False
+		else:
+			return r.url
+	except:
+		return False
+
 def suchar():
 	if random.random() < 0.01:
 		return "jogurt"
@@ -210,6 +223,34 @@ def c_youtube(client, message):
 c_youtube.command = r"(yt|youtube)"
 c_youtube.params = ["zapytanie"]
 c_youtube.desc = "szukaj filmików na YT"
+
+
+@asyncio.coroutine
+def c_tumblr_r(client, message):
+	result = tumblr_random(sh.get_args(message))
+	
+	if not result:
+		yield from client.send_message(message.channel, sh.mention(message) + "wszystko tylko nie to")
+	else:
+		yield from client.send_message(message.channel, sh.mention(message) + result)
+
+c_tumblr_r.command = r"tumblrr(andom)?"
+c_tumblr_r.params = ["tumblr"]
+c_tumblr_r.desc = "losowy post z danego Tumblra"
+
+
+@asyncio.coroutine
+def c_zwierzaki(client, message):
+	tumblr = random.choice(["fluffy-kittens", "cuteanimals", "cutest-critters"])
+	result = tumblr_random(tumblr)
+	
+	if not result:
+		yield from client.send_message(message.channel, sh.mention(message) + "ZJADŁEM WSZYSTKIE KOTY")
+	else:
+		yield from client.send_message(message.channel, sh.mention(message) + result)
+
+c_zwierzaki.command = r"zwierzaki"
+c_zwierzaki.desc = "losowy Tumblr ze zwierzakami"
 
 
 @asyncio.coroutine

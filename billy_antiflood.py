@@ -2,6 +2,9 @@ import asyncio
 import datetime
 import time
 
+import os
+import glob
+
 import billy_shared as sh
 
 start_time = time.time()
@@ -120,5 +123,11 @@ def check_channel_whitelist(client, message):
 	
 	return permissions
 
+
 def check_uptime():
-	return "Żyję już od " + str((datetime.datetime.today()-datetime.datetime.utcfromtimestamp(start_time)).days).zfill(2) + datetime.datetime.utcfromtimestamp(time.time()-start_time).strftime("d %Hh %Mmin %Ss") + "!"
+	list_of_files = glob.glob(sh.file_path("*.py"))
+	latest_file = max(list_of_files, key=os.path.getmtime)
+	
+	ret = "Żyję już od " + str((datetime.datetime.today()-datetime.datetime.utcfromtimestamp(start_time)).days).zfill(2) + datetime.datetime.utcfromtimestamp(time.time()-start_time).strftime("d %Hh %Mmin %Ss") + "!\n"
+	ret += "Ostatnia aktualizacja: " + datetime.datetime.utcfromtimestamp(int(os.path.getmtime(latest_file))).strftime('%Y-%m-%d %H:%M:%S') + " (" + latest_file + ")"
+	return ret

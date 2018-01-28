@@ -140,6 +140,16 @@ c_mangler.params = ["tekst"]
 c_mangler.desc = "najlepsze tłumaczenie na polski (losowo dobierana kolejność tłumaczeń)"
 
 @asyncio.coroutine
+def c_manglew(client, message):
+	tmp = sh.get_args(message).split(" ", 1)
+	ret = sh.insert_word(tmp[0], tmp[1])
+	yield from client.send_message(message.channel, sh.mention(message) + (yield from mangle(client, message.channel, ret, "pl")))
+
+c_manglew.command = r"(manglew|wstaglep)"
+c_manglew.params = ["słowo", "zdanie"]
+c_manglew.desc = "wstaw + manglep"
+
+@asyncio.coroutine
 def c_hakan(client, message):
 	text = sh.insert_word("hakan", sh.get_args(message))
 	yield from client.send_message(message.channel, sh.mention(message) + (yield from mangle(client, message.channel, text, "pl")))
