@@ -254,6 +254,18 @@ c_zwierzaki.desc = "losowy Tumblr ze zwierzakami"
 
 
 @asyncio.coroutine
+def c_shitpostbot(client, message):
+	result = tumblr_random("shitpostbot5k")
+	
+	if not result:
+		yield from client.send_message(message.channel, sh.mention(message) + " I have a crippling depression")
+	else:
+		yield from client.send_message(message.channel, sh.mention(message) + result)
+
+c_shitpostbot.command = r"shitpost(bot)?"
+
+
+@asyncio.coroutine
 def c_wolfram(client, message):
 	cw = wolframalpha.Client(wolfram_key)
 	res = cw.query(sh.get_args(message, True))

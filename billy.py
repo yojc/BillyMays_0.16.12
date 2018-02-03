@@ -40,6 +40,7 @@ import billy_c_web
 import billy_c_translate
 import billy_c_rhymes
 import billy_c_img
+import billy_c_stats
 #import billy_c_sopel
 
 # Error log location
@@ -49,7 +50,7 @@ import billy_c_img
 client = Bot(description="Hi, Billy Mays here", command_prefix= r"^[!\.,\/\\\\]", pm_help = True)
 
 # Used to run timer-based function once a day
-current_day = 0
+current_day = {}
 
 def compile_command(regex):
 	return client.command_prefix + regex + r"\b"
@@ -131,8 +132,8 @@ for e in t_functions:
 		while not client.is_closed:
 			now = datetime.datetime.now()
 			
-			if current_day != now.day and (not t or (t[0] == now.hour and t[1] == now.minute)):
-				current_day = now.day
+			if (not fun.__name__ in current_day or current_day[fun.__name__] != now.day) and (not t or (t[0] == now.hour and t[1] == now.minute)):
+				current_day[fun.__name__] = now.day
 				yield from fun(client, channels)
 			
 			yield from asyncio.sleep(interval)
@@ -142,7 +143,10 @@ for e in t_functions:
 # Parse message and execute functions
 
 @asyncio.coroutine
-def parse_message(message, fulltext=True):
+def parse_message(message, edited=False):
+	if not edited:
+		billy_c_stats.insert_msg(message)
+	
 	# ignore bot messages
 	
 	if message.author == client.user:
@@ -159,7 +163,7 @@ def parse_message(message, fulltext=True):
 	content = sh.rm_leading_quotes(message)
 	
 	
-	if fulltext:
+	if not edited:
 		# fulltext search
 		for f in f_functions:
 			c = getattr(f, "command", False)
@@ -247,6 +251,7 @@ def parse_message(message, fulltext=True):
 					yield from client.send_typing(message.channel)
 					try:
 						yield from f(client, message)
+						billy_c_stats.update_msg_function(message, f.__name__)
 					except Exception:
 						yield from client.send_message(message.channel, "Oho, chyba jakiś błąd w kodzie. <@307949259658100736> to kiedyś naprawi, jak się skończy bawić pociągami.")
 						print_warning("An error occured in " + f.__name__ + "!!! (" + content + ")")
@@ -255,6 +260,8 @@ def parse_message(message, fulltext=True):
 						raise
 						continue
 					break
+		
+		
 
 # Sort functions alphabetically (for .help)
 c_functions.sort(key=lambda x: x.__name__)
@@ -281,7 +288,7 @@ def on_reaction_add(reaction, user):
 	if reaction.me:
 		return
 	
-	if random.random() < 0.025:
+	if random.random() < 0.001:
 		yield from asyncio.sleep(4)
 		yield from client.add_reaction(reaction.message, reaction.emoji)
 
@@ -294,7 +301,7 @@ def on_message_edit(before, after):
 	if before.content == after.content:
 		return
 	
-	yield from parse_message(after, False)
+	yield from parse_message(after, True)
 
 # Execute on every msg
 

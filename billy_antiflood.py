@@ -125,7 +125,7 @@ def check_channel_whitelist(client, message):
 
 
 def check_uptime():
-	list_of_files = glob.glob(sh.file_path("*.py"))
+	list_of_files = glob.glob(sh.file_path("billy*.py"))
 	latest_file = max(list_of_files, key=os.path.getmtime)
 	
 	ret = "Żyję już od " + str((datetime.datetime.today()-datetime.datetime.utcfromtimestamp(start_time)).days).zfill(2) + datetime.datetime.utcfromtimestamp(time.time()-start_time).strftime("d %Hh %Mmin %Ss") + "!\n"

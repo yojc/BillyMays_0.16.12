@@ -170,7 +170,7 @@ def c_mmmm(client, message):
 		ret += 'm'
 	yield from client.send_message(message.channel, ret)
 
-c_mmmm.command = r"m{3,}"
+c_mmmm.command = r"m[mh]{2,}"
 
 @asyncio.coroutine
 def c_twss(client, message):
@@ -464,7 +464,7 @@ f_mmmm.prob = 1.0
 def f_iriptheskin(client, message):
 	yield from client.send_message(message.channel, "sometimes I pull it on so hard, I rip the skin!")
 
-f_iriptheskin.command = r'^[mh]{12,}'
+f_iriptheskin.command = r'^m[mh]{9,}'
 f_iriptheskin.prob = 1.0
 
 @asyncio.coroutine
@@ -628,28 +628,32 @@ def t_pope_time(client, channels):
 t_pope_time.channels = ["174449535811190785"]
 t_pope_time.time = "21:37"
 
-
+'''
 @asyncio.coroutine
 def t_trzytrzytrzy(client, channels):
-	img_count = 5
-	choices = ["3:33, KATH POBUDKA", "https://www.youtube.com/watch?v=WX8ZeZJqOE0"]
-	images = []
+	#img_count = 5
+	choices = ["3:33, KATH POBUDKA", "https://www.youtube.com/watch?v=WX8ZeZJqOE0", "https://www.youtube.com/watch?v=rRctiUI8pmE"]
+	#images = []
+	#
+	#for i in range(0, img_count):
+	#	images.append("kath" + str(i+1) + ".jpg")
+	#
+	#if random.random() < (len(choices)/float(len(choices)+ len(images))):
+	#	reply = random.choice(choices)
+	#	for ch in channels:
+	#		yield from client.send_message(ch, reply)
+	#else:
+	#	reply = random.choice(images)
+	#	for ch in channels:
+	#		yield from client.send_file(ch, sh.file_path("img/" + reply))
 	
-	for i in range(0, img_count):
-		images.append("kath" + str(i+1) + ".jpg")
-	
-	if random.random() < (len(choices)/float(len(choices)+ len(images))):
-		reply = random.choice(choices)
-		for ch in channels:
-			yield from client.send_message(ch, reply)
-	else:
-		reply = random.choice(images)
-		for ch in channels:
-			yield from client.send_file(ch, sh.file_path("img/" + reply))
+	reply = random.choice(choices)
+	for ch in channels:
+		yield from client.send_message(ch, reply)
 
 t_trzytrzytrzy.channels = ["174449535811190785"]
 t_trzytrzytrzy.time = "3:33"
-
+'''
 
 #@asyncio.coroutine
 #def t_test(client, channels):
