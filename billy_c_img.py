@@ -87,3 +87,9 @@ def c_smaglor(client, message):
 	yield from client.send_file(message.channel, sh.file_path("img/lanbajlan.png"))
 
 c_smaglor.command = r"(komarcz|smaglor)"
+
+@asyncio.coroutine
+def c_zzz(client, message):
+	yield from client.send_file(message.channel, sh.file_path("img/zzz.gif"))
+
+c_zzz.command = r"zzz"

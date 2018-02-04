@@ -13,6 +13,7 @@ import random
 import re
 import sys
 import datetime
+import emoji
 
 from imp import find_module
 
@@ -146,6 +147,12 @@ for e in t_functions:
 def parse_message(message, edited=False):
 	if not edited:
 		billy_c_stats.insert_msg(message)
+	
+	# Track used emojis
+	
+	emoji_list = list(c for c in message.clean_content if c in emoji.UNICODE_EMOJI) or []
+	custom_emoji_list = re.findall(r"<:\S+?:\d+>", message.clean_content, re.IGNORECASE) or []
+	billy_c_stats.insert_emojis_post(message, emoji_list, custom_emoji_list, edited)
 	
 	# ignore bot messages
 	
@@ -282,15 +289,25 @@ def on_ready():
 
 
 # Execute on every reaction
+
 @client.event
 @asyncio.coroutine
 def on_reaction_add(reaction, user):
+	# track used emojis
+	billy_c_stats.insert_emojis_reaction(reaction.message, user, reaction.emoji, reaction.custom_emoji)
+	
 	if reaction.me:
 		return
 	
 	if random.random() < 0.001:
 		yield from asyncio.sleep(4)
 		yield from client.add_reaction(reaction.message, reaction.emoji)
+
+@client.event
+@asyncio.coroutine
+def on_reaction_remove(reaction, user):
+	# track used emojis
+	billy_c_stats.remove_reaction(reaction.message, user, reaction.emoji, reaction.custom_emoji)
 
 
 # Execute on every msg edit
@@ -315,6 +332,8 @@ def on_message(message):
 @client.event
 @asyncio.coroutine
 def on_message_delete(message):
+	billy_c_stats.update_msg_deletion(message)
+	
 	content = sh.rm_leading_quotes(message)
 	
 	if message.author == client.user or not message.server or not re.match(client.command_prefix, content):

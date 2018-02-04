@@ -5,6 +5,7 @@ import re
 
 import billy_shared as sh
 from billy_antiflood import check_uptime
+from billy_c_img import c_wypierdalaj
 
 boruc = "Artur Boruc"
 
