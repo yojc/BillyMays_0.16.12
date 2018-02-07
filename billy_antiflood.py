@@ -129,5 +129,5 @@ def check_uptime():
 	latest_file = max(list_of_files, key=os.path.getmtime)
 	
 	ret = "Żyję już od " + str((datetime.datetime.today()-datetime.datetime.utcfromtimestamp(start_time)).days).zfill(2) + datetime.datetime.utcfromtimestamp(time.time()-start_time).strftime("d %Hh %Mmin %Ss") + "!\n"
-	ret += "Ostatnia aktualizacja: " + datetime.datetime.utcfromtimestamp(int(os.path.getmtime(latest_file))).strftime('%Y-%m-%d %H:%M:%S') + " (" + latest_file + ")"
+	ret += "Ostatnia aktualizacja: " + datetime.datetime.fromtimestamp(int(os.path.getmtime(latest_file))).strftime('%Y-%m-%d %H:%M:%S') + " (" + latest_file + ")"
 	return ret
