@@ -34,7 +34,7 @@ channels = ["politbiuro", "luzna_jazda", "spotkania_politbiura"]
 
 # Possible replies go here
 
-def f_iksde():
+def f_iksde(message):
 	iter = 1
 	
 	if random.random() < 0.5:
@@ -57,7 +57,7 @@ def f_iksde():
 f_iksde.prob = 0.6
 
 
-def f_chamsko():
+def f_chamsko(message):
 	reply = "chamsko"
 	
 	if random.random() < 0.3:
@@ -71,33 +71,33 @@ def f_chamsko():
 f_chamsko.prob = 0.14
 
 
-def f_pac():
+def f_pac(message):
 	return "\*pac*"
 
-f_pac.prob = 0.06
+f_pac.prob = 0.05
 
 
-def f_pff():
+def f_pff(message):
 	reply = "p"
 	for _ in range(random.randint(2, 6)):
 		reply += "f"
 	
 	return reply
 
-f_pff.prob = 0.06
+f_pff.prob = 0.05
 
 
-def f_nie():
+def f_nie(message):
 	reply = "NIE"
 	if random.random() < 0.5:
 		reply += "!"
 	
 	return reply
 
-f_nie.prob = 0.05
+f_nie.prob = 0.045
 
 
-def f_czo():
+def f_czo(message):
 	if random.random() < 0.6:
 		reply = "czo"
 		if random.random() < 0.3:
@@ -112,15 +112,33 @@ def f_czo():
 	
 	return reply
 
-f_czo.prob = 0.06
+f_czo.prob = 0.055
 
 
-def f_trzy():
-	reply = random.choice([":3", ":D"])
+def f_trzy(message):
+	reply = random.choice([":3", ":D", ":/"])
 	
 	return reply
 
 f_trzy.prob = 0.03
+
+
+def f_typalo(message):
+	replacements = ["st3fan0", "Giant Dad", "Bert", "Matt J.",]
+	nick = message.author.name
+	
+	if nick in replacements:
+		nick = message.author.display_name
+	elif nick == "SirAleksanderHeim":
+		nick = "Artius"
+	elif nick == "Xy":
+		nick = "Xysiu"
+	
+	reply = "{}, {}y pało{}".format(nick, random.choice(["T", "t"]), random.choice(["", "!"]))
+	
+	return reply
+
+f_typalo.prob = 0.03
 
 
 # Helper functions
@@ -134,7 +152,7 @@ def is_mentioned(message, user=None):
 	else:
 		return (message.server and (message.server.get_member_named("Kath#8040") in message.mentions or message.server.me in message.mentions))
 
-def choose_reply():
+def choose_reply(message):
 	prob_weight = 1.0/prob_total
 	prob_left = 1.0
 	
@@ -143,7 +161,7 @@ def choose_reply():
 		#print(f.__name__ + " " + str(f.prob) + " (" + str(prob_current) + ")")
 		if random.random() < prob_current:
 			#print("Fired")
-			return f()
+			return f(message)
 		else:
 			prob_left -= (prob_weight * f.prob)
 
@@ -283,7 +301,7 @@ def on_message(message):
 	if not is_private_msg(message) and random.random() > prob_reply:
 		return
 	
-	iksde = choose_reply()
+	iksde = choose_reply(message)
 	yield from client.send_typing(message.channel)
 	yield from asyncio.sleep(1)
 	yield from client.send_message(message.channel, iksde)
@@ -291,10 +309,7 @@ def on_message(message):
 	if iksde.lower().startswith("x") and random.random() < 0.05:
 		yield from client.send_typing(message.channel)
 		yield from asyncio.sleep(1)
-		if random.random() < 0.5:
-			yield from client.send_message(message.channel, "tak")
-		else:
-			yield from client.send_message(message.channel, "TAK")
+		yield from client.send_message(message.channel, "{} {}".format(random.choice(["TAK", "tak"]), random.choice(["", "\U00002764"])))
 
 
 # This is what happens everytime the bot launches. In this case, it prints information like server count, user count the bot is connected to, and the bot id in the console.
