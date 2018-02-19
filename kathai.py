@@ -124,15 +124,21 @@ f_trzy.prob = 0.03
 
 
 def f_typalo(message):
-	replacements = ["st3fan0", "Giant Dad", "Bert", "Matt J.",]
 	nick = message.author.name
+	mapping = { 
+		"st3fan0" : "Stefan",
+		"Giant Dad" : "Xardas",
+		"Bert" : "b3rt",
+		"Matt J." : "Black Shadow",
+		"Xy" : "Xysiu",
+		"Infel" : "Dracia",
+		"SirAleksanderHeim" : "Artius",
+		"Shakecaine" : "Shaker",
+		"POLIPOLIK" : "POLIP"
+	}
 	
-	if nick in replacements:
-		nick = message.author.display_name
-	elif nick == "SirAleksanderHeim":
-		nick = "Artius"
-	elif nick == "Xy":
-		nick = "Xysiu"
+	if nick in mapping:
+		nick = nick.replace(nick, mapping[nick])
 	
 	reply = "{}, {}y pało{}".format(nick, random.choice(["T", "t"]), random.choice(["", "!"]))
 	
@@ -192,9 +198,10 @@ def trigger_reactions(message):
 	r_list = [
 		{"regex" : r'pizz.*(ananas|hawa)|(ananas|hawa).*pizz', "reaction" : ["\U0001F355", "\U0001F34D"], "extra_check" : False, "probability" : 1},
 		{"regex" : r'vkPCjJM.jpg', "reaction" : [random.choice(["\U0001F922", "\U0001F645", "\U0001F6AB"])], "extra_check" : False, "probability" : 1},
+		{"regex" : r'(3tsmuxa|We8ms5m).jpg', "reaction" : [random.choice(["\U0001F6AC", "\U0001F6AD"])], "extra_check" : False, "probability" : 1},
 		{"regex" : r'nerv', "reaction" : ["\U0001F354"], "extra_check" : False, "probability" : prob_react},
 		{"regex" : r'kat(h|ai|aj|owic)', "reaction" : [random.choice(["\U0001F44D", "\U00002764"])], "extra_check" : is_mentioned(message), "probability" : prob_react},
-		{"regex" : r'artius', "reaction" : ["\U0001F942"], "extra_check" : is_mentioned(message, "SirAleksanderHeim#6341"), "probability" : prob_react},
+		{"regex" : r'(?<!m)artius', "reaction" : ["\U0001F942"], "extra_check" : is_mentioned(message, "SirAleksanderHeim#6341"), "probability" : prob_react},
 		{"regex" : r'rysi', "reaction" : [random.choice(["\U0001F431", "\U0001F408"])], "extra_check" : is_mentioned(message, "Rysia#1973"), "probability" : prob_react},
 		{"regex" : r'rankin', "reaction" : ["blini:256876147810369556"], "extra_check" : is_mentioned(message, "rane#2794"), "probability" : prob_react},
 		{"regex" : r'teb', "reaction" : [random.choice(["\U0001F436", "\U0001F415"])], "extra_check" : is_mentioned(message, "Teb#2096"), "probability" : prob_react},
@@ -212,7 +219,9 @@ def trigger_reactions(message):
 		{"regex" : r'xd', "reaction" : ["\U0001F1FD", "\U0001F1E9"], "extra_check" : False, "probability" : prob_react/2},
 		{"regex" : r'vod(a|ę|zi|e)|tarkin', "reaction" : ["cyka:369039064533303318"], "extra_check" : is_mentioned(message, "Tarkin#6128"), "probability" : prob_react},
 		{"regex" : r'czekolad|chocolat', "reaction" : ["\U0001F36B"], "extra_check" : False, "probability" : prob_react},
-		{"regex" : r'm[mh]{2,}|dup(a|ą|ie|y)|penis|kutas|cycek|cyck|piersi|tyłek|tylek', "reaction" : ["mhhhmm:256873687871913984"], "extra_check" : False, "probability" : prob_react},
+		{"regex" : r'm[mh]{2,}|dup(a|ą|ie|y)|penis|beni(s|z)|kutas|cycek|cyck|piersi|tyłek|tylek', "reaction" : ["mhhhmm:256873687871913984"], "extra_check" : False, "probability" : prob_react},
+		{"regex" : r'(gofer|gofr)', "reaction" : ["\U0001F984"], "extra_check" : is_mentioned(message, "Gofer#9218"), "probability" : prob_react},
+		{"regex" : r'martius', "reaction" : ["\U0001F426"], "extra_check" : is_mentioned(message, "Knight Martius#1640"), "probability" : prob_react},
 		{"regex" : r'dzik', "reaction" : ["\U0001F417"], "extra_check" : False, "probability" : prob_react}
 	]
 	
@@ -327,7 +336,11 @@ def on_ready():
 	yield from client.change_presence(game=discord.Game(name=random.choice(game_list)))
 	
 	# Join AFK
-	vc = yield from client.join_voice_channel(client.get_channel("174536838780944384"))
+	try:
+		yield from client.join_voice_channel(client.get_channel("174536838780944384"))
+	except: 
+		pass
+	
 
 
 # Loop through functions

@@ -1,11 +1,11 @@
-import random
+﻿import random
 import asyncio
 import itertools
 import re
+import unidecode
 
 import billy_shared as sh
 from billy_antiflood import check_uptime
-from billy_c_img import c_wypierdalaj
 
 boruc = "Artur Boruc"
 
@@ -60,7 +60,7 @@ c_nickrand.command = r"rn"
 c_nickrand.params = ["zdanie"]
 c_nickrand.desc = "Miesza litery w zdaniu"
 
-
+@asyncio.coroutine
 def c_slap(client, message):
 	verb = random.choice(['slaps', 'hits', 'smashes', 'beats', 'bashes', 'smacks', 'blasts', 'punches', 'stabs', 'kills', 'decapitates', 'crushes', 'devastates', 'massacres', 'assaults', 'tackles', 'abuses', 'slams', 'slaughters', 'obliderates', 'wipes out', 'pulverizes', 'granulates', 'stuns', 'knocks out', 'strikes', 'bitchslaps', 'scratches', 'pounds', 'bangs', 'whacks', 'rapes', 'eats', 'destroys', 'does nothing to', 'dooms', 'evaporates', 'does something to', 'taunts', 'disrespects', 'disarms', 'mauls', 'dismembers', 'defuses', 'butchers', 'annihilates', 'tortures', 'shatters', 'wrecks', 'toasts', 'dominates', 'suffocates', 'oxidises', 'erases', 'stomps', 'zaps', 'whomps', 'swipes', 'pats', 'nails', 'thumps', '*PAC*'])
 	area = random.choice(['around the head', 'viciously', 'repeatedly', 'in the face', 'to death', 'in the balls', 'in the ass', 'savagely', 'brutally', 'infinitely', 'deeply', 'mercilessly', 'randomly', 'homosexually', 'keenly', 'accurately', 'ironically', 'gayly', 'outrageously', 'straight through the heart', 'immediately', 'unavoidably', 'from the inside', 'around a bit', 'from outer space', 'gently', 'silently', 'for real', 'for no apparent reason', 'specifically', 'maybe', 'allegedly', 'once and for all', 'for life', 'stealthly', 'energetically', 'frightfully', 'in the groin', 'in the dignity', 'in the heels', 'in the nostrils', 'in the ears', 'in the eyes', 'in the snout', 'fearfully', 'appallingly', 'vigorously', 'hrabully'])
@@ -265,9 +265,113 @@ def c_pair(client, message):
 			second = random.choice(nicks)
 		
 		yield from client.send_message(message.channel, first + " × " + second)
-	
 
 c_pair.command = r"pair"
+
+
+@asyncio.coroutine
+def c_klocuch(client, message):
+	vids = ["https://www.youtube.com/watch?v=YidQZnQSB4I", "https://www.youtube.com/watch?v=Auot04TYZp4", "https://www.youtube.com/watch?v=YJakurmhT-E", "https://www.youtube.com/watch?v=v20aYFWu8f4", "https://www.youtube.com/watch?v=ABhdqD7hGtw", "https://www.youtube.com/watch?v=xhpamcFwRBs", "https://www.youtube.com/watch?v=5itoVUzXHIg", "https://www.youtube.com/watch?v=xLaHAjENWb0", "https://www.youtube.com/watch?v=V77ktdbGmbI", "https://www.youtube.com/watch?v=Q8N_dgvm_28", "https://www.youtube.com/watch?v=CQvBAPMOw1E", "https://www.youtube.com/watch?v=medTXwgrx4U", "https://www.youtube.com/watch?v=BYPR9ebbLFY", "https://www.youtube.com/watch?v=YZI-_MVGRM4", "https://www.youtube.com/watch?v=xq-mD3TCkfc", "https://www.youtube.com/watch?v=E7gCQ6FA3BQ", "https://www.youtube.com/watch?v=09F-waIZG2E", "https://www.youtube.com/watch?v=w1iVTOdllUo", "https://www.youtube.com/watch?v=jn54hyJH1W8", "https://www.youtube.com/watch?v=hN7NZCG63Sk", "https://www.youtube.com/watch?v=gMEWuMmOf-A", "https://www.youtube.com/watch?v=8WFjoBCnzGY", "https://www.youtube.com/watch?v=zii15LcTSLw", "https://www.youtube.com/watch?v=kykPWhAdJZA", "https://www.youtube.com/watch?v=8NV9zyhaQaY", "https://www.youtube.com/watch?v=UrG5mioVZe0", "https://www.youtube.com/watch?v=cJRrqAPyywk", "https://www.youtube.com/watch?v=sccYn-rfq4Q", "https://www.youtube.com/watch?v=EzMkI_FBje0", "https://www.youtube.com/watch?v=YHm60KS0EMc", "https://www.youtube.com/watch?v=s9izhCLWPZs", "https://www.youtube.com/watch?v=qis339gCCSg", "https://www.youtube.com/watch?v=4-wWAtSGSaE", "https://www.youtube.com/watch?v=Ldp0X3SpbnE", "https://www.youtube.com/watch?v=Io3f5bKFlFs", "https://www.youtube.com/watch?v=Ofm-ZU-WbLM", "https://www.youtube.com/watch?v=665_HyoNxU8", "https://www.youtube.com/watch?v=cbm_CikNeEk", "https://www.youtube.com/watch?v=dID0aHDKATU", "https://www.youtube.com/watch?v=Si-L0arYVoE", "https://www.youtube.com/watch?v=xxwJuE215SM", "https://www.youtube.com/watch?v=NG_W3L_iy9w", "https://www.youtube.com/watch?v=AUtNIXO8pcU", "https://www.youtube.com/watch?v=8DDx5r6lwpM", "https://www.youtube.com/watch?v=9QXu7MRCs30", "https://www.youtube.com/watch?v=KUva_V-NWs8", "https://www.youtube.com/watch?v=5Ff1__OBYXc", "https://www.youtube.com/watch?v=TSQnM33CGII", "https://www.youtube.com/watch?v=2k-y5N_vFZA", "https://www.youtube.com/watch?v=NFdhFJ0RzHA", "https://www.youtube.com/watch?v=s0S-Jamzi_c", "https://www.youtube.com/watch?v=fDtCStfL1Y8", "https://www.youtube.com/watch?v=hqt3u3c5QiI", "https://www.youtube.com/watch?v=q1a5TUDISdM", "https://www.youtube.com/watch?v=uZx83buJNA8", "https://www.youtube.com/watch?v=sZg6XSaMAwM", "https://www.youtube.com/watch?v=VurnIaithdo", "https://www.youtube.com/watch?v=acMskgoCacY", "https://www.youtube.com/watch?v=zzRjCjo2SFQ", "https://www.youtube.com/watch?v=LW8YS8jnZxA", "https://www.youtube.com/watch?v=AiPLWSXgGgU", "https://www.youtube.com/watch?v=ZIYnRWfM9sk", "https://www.youtube.com/watch?v=WFgnlaLMbcc", "https://www.youtube.com/watch?v=lfQr68XXCXo", "https://www.youtube.com/watch?v=nwXiFgawbdA", "https://www.youtube.com/watch?v=azvm8A_BIkE", "https://www.youtube.com/watch?v=A_AuB8dXmP4", "https://www.youtube.com/watch?v=XFgMBBwi8lI", "https://www.youtube.com/watch?v=GBSfqEV1cxo", "https://www.youtube.com/watch?v=OoB_clQZJyk", "https://www.youtube.com/watch?v=g0K64KeYyl4", "https://www.youtube.com/watch?v=4UDC3ZpNjlI", "https://www.youtube.com/watch?v=heAtTMF7lzU", "https://www.youtube.com/watch?v=1dsSM1C0f-o", "https://www.youtube.com/watch?v=Ucam4s2rxC4", "https://www.youtube.com/watch?v=HHraFdmGOKQ", "https://www.youtube.com/watch?v=SzBWXg9ns44", "https://www.youtube.com/watch?v=9gzq988ANfg", "https://www.youtube.com/watch?v=_J7zDdQyzPw", "https://www.youtube.com/watch?v=gdLsTCQ3d0s", "https://www.youtube.com/watch?v=sRcHVGTphWY", "https://www.youtube.com/watch?v=UzFj_PrBDDs", "https://www.youtube.com/watch?v=ZL-3-t8hedg", "https://www.youtube.com/watch?v=W_Ro0zlD7x8", "https://www.youtube.com/watch?v=5RGa4lBgEk0", "https://www.youtube.com/watch?v=EChdbKFy5qk", "https://www.youtube.com/watch?v=QdasWOuiB_E", "https://www.youtube.com/watch?v=D_Lyp0jMJS8", "https://www.youtube.com/watch?v=AVHepIx3HXQ"]
+	
+	yield from client.send_message(message.channel, random.choice(vids))
+
+c_klocuch.command = r"klocuch(12)?"
+
+
+@asyncio.coroutine
+def c_skryba(client, message):
+	yield from client.send_message(message.channel, "Moim zdaniem to nie ma tak, że dobrze albo że nie dobrze. Gdybym miał powiedzieć, co cenię w życiu najbardziej, powiedziałbym, że ludzi. Ekhm... Ludzi, którzy podali mi pomocną dłoń, kiedy sobie nie radziłem, kiedy byłem sam. I co ciekawe, to właśnie przypadkowe spotkania wpływają na nasze życie. Chodzi o to, że kiedy wyznaje się pewne wartości, nawet pozornie uniwersalne, bywa, że nie znajduje się zrozumienia, które by tak rzec, które pomaga się nam rozwijać. Ja miałem szczęście, by tak rzec, ponieważ je znalazłem. I dziękuję życiu. Dziękuję mu, życie to śpiew, życie to taniec, życie to miłość. Wielu ludzi pyta mnie o to samo, ale jak ty to robisz?, skąd czerpiesz tę radość? A ja odpowiadam, że to proste, to umiłowanie życia, to właśnie ono sprawia, że dzisiaj na przykład buduję maszyny, a jutro... kto wie, dlaczego by nie, oddam się pracy społecznej i będę ot, choćby sadzić... znaczy... marchew.")
+
+c_skryba.command = r"skryba"
+
+
+@asyncio.coroutine
+def c_fullwidth(client, message):
+	HALFWIDTH_TO_FULLWIDTH = str.maketrans(
+		'0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!"#$%&()*+,-./:;<=>?@[]^_`{|}~',
+		'０１２３４５６７８９ａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ！゛＃＄％＆（）＊＋、ー。／：；〈＝〉？＠［］＾＿‘｛｜｝～')
+	
+	yield from client.send_message(message.channel, unidecode.unidecode(sh.get_args(message, True)).translate(HALFWIDTH_TO_FULLWIDTH))
+
+c_fullwidth.command = r"fullwidth"
+
+
+@asyncio.coroutine
+def c_letter_emoji(client, message):
+	replacements = [
+		(" ", "   "),
+		("\(c\)", "©️"),
+		("\(r\)", "®️"),
+		("\(tm\)", "™️"),
+		("cool", "🆒"),
+		("free", "🆓"),
+		("new", "🆕"),
+		("ok", "🆗"),
+		("sos", "🆘"),
+		("zzz", "💤"),
+		("ng", "🆖"),
+		("cl", "🆑"),
+		("up!", "🆙"),
+		("vs", "🆚"),
+		("id", "🆔"),
+		("ab", "🆎"),
+		("<3", "❤"),
+		("100", "💯"),
+		("a", "🇦"),
+		("b", "🅱️"),
+		("c", "🇨"),
+		("d", "🇩"),
+		("e", "🇪"),
+		("f", "🇫"),
+		("g", "🇬"),
+		("h", "🇭"),
+		("i", "🇮"),
+		("j", "🇯"),
+		("k", "🇰"),
+		("l", "🇱"),
+		("m", "🇲"),
+		("n", "🇳"),
+		("o", "🇴"),
+		("p", "🇵"),
+		("q", "🇶"),
+		("r", "🇷"),
+		("s", "🇸"),
+		("t", "🇹"),
+		("u", "🇺"),
+		("v", "🇻"),
+		("w", "🇼"),
+		("x", "🇽"),
+		("y", "🇾"),
+		("z", "🇿"),
+		("0", ":zero:"),
+		("1", ":one:"),
+		("2", ":two:"),
+		("3", ":three:"),
+		("4", ":four:"),
+		("5", ":five:"),
+		("6", ":six:"),
+		("7", ":seven:"),
+		("8", ":eight:"),
+		("9", ":nine:"),
+		("\+", "➕"),
+		("-", "➖"),
+		("!\?", "⁉"),
+		("!!", "‼"),
+		("\?", "❓"),
+		("!", "❗"),
+		("#", ":hash:"),
+		("\*", ":asterisk:"),
+		("\$", "💲")
+	]
+	
+	ret = unidecode.unidecode(sh.get_args(message, True))
+	
+	for e in replacements:
+		ret = re.sub(e[0], " {} ".format(e[1]), ret, flags=re.I)
+	
+	yield from client.send_message(message.channel, ret)
+
+c_letter_emoji.command = r"b"
 
 
 # -------------------------------------
@@ -287,7 +391,7 @@ def c_ile(client, message):
     zeros = random.randint(1,4)
     yield from client.send_message(message.channel, sh.mention(message) + str(random.randint(pow(10, zeros-1), pow(10, zeros))))
 
-c_ile.command = r"ile"
+c_ile.command = r"(ile|ilu)"
 c_ile.params = ["zapytanie"]
 
 @asyncio.coroutine
@@ -395,351 +499,3 @@ def c_komu(client, message):
 
 c_komu.command = r"komu"
 c_komu.params = ["zapytanie"]
-
-
-# -------------------------------------
-# gaywards
-# -------------------------------------
-
-@asyncio.coroutine
-def f_ohshitimsorry(client, message):
-	yield from client.send_message(message.channel, "sorry for what?")
-
-f_ohshitimsorry.command = r'^oh shit,? I(\')?m sorry'
-f_ohshitimsorry.prob = 1.0
-
-@asyncio.coroutine
-def f_sorryforwhat(client, message):
-	yield from client.send_message(message.channel, "our dad told us not to be ashamed of our dicks")
-
-f_sorryforwhat.command = r'^sorry for what'
-f_sorryforwhat.prob = 1.0
-
-@asyncio.coroutine
-def f_nottobeashamed(client, message):
-	yield from client.send_message(message.channel, "especially since they're such good size and all")
-
-f_nottobeashamed.command = r'our dad told us not to be ashamed of our dicks'
-f_nottobeashamed.prob = 1.0
-
-@asyncio.coroutine
-def f_iseethat(client, message):
-	yield from client.send_message(message.channel, "yeah, I see that, daddy gave you good advice")
-
-f_iseethat.command = r'specially since (it(\')?s|theyre|they\'re) such good size'
-f_iseethat.prob = 1.0
-
-@asyncio.coroutine
-def f_goodadvice(client, message):
-	yield from client.send_message(message.channel, "daddy gave you good advice")
-	
-f_goodadvice.command = r'^yea(h)?(,)? i see that$'
-f_goodadvice.prob = 1.0
-
-@asyncio.coroutine
-def f_itgetsbigger(client, message):
-	yield from client.send_message(message.channel, "it gets bigger when I pull on it")
-
-f_itgetsbigger.command = r'daddy gave you good advice'
-f_itgetsbigger.prob = 1.0
-
-@asyncio.coroutine
-def f_mmmm(client, message):
-	ret = ""
-	for x in range(0, random.randint(4, 13)):
-		ret += 'm'
-	for x in range(0, random.randint(1, 4)):
-		ret += 'M'
-	for x in range(0, random.randint(2, 5)):
-		ret += 'H'
-	for x in range(0, random.randint(1, 4)):
-		ret += 'M'
-	for x in range(0, random.randint(4, 13)):
-		ret += 'm'
-	yield from client.send_message(message.channel, ret)
-
-f_mmmm.command = r'^it gets bigger when I pull'
-f_mmmm.prob = 1.0
-
-@asyncio.coroutine
-def f_iriptheskin(client, message):
-	yield from client.send_message(message.channel, "sometimes I pull it on so hard, I rip the skin!")
-
-f_iriptheskin.command = r'^m[mh]{9,}'
-f_iriptheskin.prob = 1.0
-
-@asyncio.coroutine
-def f_mydaddytold(client, message):
-	yield from client.send_message(message.channel, "my daddy told me few things too")
-
-f_mydaddytold.command = r'^sometimes I pull it on so hard(,)? I rip the skin'
-f_mydaddytold.prob = 1.0
-
-@asyncio.coroutine
-def f_nottorip(client, message):
-	yield from client.send_message(message.channel, "like, uh, how not to rip the skin by using someone else's mouth")
-
-f_nottorip.command = r'my daddy (told|taught) me few things too'
-f_nottorip.prob = 1.0
-
-@asyncio.coroutine
-def f_willyoushowme(client, message):
-	yield from client.send_message(message.channel, "will you show me?")
-
-f_willyoushowme.command = r'how not to rip the skin by using someone else(\')?s mouth'
-f_willyoushowme.prob = 1.0
-
-@asyncio.coroutine
-def f_idberighthappy(client, message):
-	yield from client.send_message(message.channel, "I'd be right happy to!")
-
-f_idberighthappy.command = r'^will you show me'
-f_idberighthappy.prob = 1.0
-
-# -------------------------------------
-# funkcje sprawdzające całą wypowiedź
-# -------------------------------------
-
-@asyncio.coroutine
-def f_cogowno(client, message):
-	yield from client.send_message(message.channel, "gówno 1:0")
-
-f_cogowno.command = r'^(co|czo)\b'
-f_cogowno.prob = 0.025
-
-@asyncio.coroutine
-def f_czyzby(client, message):
-	yield from client.send_message(message.channel, "chyba ty")
-
-f_czyzby.command = r'(czyzby|czyżby)'
-f_czyzby.prob = 0.05
-
-@asyncio.coroutine
-def f_guten(client, message):
-	yield from client.send_message(message.channel, "Schwuchtel Arsch in der Nähe!!!")
-
-f_guten.command = r'^guten tag$'
-f_guten.prob = 0.5
-
-@asyncio.coroutine
-def f_maciek(client, message):
-	yield from client.send_message(message.channel, "Maćku")
-
-f_maciek.command = r'^maciek$'
-f_maciek.prob = 1.0
-
-@asyncio.coroutine
-def f_rucha(client, message):
-	yield from client.send_message(message.channel, "ruchasz psa jak sra")
-
-f_rucha.command = r'\.\.\.'
-f_rucha.prob = 0.025
-
-@asyncio.coroutine
-def f_wulg(client, message):
-	yield from client.send_message(message.channel, random.choice(["może byś tak kurwa nie przeklinał", "co?", "bez wulgaryzmów proszę", "na ten kanał zaglądają dzieci", "ostrożniej z językiem", "to kanał PG13", "czy mam ci język uciąć?", "przestań przeklinać gejasie bo cię stąd wypierdolę dyscyplinarnie", "pambuk płacze jak przeklinasz", "mów do mnie brzydko", "Kath bączy jak przeklinasz", "proszę tu nie przeklinać, to porządna knajpa", "nie ma takiego przeklinania chuju", "блять))))))))))", "zamknij pizdę"]))
-
-f_wulg.command = r'(kurw|chuj|pierdol|pierdal|jeb)'
-f_wulg.prob = 0.025
-
-@asyncio.coroutine
-def f_witam(client, message):
-	yield from client.send_message(message.channel, random.choice(["witam na kanale i życzę miłej zabawy", "cześć, kopę lat", "siemanko witam na moim kanale", "witam witam również", "no elo", "salam alejkum", "привет", "dzińdybry", "siemaszki", "serwus", "gitara siema", "dobrý den", "pozdrawiam, Mariusz " + random.choice(["Gambal", "Handzlik"]), "feedlysiemka " + str(message.author).split("#")[0].lower() + "ox"]))
-
-f_witam.command = r'(witam|cześć|czesc|siema|szalom|joł|shalom|dzi(n|ń)dybry|dzie(n|ń) dobry|siemka)'
-f_witam.prob = 0.25
-
-@asyncio.coroutine
-def f_opti(client, message):
-	yield from client.send_message(message.channel, sh.mention(message) + " uprasza się o nieużywanie słowa \"opti\" na terenie politbiura. Dziękuję.")
-
-f_opti.command = r"opti"
-f_opti.prob = 0.05
-
-
-@asyncio.coroutine
-def f_tbh(client, message):
-	yield from client.send_message(message.channel, "smh")
-
-f_tbh.command = r"^tbh$"
-f_tbh.prob = 1.0
-
-
-@asyncio.coroutine
-def f_smh(client, message):
-	yield from client.send_message(message.channel, "tbh")
-
-f_smh.command = r"^smh$"
-f_smh.prob = 1.0
-
-
-@asyncio.coroutine
-def f_jakisgolas(client, message):
-	replies = ["USUŃ TO", "boga w sercu nie masz?", "jezus maria...", "całe życie z debilami", "a bana to byś nie chciał?", "<rzygi>", "ty bamboclu"]
-	
-	if random.random() < 1/(len(replies)+1):
-		yield from client.send_typing(message.channel)
-		yield from c_wypierdalaj(client, message)
-	else:
-		yield from client.send_message(message.channel,  random.choice(replies))
-
-f_jakisgolas.command = r"vkPCjJM.jpg"
-f_jakisgolas.prob = 1.0
-
-
-@asyncio.coroutine
-def f_takiezycie(client, message):
-	yield from client.send_message(message.channel, "takie życie")
-
-f_takiezycie.command = r"^chamsko"
-f_takiezycie.prob = 0.05
-
-
-#@asyncio.coroutine
-#def f_nawzajem(client, message):
-#	yield from client.send_message(message.channel, "nawzajem")
-
-#f_nawzajem.command = r"weso(l|ł)"
-#f_nawzajem.prob = 1.0
-
-
-# -------------------------------------
-# do wykonania o określonych godzinach
-# -------------------------------------
-
-
-@asyncio.coroutine
-def t_pope_time(client, channels):
-	choices = ["zapraszam wszystkich na kremówki", "wybiła godzina papieska", "Jan Paweł 2, w moim sercu zawsze 1", "Jan Paweł II był wielkim człowiekiem", "Jan Paweł 2 Gloria Matki Dziewicy"]
-	barka = [("Pan kiedyś stanął nad brzegiem,\n" +
-		"Szukał ludzi gotowych pójść za Nim;\n" +
-		"By łowić serca\n" +
-		"Słów Bożych prawdą.\n\n" +
-		"Ref.: \n" +
-		"O Panie, to Ty na mnie spojrzałeś,\n" +
-		"Twoje usta dziś wyrzekły me imię.\n" +
-		"Swoją barkę pozostawiam na brzegu,\n" +
-		"Razem z Tobą nowy zacznę dziś łów."), (("O"*random.randint(3, 10)) + " P" + ("A"*random.randint(5,15)) + "NI" + ("E"*random.randint(5,15)))]
-	
-	reply = random.choice([random.choice(choices), random.choice(barka)])
-	
-	for ch in channels:
-		yield from client.send_message(ch, reply)
-
-t_pope_time.channels = ["174449535811190785"]
-t_pope_time.time = "21:37"
-
-'''
-@asyncio.coroutine
-def t_trzytrzytrzy(client, channels):
-	#img_count = 5
-	choices = ["3:33, KATH POBUDKA", "https://www.youtube.com/watch?v=WX8ZeZJqOE0", "https://www.youtube.com/watch?v=rRctiUI8pmE"]
-	#images = []
-	#
-	#for i in range(0, img_count):
-	#	images.append("kath" + str(i+1) + ".jpg")
-	#
-	#if random.random() < (len(choices)/float(len(choices)+ len(images))):
-	#	reply = random.choice(choices)
-	#	for ch in channels:
-	#		yield from client.send_message(ch, reply)
-	#else:
-	#	reply = random.choice(images)
-	#	for ch in channels:
-	#		yield from client.send_file(ch, sh.file_path("img/" + reply))
-	
-	reply = random.choice(choices)
-	for ch in channels:
-		yield from client.send_message(ch, reply)
-
-t_trzytrzytrzy.channels = ["174449535811190785"]
-t_trzytrzytrzy.time = "3:33"
-'''
-
-#@asyncio.coroutine
-#def t_test(client, channels):
-#	yield from client.send_message(channels[0], "test")
-#
-#t_test.channels = ["174449535811190785"]
-#t_test.time = "16:25"
-
-
-# -------------------------------------
-# dice.py
-# -------------------------------------
-
-
-@asyncio.coroutine
-def c_dice(client, message):
-	""".dice <formula> - Rolls dice using the XdY format, also does basic (+-*/) math."""
-	#MATHTIME! Let's prepare the failsafes.
-	legal_formula, no_dice = 1, 1
-	#parsing time.
-	msg = sh.get_args(message)
-	formula = msg #back-up the original message, because you're going to feed it back to the user in the end.
-	formula = formula.replace("-", " - ")
-	formula = formula.replace("+", " + ") #add spaces
-	formula = formula.replace("/", " / ") #for all
-	formula = formula.replace("*", " * ") #the characters
-	formula = formula.replace("(", " ( ") #supported
-	formula = formula. replace(")", " ) ")
-	arr = formula.split(" ") #aaaand, CUT IT APART! (this is why you needed the spaces.)
-	full_string = "" #reset the formula
-	for segment in arr:
-		#let's look at this formula... piece, by, piece
-		if segment != "":
-			#the value of this segment is 0
-			value = 0
-			if re.search("[0-9]*(d|D|k|K)[0-9]+", segment): #if there's a dice (regex FTW!)
-				value = rollDice(segment.lower()) #then roll the dice.
-				no_dice = 0 # And let the bot know there's dice in the formula
-			elif re.search("([0-9]|\+|\-|\*|\/|\(|\)| \+| \-| \*| \/| \(| \))", segment): #are any of the supported math characters in this piece?
-				value = segment #then just make that the value.
-			else:
-				legal_formula = 0 #non-supported character found...
-				break #ABORT, ABORT, ABORT!
-			full_string += value #add this segment's value to the full string
-	#repeat next segment
-	#you done? good.
-	if legal_formula == 1 and full_string != "": # did something break? no? good, continue.
-		#at this point full string is something like: "4 + 6 + 12 * 4" etc.
-		result = str(eval(full_string)) # so normally eval is UNSAFE... but since i've dumped regex over the user input i'm pretty confident in the security.
-		#print result to chat
-		if(no_dice): #no dice found, warn!
-			yield from client.send_message(message.channel, sh.mention(message) + msg+" = "+result)
-		else: #dice found, just let the users know what's happening
-			yield from client.send_message(message.channel, sh.mention(message) + "wyrzucono "+msg+" ("+full_string+"): "+result)
-	else: #print illegal warning.
-		yield from client.send_message(message.channel, sh.mention(message) + "coś tu jest nie teges: "+segment)
-
-c_dice.command = r"(d|dice|roll|rzut|rzuc)"
-c_dice.params = ["XdY / XkY"]
-c_dice.desc = "Rzut kością"
-
-def rollDice(diceroll):
-#Time for the real fun, dice!
-	if "k" in diceroll.lower():
-		delimiter = "k"
-	else:
-		delimiter = "d"
-	
-	if(diceroll.lower().startswith(delimiter)): #check if it's XdX or dX
-		#  dX
-		rolls = 1 #no dice amounts specified, roll 1
-		size = int(diceroll[1:]) # dice with this amount of sides
-	else:
-		# XdX
-		rolls = int(diceroll.lower().split(delimiter)[0]) # dice amount specified, use it.
-		size = int(diceroll.lower().split(delimiter)[1]) #  aswell as this size.
-	result = "" #dice result is zero.
-	for i in range(1,rolls+1): #for the amount of dice
-		#roll 10 dice, pick a random dice to use, add string to result.
-		# I should elaborate on this...
-		# str() makes sure the number is in string format (required for the eval())
-		# random.randint(1,size) is 1 dice and random.randint(0,9) selects one of the ten dice rolled
-		# reason for this is fairness, true random has at least 2 stages.
-		result += str((random.randint(1,size),random.randint(1,size),random.randint(1,size),random.randint(1,size),random.randint(1,size),random.randint(1,size),random.randint(1,size),random.randint(1,size),random.randint(1,size),random.randint(1,size))[random.randint(0,9)])
-		if(i != rolls):
-			#if it's not the last sign, add a plus sign.
-			result += "+"
-	return "("+result+")" #feed it back to the formula parser... add some parentheses so we know this is 1 roll.

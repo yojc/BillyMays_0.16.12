@@ -13,7 +13,7 @@ NOT_FOUND = "[nie znaleziono]"
 CHANNELS_TO_OMIT = str(tuple([326696245684862987])).rstrip(',)') + ')'
 
 # Open database
-stats = sqlite3.connect(sh.file_path("billy_stats.db"))
+stats = sqlite3.connect(sh.file_path("billy_db_stats.db"))
 stats_c = stats.cursor()
 
 # Init database if necessary
@@ -208,7 +208,7 @@ def parse_stats_args(client, message, args):
 	
 	# Check if server exists
 	if ret_array["server"] and not ret_array["server"].isdigit():
-		e = find(lambda m: re.match(ret_array["server"], m.name, flags=re.I), client.servers)
+		e = find(lambda m: re.search(ret_array["server"], m.name, flags=re.I), client.servers)
 		if e:
 			ret_array["server"] = e.id
 		else:
@@ -216,7 +216,7 @@ def parse_stats_args(client, message, args):
 	
 	# Check if channel exists
 	if ret_array["channel"] and not ret_array["channel"].isdigit():
-		e = find(lambda m: re.match(ret_array["channel"], m.name, flags=re.I), client.get_all_channels())
+		e = find(lambda m: re.search(ret_array["channel"], m.name, flags=re.I), client.get_all_channels())
 		if e:
 			ret_array["channel"] = e.id
 		else:
@@ -224,9 +224,9 @@ def parse_stats_args(client, message, args):
 	
 	# Check if user exists
 	if ret_array["user"] and not ret_array["user"].isdigit():
-		e = find(lambda m: re.match(ret_array["user"], m.name, flags=re.I), client.get_all_members())
+		e = find(lambda m: re.search(ret_array["user"], m.name, flags=re.I), client.get_all_members())
 		if not e:
-			e = find(lambda m: re.match(ret_array["user"], m.display_name, flags=re.I), client.get_all_members())
+			e = find(lambda m: re.search(ret_array["user"], m.display_name, flags=re.I), client.get_all_members())
 		
 		if e:
 			ret_array["user"] = e.id
@@ -436,50 +436,50 @@ def generate_stats(client, message, channel, arguments, stat_limit=5, bot_stats=
 		if query_args["time"] is not None:
 			args_display += "czas: *{}*, ".format(query_args["time"])
 		
-		if query_args["bot"] is not None:
-			args_display += "boty: *{}*, ".format(query_args["bot"])
+		if (query_args["bot"] or query_args["user"]) is not None:
+			args_display += "boty: *{}*, ".format((query_args["bot"] or not not query_args["user"]))
 		
 		if query_args["everyone"]:
 			args_display += "everyone: *{}*, ".format(query_args["everyone"])
 			
 		args_display = args_display[:-2] + "]"
 	
-	result_count = stats_count_messages(query_args["server"], time=query_args["time"], channel=query_args["channel"], user=query_args["user"], bot=query_args["bot"], everyone=query_args["everyone"], deleted=False, functions=bot_stats)
+	result_count = stats_count_messages(query_args["server"], time=query_args["time"], channel=query_args["channel"], user=query_args["user"], bot=(query_args["bot"] or query_args["user"]), everyone=query_args["everyone"], deleted=False, functions=bot_stats)
 	
 	# Message stats
 	
 	if result_count == 0:
 		ret += "Brak wiadomości dla zadanych parametrów.{}".format(args_display)
 	else:
-		deleted_count = stats_count_messages(query_args["server"], time=query_args["time"], channel=query_args["channel"], user=query_args["user"], bot=query_args["bot"], everyone=query_args["everyone"], deleted=True, functions=bot_stats)
+		deleted_count = stats_count_messages(query_args["server"], time=query_args["time"], channel=query_args["channel"], user=query_args["user"], bot=(query_args["bot"] or query_args["user"]), everyone=query_args["everyone"], deleted=True, functions=bot_stats)
 		ret += "Łącznie **{}** wiadomości (oraz {} usuniętych).{}".format(result_count, deleted_count, args_display)
 		
 		if not query_args["user"]:
 			ret += ("\n\n*Najwięksi męczyciele bota:*\n\n" if bot_stats else "\n\n*Najwięksi spamerzy:*\n\n")
 			
-			ret += stats_users(client, query_args["server"], rows=stat_limit, time=query_args["time"], channel=query_args["channel"], user=query_args["user"], bot=query_args["bot"], everyone=query_args["everyone"], deleted=False, functions=bot_stats)
+			ret += stats_users(client, query_args["server"], rows=stat_limit, time=query_args["time"], channel=query_args["channel"], user=query_args["user"], bot=(query_args["bot"] or query_args["user"]), everyone=query_args["everyone"], deleted=False, functions=bot_stats)
 		
 		if not query_args["channel"] and query_args["server"] != "0":
 			ret += "\n\n*Najbardziej zaspamowane kanały:*\n\n"
 			
-			ret += stats_channels(client, query_args["server"], rows=stat_limit, time=query_args["time"], channel=query_args["channel"], user=query_args["user"], bot=query_args["bot"], everyone=query_args["everyone"], deleted=False, functions=bot_stats)
+			ret += stats_channels(client, query_args["server"], rows=stat_limit, time=query_args["time"], channel=query_args["channel"], user=query_args["user"], bot=(query_args["bot"] or query_args["user"]), everyone=query_args["everyone"], deleted=False, functions=bot_stats)
 		
 		if bot_stats:
 			ret += "\n\n*Najczęściej używane funkcje:*\n\n"
 			
-			ret += stats_functions(client, query_args["server"], rows=stat_limit, time=query_args["time"], channel=query_args["channel"], user=query_args["user"], bot=query_args["bot"], deleted=False)
+			ret += stats_functions(client, query_args["server"], rows=stat_limit, time=query_args["time"], channel=query_args["channel"], user=query_args["user"], bot=(query_args["bot"] or query_args["user"]), deleted=False)
 	
 	# Emoji stats
 	
 	if not bot_stats and not query_args["everyone"]:
-		result_count = stats_count_emojis(query_args["server"], time=query_args["time"], channel=query_args["channel"], user=query_args["user"], bot=query_args["bot"], custom_only=True)
+		result_count = stats_count_emojis(query_args["server"], time=query_args["time"], channel=query_args["channel"], user=query_args["user"], bot=(query_args["bot"] or query_args["user"]), custom_only=True)
 		
 		if result_count == 0:
 			ret += "\n\nBrak emotikon dla zadanych parametrów."
 		else:
 			ret += "\n\n*Najczęściej używane emoty:*\n\n"
 			
-			ret += stats_emojis(client, query_args["server"], rows=stat_limit, time=query_args["time"], channel=query_args["channel"], user=query_args["user"], bot=(False if not query_args["bot"] else not hide_args), custom_only=True)
+			ret += stats_emojis(client, query_args["server"], rows=stat_limit, time=query_args["time"], channel=query_args["channel"], user=query_args["user"], bot=(query_args["bot"] or query_args["user"]), custom_only=True)
 	
 	return ret
 
@@ -516,3 +516,33 @@ def t_daily_stats(client, channels):
 
 t_daily_stats.channels = ["174449535811190785"]
 t_daily_stats.time = "00:00"
+
+# Weekly stats
+
+@asyncio.coroutine
+def t_weekly_stats(client, channels):
+	if datetime.now().weekday() == 0:
+		last_monday = (datetime.now()-timedelta(days=7)).strftime('%Y-%m-%d')
+		yesterday = (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
+		ret = "Statystyki z zeszłego tygodnia (od **{}** do **{}**)\n".format(last_monday, yesterday)
+		
+		for ch in channels:
+			yield from client.send_message(ch, ret + generate_stats(client, None, ch, "time={},{} server=politbiuro bot=t".format(last_monday, yesterday), 15, hide_args=True))
+
+t_weekly_stats.channels = ["174449535811190785"]
+t_weekly_stats.time = "01:23"
+
+
+# Monthly stats
+
+@asyncio.coroutine
+def t_monthly_stats(client, channels):
+	if datetime.now().strftime('%d') == "01":
+		last_month = (datetime.now() - timedelta(days=1)).strftime('%Y-%m')
+		ret = "Statystyki z zeszłego miesiąca (**{}**)\n".format(last_month)
+		
+		for ch in channels:
+			yield from client.send_message(ch, ret + generate_stats(client, None, ch, "time=last_month server=politbiuro bot=t", 15, hide_args=True))
+
+t_monthly_stats.channels = ["174449535811190785"]
+t_monthly_stats.time = "03:33"

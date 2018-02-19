@@ -4,8 +4,8 @@ config.py
 # Startup scripts
 *.sh
 
-# Statistics database
-billy_stats.db
+# Databases
+billy_db_*.db
 
 
 # Byte-compiled / optimized / DLL files

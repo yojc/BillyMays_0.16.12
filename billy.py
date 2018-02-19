@@ -42,7 +42,12 @@ import billy_c_translate
 import billy_c_rhymes
 import billy_c_img
 import billy_c_stats
-#import billy_c_sopel
+import billy_c_timers
+import billy_c_reactions
+
+import billy_c_sopel_calc
+import billy_c_sopel_dice
+import billy_c_sopel_remind
 
 # Error log location
 #logging.basicConfig(filename="billy_err.log", level=logging.DEBUG)
@@ -286,6 +291,8 @@ def on_ready():
 	print('Use this link to invite {}:'.format(client.user.name))
 	print('https://discordapp.com/oauth2/authorize?client_id={}&scope=bot&permissions=8'.format(client.user.id))
 	print('--------')
+	
+	yield from billy_c_sopel_remind.setup(client)
 
 
 # Execute on every reaction
@@ -351,6 +358,22 @@ def on_message_delete(message):
 		return
 	
 	sh.debug("No matching bot response found")
+
+@client.event
+@asyncio.coroutine
+def on_member_join(member):
+	invitation_msg = "Witam witam {} na naszym magicznym serwerze!".format(member.mention)
+	
+	if member.server.id == "174449535811190785":
+		yield from client.send_file(member.server.default_channel, sh.file_path("img/w mcdonalds spotkajmy sie.jpg"), content=invitation_msg)
+		yield from client.send_message(member.server.default_channel, "(lepiej nie pytaj kto to jest)")
+	else:
+		yield from client.send_message(member.server.default_channel, invitation_msg)
+
+@client.event
+@asyncio.coroutine
+def on_member_remove(member):
+	yield from client.send_message(member.server.default_channel, "{} ({}) właśnie se stąd gdzieś polazł <:smaglor:328947669676457984>".format(member.mention, str(member)))
 
 # Bot ID
 client.run(billy_key)
