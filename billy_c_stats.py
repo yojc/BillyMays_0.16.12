@@ -288,7 +288,7 @@ def prepare_conditions(time=None, server=None, channel=None, user=None, bot=Fals
 	elif time == "this_month":
 		conditions += "AND date(time, 'localtime') BETWEEN '{}-01' AND '{}' ".format(today.strftime('%Y-%m'), today.strftime('%Y-%m-%d'))
 	elif time == "last_month":
-		conditions += "AND strftime('%Y-%m', time, 'localtime') = '{}' ".format(today.replace(day=1).timedelta(days=1).strftime('%Y-%m'))
+		conditions += "AND strftime('%Y-%m', time, 'localtime') = '{}' ".format((today.replace(day=1)-timedelta(days=1)).strftime('%Y-%m'))
 	
 	elif time != None and time.count(",") == 1:
 		tmp = time.split(",")
@@ -545,4 +545,4 @@ def t_monthly_stats(client, channels):
 			yield from client.send_message(ch, ret + generate_stats(client, None, ch, "time=last_month server=politbiuro bot=t", 15, hide_args=True))
 
 t_monthly_stats.channels = ["174449535811190785"]
-t_monthly_stats.time = "03:33"
+t_monthly_stats.time = "00:33"

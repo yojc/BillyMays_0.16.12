@@ -374,7 +374,7 @@ c_kath.rhyme = True
 def c_kicek(client, message):
 	yield from client.send_message(message.channel, random.choice(["kicek", "kiceg"]) + " mały " + random.choice(["bicek", "dicek", "cycek"]))
 
-c_kicek.command = r"kicek"
+c_kicek.command = r"kice(k|g)"
 c_kicek.desc = "kicek mały..."
 c_kicek.rhyme = True
 

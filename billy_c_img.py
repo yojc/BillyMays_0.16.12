@@ -62,7 +62,10 @@ c_bkc.command = r"bkc"
 
 @asyncio.coroutine
 def c_zgadzam(client, message):
-	yield from client.send_file(message.channel, sh.file_path("img/nargogh wins.png"))
+	if random.random() < 0.05:
+		yield from client.send_file(message.channel, sh.file_path("img/dracia_intensifies.gif"))
+	else:
+		yield from client.send_file(message.channel, sh.file_path("img/nargogh wins.png"))
 
 c_zgadzam.command = r"zgadzam"
 c_zgadzam.desc = "Się zgadzam z Nargogiem"
@@ -80,7 +83,7 @@ c_wish.desc = "god I wish it was me"
 def c_babe(client, message):
 	yield from client.send_file(message.channel, sh.file_path("img/marian_czy_ty_mnie_kochasz.jpg"))
 
-c_babe.command = r"(chlopprzebranyza)?babe"
+c_babe.command = r"(chlopprzebranyza)?bab(a|e)"
 
 @asyncio.coroutine
 def c_smaglor(client, message):
@@ -99,3 +102,9 @@ def c_dojce(client, message):
 	yield from client.send_file(message.channel, sh.file_path("img/parampampam.jpg"))
 
 c_dojce.command = r"dojce"
+
+@asyncio.coroutine
+def c_cisza(client, message):
+	yield from client.send_file(message.channel, sh.file_path("img/SILENCE OR I WILL KILL YOU.jpg"))
+
+c_cisza.command = r"(cisza|silence)"

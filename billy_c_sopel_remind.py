@@ -200,7 +200,7 @@ def c_remind(client, message_obj):
 			reminder = reminder + piece
 			stop = True
 	if duration == 0:
-		yield from client.send_message(message.channel, sh.mention(message_obj) + "i może frytki do tego?")
+		yield from client.send_message(message_obj.channel, sh.mention(message_obj) + "i może frytki do tego?")
 		return
 
 	if duration % 1:

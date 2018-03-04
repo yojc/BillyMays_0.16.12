@@ -11,6 +11,8 @@ import billy_shared as sh
 from billy_c_yojc import c_rimshot as rimshot
 from config import wolfram_key, cleverbot_key
 
+cw = CleverWrap(cleverbot_key)
+
 headers_Get = {
 	'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:49.0) Gecko/20100101 Firefox/49.0',
 	'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -310,9 +312,16 @@ c_cytat.desc = "życiowe maksymy"
 
 @asyncio.coroutine
 def c_cleverbot(client, message):
-	cw = CleverWrap(cleverbot_key)
 	yield from client.send_message(message.channel, sh.mention(message) + cw.say(sh.get_args(message, True)))
 
 c_cleverbot.command = r"(cb|cleverbot|(od)?powiedz)"
 c_cleverbot.params = ["zapytanie"]
 c_cleverbot.desc = "spytaj bota o sens życia"
+
+
+@asyncio.coroutine
+def c_cleverbot_reset(client, message):
+	cw.reset()
+
+c_cleverbot_reset.command = r"(cb|cleverbot)r(eset)?"
+c_cleverbot_reset.desc = "hidden"
