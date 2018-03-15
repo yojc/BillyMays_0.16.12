@@ -216,15 +216,16 @@ def trigger_reactions(message):
 		{"regex" : r'p_?aul', "reaction" : ["\U0001F4A3"], "extra_check" : is_mentioned(message, "P_aul#1696"), "probability" : prob_react, "might_reply" : False},
 		{"regex" : r'hrabul', "reaction" : [random.choice(["\U0001F4B2", "\U0001F4B5"])], "extra_check" : is_mentioned(message, "hrabula#4726"), "probability" : prob_react, "might_reply" : False},
 		{"regex" : r'@(everyone|here)', "reaction" : ["angery:325368048640983052"], "extra_check" : message.mention_everyone, "probability" : prob_react, "might_reply" : True},
-		{"regex" : r'org(u|iel|ieł)', "reaction" : ["coolczesc:325367097125502989", "🇮🇱"], "extra_check" : is_mentioned(message, "orgiele#8308"), "probability" : prob_react, "might_reply" : False},
+		{"regex" : r'org(u|iel|ieł)', "reaction" : random.choice(["coolczesc:325367097125502989", "🇮🇱"]), "extra_check" : is_mentioned(message, "orgiele#8308"), "probability" : prob_react, "might_reply" : False},
 		{"regex" : r'fel', "reaction" : ["\U0001F388"], "extra_check" : is_mentioned(message, "Fel#6728"), "probability" : prob_react, "might_reply" : False},
 		{"regex" : r'xd', "reaction" : ["\U0001F1FD", "\U0001F1E9"], "extra_check" : False, "probability" : prob_react/2, "might_reply" : False},
 		{"regex" : r'vod(a|ę|zi|e)|tarkin', "reaction" : ["cyka:369039064533303318"], "extra_check" : is_mentioned(message, "Tarkin#6128"), "probability" : prob_react, "might_reply" : False},
 		{"regex" : r'czekolad|chocolat', "reaction" : ["\U0001F36B"], "extra_check" : False, "probability" : prob_react, "might_reply" : False},
-		{"regex" : r'm[mh]{2,}|dup(a|ą|ie|y)|penis|beni(s|z)|kutas|cycek|cyck|piersi|tyłek|tylek', "reaction" : ["mhhhmm:256873687871913984"], "extra_check" : False, "probability" : prob_react, "might_reply" : True},
+		{"regex" : r'm[mh]{2,}|dup(a|ą|ie|y)|penis|beni(s|z)|kutas|cycek|cyck|piersi|tyłek|tylek|dojce', "reaction" : ["mhhhmm:256873687871913984"], "extra_check" : False, "probability" : prob_react, "might_reply" : True},
 		{"regex" : r'(gofer|gofr)', "reaction" : ["\U0001F984"], "extra_check" : is_mentioned(message, "Gofer#9218"), "probability" : prob_react, "might_reply" : False},
 		{"regex" : r'martius', "reaction" : ["\U0001F426"], "extra_check" : is_mentioned(message, "Knight Martius#1640"), "probability" : prob_react, "might_reply" : False},
-		{"regex" : r'dzik', "reaction" : ["\U0001F417"], "extra_check" : False, "probability" : prob_react, "might_reply" : False}
+		{"regex" : r'dzik', "reaction" : ["\U0001F417"], "extra_check" : False, "probability" : prob_react, "might_reply" : False},
+		{"regex" : r'draci', "reaction" : ["\U0001F409"], "extra_check" : is_mentioned(message, "Dracia#6218"), "probability" : prob_react, "might_reply" : False}
 	]
 	
 	for r in r_list:

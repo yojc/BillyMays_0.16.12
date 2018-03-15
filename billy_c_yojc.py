@@ -403,7 +403,7 @@ def c_ocen(client, message):
 	if ocena < 10 and ocena > 0:
 		doda = random.choice(["", ",5", "-", "+"])
 	if ocena > 7:
-		znak = random.choice(["", "+ <:znak:400312259328606214>", "- Berlin poleca", ""])
+		znak = random.choice(["", "+ <:znak:391940544458391565>", "- Berlin poleca", ""])
 	
 	yield from client.send_message(message.channel, sh.mention(message) + str(ocena) + doda + "/10 " + znak)
 
