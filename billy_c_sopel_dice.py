@@ -88,4 +88,4 @@ def rollDice(diceroll):
 		if(i != rolls):
 			#if it's not the last sign, add a plus sign.
 			result += "+"
-		return "("+result+")" #feed it back to the formula parser... add some parentheses so we know this is 1 roll.
+	return "("+result+")" #feed it back to the formula parser... add some parentheses so we know this is 1 roll.

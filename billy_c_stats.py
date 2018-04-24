@@ -10,7 +10,7 @@ import billy_shared as sh
 NOT_FOUND = "[nie znaleziono]"
 
 # Channels to hide results from (they are still calculated!)
-CHANNELS_TO_OMIT = str(tuple([326696245684862987])).rstrip(',)') + ')'
+CHANNELS_TO_OMIT = str(tuple([326696245684862987, 425724173906870284])).rstrip(',)') + ')'
 
 # Open database
 stats = sqlite3.connect(sh.file_path("billy_db_stats.db"))

@@ -62,7 +62,7 @@ c_bkc.command = r"bkc"
 
 @asyncio.coroutine
 def c_zgadzam(client, message):
-	if random.random() < 0.05:
+	if random.random() < 0.1:
 		yield from client.send_file(message.channel, sh.file_path("img/dracia_intensifies.gif"))
 	else:
 		yield from client.send_file(message.channel, sh.file_path("img/nargogh wins.png"))
@@ -108,3 +108,10 @@ def c_cisza(client, message):
 	yield from client.send_file(message.channel, sh.file_path("img/SILENCE OR I WILL KILL YOU.jpg"))
 
 c_cisza.command = r"(cisza|silence)"
+
+
+@asyncio.coroutine
+def c_afera(client, message):
+	yield from client.send_file(message.channel, sh.file_path("img/comment_5DTDRHYuWYyVyTXzQGs7SvHZtyDz2sF8.gif"))
+
+c_afera.command = r"afera"

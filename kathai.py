@@ -17,7 +17,7 @@ game_synced = None
 
 # Games to play
 
-game_list = ["Borderlands", "Borderlands 2", "Borderlands 3", "Borderlands: the Pre-Sequel!", "Dragon Age: Origins", "Tales from the Borderlands", "Genital Jousting", "Team Fortress 2", "Crusaders of the Lost Idols", "Mining Industry Simulator", "Plush", "Chamsko: The Rift", "Overwatch"]
+game_list = ["Borderlands", "Borderlands 2", "Borderlands 3", "Borderlands: the Pre-Sequel!", "Dragon Age: Origins", "Tales from the Borderlands", "Genital Jousting", "Team Fortress 2", "Crusaders of the Lost Idols", "Mining Industry Simulator", "Plush", "Chamsko: The Rift", "Overwatch", "Tom Hardy: The Game", "Śląsk Tycoon", "PAC-MAN"]
 
 
 # Action probability
@@ -55,17 +55,22 @@ def f_iksde(message):
 	
 	return reply
 
-f_iksde.prob = 0.6
+f_iksde.prob = 0.59
 
 
 def f_chamsko(message):
-	reply = "chamsko"
-	
-	if random.random() < 0.3:
-		if random.random() < 0.5:
-			reply += "!"
-		else:
-			reply += " XD"
+	if random.random() < 0.7:
+		reply = "chamsko"
+		
+		if random.random() < 0.3:
+			if random.random() < 0.5:
+				reply += "!"
+			else:
+				reply += " XD"
+	elif random.random() < 0.5:
+		reply = random.choice(["najchamściej", "NAJCHAMŚCIEJ"])
+	else:
+		reply = "borze, jak chamsko"
 	
 	return reply
 
@@ -73,7 +78,9 @@ f_chamsko.prob = 0.14
 
 
 def f_pac(message):
-	return "\*pac*"
+	reply = random.choice(["\*pac*", "\*PAC*", "\*PACPACPAC*"])
+	
+	return reply
 
 f_pac.prob = 0.05
 
@@ -85,7 +92,7 @@ def f_pff(message):
 	
 	return reply
 
-f_pff.prob = 0.05
+f_pff.prob = 0.03
 
 
 def f_nie(message):
@@ -93,9 +100,12 @@ def f_nie(message):
 	if random.random() < 0.5:
 		reply += "!"
 	
+	if random.random() < 0.1:
+		reply = "borze, " + reply
+	
 	return reply
 
-f_nie.prob = 0.045
+f_nie.prob = 0.04
 
 
 def f_czo(message):
@@ -113,11 +123,11 @@ def f_czo(message):
 	
 	return reply
 
-f_czo.prob = 0.055
+f_czo.prob = 0.04
 
 
 def f_trzy(message):
-	reply = random.choice([":3", ":D", ":/", "\U00002764", "\U0001F922"])
+	reply = random.choice([":3", ":D", ":/", "\U00002764", "\U0001F922", "\U0001F44D", "\U00002764", "<:mhhhmm:256873687871913984>", "<:podbiel:326424787121602560>", "<:brwinow:349219149614022666>", "<:angery:325368048640983052>", "<:paweeel:397807577699975181>"])
 	
 	return reply
 
@@ -126,6 +136,10 @@ f_trzy.prob = 0.03
 
 def f_typalo(message):
 	nick = message.author.name
+	
+	if nick == "Kath":
+		return "tak!!!"
+	
 	mapping = { 
 		"st3fan0" : "Stefan",
 		"Giant Dad" : "Xardas",
@@ -142,11 +156,30 @@ def f_typalo(message):
 	if nick in mapping:
 		nick = nick.replace(nick, mapping[nick])
 	
-	reply = "{}, {}y pało{}".format(nick, random.choice(["T", "t"]), random.choice(["", "!"]))
+	reply = random.choice([
+		"{}, {}y pało{}".format(nick, random.choice(["T", "t"]), random.choice(["", "!"])),
+		"{}{}, cho{} na {}!".format(random.choice(["", "ej "]), nick, random.choice(["", "dź"]), random.choice(["Bordery", "Overwatcha", "TSa"]))
+	])
 	
 	return reply
 
-f_typalo.prob = 0.03
+f_typalo.prob = 0.02
+
+
+def f_whew(message):
+	reply = random.choice(["whew", "WHEW", "w h e w", "W H E W"])
+	
+	return reply
+
+f_whew.prob = 0.03
+
+
+def f_borze(message):
+	reply = random.choice(["borze", "BORZE"])
+	
+	return reply
+
+f_borze.prob = 0.03
 
 
 # Helper functions
@@ -204,28 +237,32 @@ def trigger_reactions(message):
 		{"regex" : r'nerv', "reaction" : ["\U0001F354"], "extra_check" : False, "probability" : prob_react, "might_reply" : False},
 		{"regex" : r'kat(h|ai|aj|owic)', "reaction" : [random.choice(["\U0001F44D", "\U00002764"])], "extra_check" : is_mentioned(message), "probability" : prob_react, "might_reply" : True},
 		{"regex" : r'(?<!m)artius', "reaction" : ["\U0001F942"], "extra_check" : is_mentioned(message, "SirAleksanderHeim#6341"), "probability" : prob_react, "might_reply" : False},
-		{"regex" : r'rysi', "reaction" : [random.choice(["\U0001F431", "\U0001F408"])], "extra_check" : is_mentioned(message, "Rysia#1973"), "probability" : prob_react, "might_reply" : False},
+		{"regex" : r'\brysi', "reaction" : [random.choice(["\U0001F431", "\U0001F408"])], "extra_check" : is_mentioned(message, "Rysia#1973"), "probability" : prob_react, "might_reply" : False},
 		{"regex" : r'rankin', "reaction" : ["blini:256876147810369556"], "extra_check" : is_mentioned(message, "rane#2794"), "probability" : prob_react, "might_reply" : False},
-		{"regex" : r'teb', "reaction" : [random.choice(["\U0001F436", "\U0001F415"])], "extra_check" : is_mentioned(message, "Teb#2096"), "probability" : prob_react, "might_reply" : False},
-		{"regex" : r'kice|kick', "reaction" : [random.choice(["🏳️‍🌈", "\U0001F308", "\U0001F407", "\U0001F430"])], "extra_check" : is_mentioned(message, "kiceg#1555"), "probability" : prob_react, "might_reply" : False},
+		{"regex" : r'\bteb', "reaction" : [random.choice(["\U0001F436", "\U0001F415"])], "extra_check" : is_mentioned(message, "Teb#2096"), "probability" : prob_react, "might_reply" : False},
+		{"regex" : r'\bkice|kick', "reaction" : [random.choice(["🏳️‍🌈", "\U0001F308", "\U0001F407", "\U0001F430"])], "extra_check" : is_mentioned(message, "kiceg#1555"), "probability" : prob_react, "might_reply" : False},
 		{"regex" : r'pewker|palker|pałker', "reaction" : ["\U0001F4A9"], "extra_check" : is_mentioned(message, "Pewker#3465"), "probability" : prob_react, "might_reply" : False},
 		{"regex" : r'papie(z|ż)|jp2|wojty(l|ł)a|krem(o|ó)wk|watykan|vatican', "reaction" : ["🇻🇦"], "extra_check" : False, "probability" : prob_react, "might_reply" : False},
-		{"regex" : r'bryl|brwi', "reaction" : ["brwinow:349219149614022666"], "extra_check" : is_mentioned(message, "brylant#7668"), "probability" : prob_react, "might_reply" : False},
+		{"regex" : r'\bbryl|brwi', "reaction" : ["brwinow:349219149614022666"], "extra_check" : is_mentioned(message, "brylant#7668"), "probability" : prob_react, "might_reply" : False},
 		{"regex" : r'podbiel', "reaction" : ["podbiel:326424787121602560"], "extra_check" : is_mentioned(message, "podbiel#4486"), "probability" : prob_react, "might_reply" : False},
 		{"regex" : r'wąż|wonsz|snake|snek', "reaction" : ["\U0001F40D"], "extra_check" : False, "probability" : prob_react, "might_reply" : False},
-		{"regex" : r'p_?aul', "reaction" : ["\U0001F4A3"], "extra_check" : is_mentioned(message, "P_aul#1696"), "probability" : prob_react, "might_reply" : False},
-		{"regex" : r'hrabul', "reaction" : [random.choice(["\U0001F4B2", "\U0001F4B5"])], "extra_check" : is_mentioned(message, "hrabula#4726"), "probability" : prob_react, "might_reply" : False},
+		{"regex" : r'p_?aul', "reaction" : [random.choice(["\U0001F4A3", "paweeel:397807577699975181"])], "extra_check" : is_mentioned(message, "P_aul#1696"), "probability" : prob_react, "might_reply" : False},
+		{"regex" : r'hrabul', "reaction" : ["\U0001F4B2"], "extra_check" : is_mentioned(message, "hrabula#4726"), "probability" : prob_react, "might_reply" : False},
 		{"regex" : r'@(everyone|here)', "reaction" : ["angery:325368048640983052"], "extra_check" : message.mention_everyone, "probability" : prob_react, "might_reply" : True},
-		{"regex" : r'org(u|iel|ieł)', "reaction" : random.choice(["coolczesc:325367097125502989", "🇮🇱"]), "extra_check" : is_mentioned(message, "orgiele#8308"), "probability" : prob_react, "might_reply" : False},
-		{"regex" : r'fel', "reaction" : ["\U0001F388"], "extra_check" : is_mentioned(message, "Fel#6728"), "probability" : prob_react, "might_reply" : False},
-		{"regex" : r'xd', "reaction" : ["\U0001F1FD", "\U0001F1E9"], "extra_check" : False, "probability" : prob_react/2, "might_reply" : False},
+		{"regex" : r'\borg(u|iel|ieł)', "reaction" : [random.choice(["coolczesc:325367097125502989", "🇮🇱"])], "extra_check" : is_mentioned(message, "orgiele#8308"), "probability" : prob_react, "might_reply" : False},
+		{"regex" : r'\bfel', "reaction" : ["\U0001F388"], "extra_check" : is_mentioned(message, "Fel#6728"), "probability" : prob_react, "might_reply" : False},
+		{"regex" : r'xd|iksde', "reaction" : random.choice([["pacaj:424902606637498391"], ["\U0001F1FD", "\U0001F1E9"]]), "extra_check" : False, "probability" : prob_react/2, "might_reply" : False},
 		{"regex" : r'vod(a|ę|zi|e)|tarkin', "reaction" : ["cyka:369039064533303318"], "extra_check" : is_mentioned(message, "Tarkin#6128"), "probability" : prob_react, "might_reply" : False},
 		{"regex" : r'czekolad|chocolat', "reaction" : ["\U0001F36B"], "extra_check" : False, "probability" : prob_react, "might_reply" : False},
-		{"regex" : r'm[mh]{2,}|dup(a|ą|ie|y)|penis|beni(s|z)|kutas|cycek|cyck|piersi|tyłek|tylek|dojce', "reaction" : ["mhhhmm:256873687871913984"], "extra_check" : False, "probability" : prob_react, "might_reply" : True},
+		{"regex" : r'\bm[mh]{2,}|dup(a|ą|ie|y)|penis|beni(s|z)|kutas|cycek|cyck|piersi|tyłek|tylek|dojce|loda', "reaction" : ["mhhhmm:256873687871913984"], "extra_check" : False, "probability" : prob_react, "might_reply" : True},
 		{"regex" : r'(gofer|gofr)', "reaction" : ["\U0001F984"], "extra_check" : is_mentioned(message, "Gofer#9218"), "probability" : prob_react, "might_reply" : False},
 		{"regex" : r'martius', "reaction" : ["\U0001F426"], "extra_check" : is_mentioned(message, "Knight Martius#1640"), "probability" : prob_react, "might_reply" : False},
-		{"regex" : r'dzik', "reaction" : ["\U0001F417"], "extra_check" : False, "probability" : prob_react, "might_reply" : False},
-		{"regex" : r'draci', "reaction" : ["\U0001F409"], "extra_check" : is_mentioned(message, "Dracia#6218"), "probability" : prob_react, "might_reply" : False}
+		{"regex" : r'\bdzik', "reaction" : ["\U0001F417"], "extra_check" : False, "probability" : prob_react, "might_reply" : False},
+		{"regex" : r'draci', "reaction" : [random.choice(["\U0001F409", "\U0001F432"])], "extra_check" : is_mentioned(message, "Dracia#6218"), "probability" : prob_react, "might_reply" : False},
+		{"regex" : r'(\bhm+\b|czy.*\?)', "reaction" : [random.choice(["tonk:293675913290317825", "hyperthink:383238503913357313"])], "extra_check" : False, "probability" : prob_react, "might_reply" : True},
+		{"regex" : r'brawo|brawa|poleca', "reaction" : [random.choice(["gato:339849333530689537", "znak:391940544458391565"])], "extra_check" : False, "probability" : prob_react, "might_reply" : False},
+		{"regex" : r'darmo|janusz|polac|polak|promoc|tani', "reaction" : ["janusz:398923553736622107"], "extra_check" : False, "probability" : prob_react, "might_reply" : True},
+		{"regex" : r'pewien|pewn', "reaction" : ["jestespewien:328913959342178304"], "extra_check" : False, "probability" : prob_react, "might_reply" : True}
 	]
 	
 	for r in r_list:
@@ -290,7 +327,7 @@ def on_message(message):
 	# Repeat emoji from post
 	emoji_list = list(c for c in message.clean_content if c in emoji.UNICODE_EMOJI) or []
 	custom_emoji_list = re.findall(r"(?<=:)\S+?:\d+", message.clean_content, re.IGNORECASE) or []
-	custom_emoji_list_raw = re.findall(r"<:\S+?:\d+>", message.clean_content, re.IGNORECASE) or []
+	custom_emoji_list_raw = re.findall(r"<a?:\S+?:\d+>", message.clean_content, re.IGNORECASE) or []
 	if not message.author.bot and len(emoji_list+custom_emoji_list) > 0 and (is_private_msg(message) or random.random() < prob_react):
 		if (is_private_msg(message) or str(message.channel) in channels) and random.random() < prob_react_as_reply:
 			yield from client.send_typing(message.channel)
@@ -322,7 +359,7 @@ def on_message(message):
 	yield from asyncio.sleep(1)
 	yield from client.send_message(message.channel, iksde)
 	
-	if iksde.lower().startswith("x") and random.random() < 0.05:
+	if iksde.lower().startswith("x") and random.random() < 0.04:
 		yield from client.send_typing(message.channel)
 		yield from asyncio.sleep(1)
 		yield from client.send_message(message.channel, "{} {}".format(random.choice(["TAK", "tak"]), random.choice(["", "\U00002764"])))

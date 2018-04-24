@@ -151,7 +151,7 @@ f_wulg.prob = 0.025
 
 @asyncio.coroutine
 def f_witam(client, message):
-	yield from client.send_message(message.channel, random.choice(["witam na kanale i życzę miłej zabawy", "cześć, kopę lat", "siemanko witam na moim kanale", "witam witam również", "no elo", "salam alejkum", "привет", "dzińdybry", "siemaszki", "serwus", "gitara siema", "dobrý den", "pozdrawiam, Mariusz " + random.choice(["Gambal", "Handzlik"]), "feedlysiemka " + str(message.author).split("#")[0].lower() + "ox"]))
+	yield from client.send_message(message.channel, random.choice(["witam na kanale i życzę miłej zabawy", "cześć, kopę lat", "siemanko witam na moim kanale", "witam witam również", "no elo", "salam alejkum", "привет", "dzińdybry", "siemaszki", "serwus", "gitara siema", "dobrý den", "pozdrawiam, " + random.choice(["Piotr Gambal", "Mateusz Handzlik"]), "feedlysiemka " + str(message.author).split("#")[0].lower() + "ox"]))
 
 f_witam.command = r'(witam|cześć|czesc|siema|szalom|joł|shalom|dzi(n|ń)dybry|dzie(n|ń) dobry|siemka)'
 f_witam.prob = 0.25
