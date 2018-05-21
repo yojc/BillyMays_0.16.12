@@ -17,7 +17,7 @@ game_synced = None
 
 # Games to play
 
-game_list = ["Borderlands", "Borderlands 2", "Borderlands 3", "Borderlands: the Pre-Sequel!", "Dragon Age: Origins", "Tales from the Borderlands", "Genital Jousting", "Team Fortress 2", "Crusaders of the Lost Idols", "Mining Industry Simulator", "Plush", "Chamsko: The Rift", "Overwatch", "Tom Hardy: The Game", "Śląsk Tycoon", "PAC-MAN"]
+game_list = ["Borderlands", "Borderlands 2", "Borderlands 3", "Borderlands: the Pre-Sequel!", "Dragon Age: Origins", "Tales from the Breslau", "Genital Jousting", "Team Fortress 2", "Crusaders of the Lost Idols", "Mining Industry Simulator", "Plush", "Chamsko: The Rift", "Overwatch", "Tom Hardy: The Game", "Silesia Tycoon", "PAC-MAN", "Call of Kopalnioki"]
 
 
 # Action probability
@@ -28,10 +28,21 @@ prob_react_as_reply = 0.3
 prob_game = 0.01
 
 
+# Repeat emojis from messages/reactions?
+
+repeat_emoji = False
+repeat_reaction = False
+
+
 # Channel whitelist
 
 channels = ["politbiuro", "luzna_jazda", "spotkania_politbiura"]
 
+
+# Owners
+
+master = "307949259658100736"
+owners = []
 
 # Possible replies go here
 
@@ -136,10 +147,6 @@ f_trzy.prob = 0.03
 
 def f_typalo(message):
 	nick = message.author.name
-	
-	if nick == "Kath":
-		return "tak!!!"
-	
 	mapping = { 
 		"st3fan0" : "Stefan",
 		"Giant Dad" : "Xardas",
@@ -150,7 +157,8 @@ def f_typalo(message):
 		"SirAleksanderHeim" : "Artius",
 		"Shakecaine" : "Shaker",
 		"POLIPOLIK" : "POLIP",
-		"Billy Mays" : "Billy"
+		"Billy Mays" : "Billy",
+		"wies.niak" : "wiesiu"
 	}
 	
 	if nick in mapping:
@@ -247,22 +255,24 @@ def trigger_reactions(message):
 		{"regex" : r'podbiel', "reaction" : ["podbiel:326424787121602560"], "extra_check" : is_mentioned(message, "podbiel#4486"), "probability" : prob_react, "might_reply" : False},
 		{"regex" : r'wąż|wonsz|snake|snek', "reaction" : ["\U0001F40D"], "extra_check" : False, "probability" : prob_react, "might_reply" : False},
 		{"regex" : r'p_?aul', "reaction" : [random.choice(["\U0001F4A3", "paweeel:397807577699975181"])], "extra_check" : is_mentioned(message, "P_aul#1696"), "probability" : prob_react, "might_reply" : False},
-		{"regex" : r'hrabul', "reaction" : ["\U0001F4B2"], "extra_check" : is_mentioned(message, "hrabula#4726"), "probability" : prob_react, "might_reply" : False},
+		{"regex" : r'hrabul', "reaction" : [random.choice(["\U0001F4B2", "\U0001F4B5"])], "extra_check" : is_mentioned(message, "hrabula#4726"), "probability" : prob_react, "might_reply" : False},
 		{"regex" : r'@(everyone|here)', "reaction" : ["angery:325368048640983052"], "extra_check" : message.mention_everyone, "probability" : prob_react, "might_reply" : True},
 		{"regex" : r'\borg(u|iel|ieł)', "reaction" : [random.choice(["coolczesc:325367097125502989", "🇮🇱"])], "extra_check" : is_mentioned(message, "orgiele#8308"), "probability" : prob_react, "might_reply" : False},
 		{"regex" : r'\bfel', "reaction" : ["\U0001F388"], "extra_check" : is_mentioned(message, "Fel#6728"), "probability" : prob_react, "might_reply" : False},
-		{"regex" : r'xd|iksde', "reaction" : random.choice([["pacaj:424902606637498391"], ["\U0001F1FD", "\U0001F1E9"]]), "extra_check" : False, "probability" : prob_react/2, "might_reply" : False},
+		{"regex" : r'xd|iksde', "reaction" : random.choice([["pacaj:424902606637498391"], ["\U0001F1FD", "\U0001F1E9"]]), "extra_check" : False, "probability" : prob_react/3, "might_reply" : False},
 		{"regex" : r'vod(a|ę|zi|e)|tarkin', "reaction" : ["cyka:369039064533303318"], "extra_check" : is_mentioned(message, "Tarkin#6128"), "probability" : prob_react, "might_reply" : False},
 		{"regex" : r'czekolad|chocolat', "reaction" : ["\U0001F36B"], "extra_check" : False, "probability" : prob_react, "might_reply" : False},
 		{"regex" : r'\bm[mh]{2,}|dup(a|ą|ie|y)|penis|beni(s|z)|kutas|cycek|cyck|piersi|tyłek|tylek|dojce|loda', "reaction" : ["mhhhmm:256873687871913984"], "extra_check" : False, "probability" : prob_react, "might_reply" : True},
 		{"regex" : r'(gofer|gofr)', "reaction" : ["\U0001F984"], "extra_check" : is_mentioned(message, "Gofer#9218"), "probability" : prob_react, "might_reply" : False},
 		{"regex" : r'martius', "reaction" : ["\U0001F426"], "extra_check" : is_mentioned(message, "Knight Martius#1640"), "probability" : prob_react, "might_reply" : False},
 		{"regex" : r'\bdzik', "reaction" : ["\U0001F417"], "extra_check" : False, "probability" : prob_react, "might_reply" : False},
-		{"regex" : r'draci', "reaction" : [random.choice(["\U0001F409", "\U0001F432"])], "extra_check" : is_mentioned(message, "Dracia#6218"), "probability" : prob_react, "might_reply" : False},
-		{"regex" : r'(\bhm+\b|czy.*\?)', "reaction" : [random.choice(["tonk:293675913290317825", "hyperthink:383238503913357313"])], "extra_check" : False, "probability" : prob_react, "might_reply" : True},
+		{"regex" : r'draci', "reaction" : ["\U0001F409"], "extra_check" : is_mentioned(message, "Dracia#6218"), "probability" : prob_react, "might_reply" : False},
+		{"regex" : r'(\bhm+\b|mo(z|ż).*|czy.*\?)', "reaction" : [random.choice(["tonk:293675913290317825", "hyperthink:383238503913357313"])], "extra_check" : False, "probability" : prob_react, "might_reply" : False},
 		{"regex" : r'brawo|brawa|poleca', "reaction" : [random.choice(["gato:339849333530689537", "znak:391940544458391565"])], "extra_check" : False, "probability" : prob_react, "might_reply" : False},
-		{"regex" : r'darmo|janusz|polac|polak|promoc|tani', "reaction" : ["janusz:398923553736622107"], "extra_check" : False, "probability" : prob_react, "might_reply" : True},
-		{"regex" : r'pewien|pewn', "reaction" : ["jestespewien:328913959342178304"], "extra_check" : False, "probability" : prob_react, "might_reply" : True}
+		{"regex" : r'darmo|janusz|polac|polak|promoc|tani', "reaction" : ["janusz:398923553736622107"], "extra_check" : False, "probability" : prob_react, "might_reply" : False},
+		{"regex" : r'pewien|pewn', "reaction" : ["jestespewien:328913959342178304"], "extra_check" : False, "probability" : prob_react, "might_reply" : False},
+		{"regex" : r'xardas|czardas|ściaz|sciaz', "reaction" : [random.choice(["sadpepe:256873871037300736", "sadface:256877855378636810"])], "extra_check" : is_mentioned(message, "Giant Dad#3849"), "probability" : prob_react, "might_reply" : False},
+		{"regex" : r'nargog', "reaction" : [random.choice(["smaglor:328947669676457984", "komarcz:328946510274232330"])], "extra_check" : is_mentioned(message, "Giant Dad#3849"), "probability" : prob_react, "might_reply" : False}
 	]
 	
 	for r in r_list:
@@ -282,23 +292,41 @@ def trigger_reactions(message):
 					except Exception:
 						print("Failure: {}, {}, {}, {}".format(message.channel, message.author, e.encode('raw_unicode_escape'), r["regex"]))
 						raise
-						continue
 
+'''
+# Check user message for commands
+@asyncio.coroutine
+def parse_commands(message):
+	global master
+	global owners
+
+	if message.author.id != master or message.author.id not in owners:
+		return True
+
+	elif message.content.startswith(".send"):
+		args = message.content.split(None, 2)
+		client.get_channel(args[1]).send(args[2])
+		return False
+
+	else:
+		return True
+'''
 
 
 # Execute on every reaction
 @client.event
 @asyncio.coroutine
 def on_reaction_add(reaction, user):
-	if reaction.me:
-		return
-	
-	#if is_private_msg(reaction.message) or (str(reaction.message.channel) in channels and random.random() < prob_reply):
-	#	yield from client.send_message(reaction.message.channel, choose_reply())
-	
-	if is_private_msg(reaction.message) or random.random() < prob_react:
-		yield from asyncio.sleep(4)
-		yield from client.add_reaction(reaction.message, reaction.emoji)
+	if repeat_reaction:
+		if reaction.me:
+			return
+		
+		#if is_private_msg(reaction.message) or (str(reaction.message.channel) in channels and random.random() < prob_reply):
+		#	yield from client.send_message(reaction.message.channel, choose_reply())
+		
+		if is_private_msg(reaction.message) or random.random() < prob_react:
+			yield from asyncio.sleep(4)
+			yield from client.add_reaction(reaction.message, reaction.emoji)
 
 
 # Execute on every msg
@@ -310,14 +338,36 @@ def on_message(message):
 	if message.author == client.user:
 		return
 	
+	# Check for commands
+
+	global master
+	global owners
+
+	if message.author.id == master or message.author.id in owners:
+
+		if message.content.startswith(".send"):
+			args = message.content.split(None, 2)
+			channel = client.get_channel(args[1])
+			msg = args[2]
+			yield from client.send_message(channel, msg)
+			return
+
+		elif message.content.startswith(".react"):
+			args = message.content.split(None, 3)
+			channel = client.get_channel(args[1])
+			msg = yield from client.get_message(channel, args[2])
+			react = args[3]
+			yield from client.add_reaction(msg, react)
+			return
+	
 	# Sync game
 	
 	if message.server and message.server.get_member_named("Kath#8040") and message.server.get_member_named("Kath#8040").game and game_synced != message.server.get_member_named("Kath#8040").game:
 	#and re.search(r"borderlands", message.server.get_member_named("Kath#8040").game.name, re.IGNORECASE):
-		game_synced = message.server.get_member_named("Kath#8040").game;
+		game_synced = message.server.get_member_named("Kath#8040").game
 		yield from client.change_presence(game=message.server.get_member_named("Kath#8040").game)
 	elif not is_private_msg(message) and random.random() < prob_game:
-		game_synced = None;
+		game_synced = None
 		yield from client.change_presence(game=discord.Game(name=random.choice(game_list)))
 	
 	# Add a reaction
@@ -325,18 +375,19 @@ def on_message(message):
 		yield from trigger_reactions(message)
 	
 	# Repeat emoji from post
-	emoji_list = list(c for c in message.clean_content if c in emoji.UNICODE_EMOJI) or []
-	custom_emoji_list = re.findall(r"(?<=:)\S+?:\d+", message.clean_content, re.IGNORECASE) or []
-	custom_emoji_list_raw = re.findall(r"<a?:\S+?:\d+>", message.clean_content, re.IGNORECASE) or []
-	if not message.author.bot and len(emoji_list+custom_emoji_list) > 0 and (is_private_msg(message) or random.random() < prob_react):
-		if (is_private_msg(message) or str(message.channel) in channels) and random.random() < prob_react_as_reply:
-			yield from client.send_typing(message.channel)
-			yield from asyncio.sleep(1)
-			yield from client.send_message(message.channel, random.choice(emoji_list+custom_emoji_list_raw))
-			return
-		else:
-			yield from asyncio.sleep(1)
-			yield from client.add_reaction(message, random.choice(emoji_list+custom_emoji_list))
+	if repeat_emoji:
+		emoji_list = list(c for c in message.clean_content if c in emoji.UNICODE_EMOJI) or []
+		custom_emoji_list = re.findall(r"(?<=:)\S+?:\d+", message.clean_content, re.IGNORECASE) or []
+		custom_emoji_list_raw = re.findall(r"<:\S+?:\d+>", message.clean_content, re.IGNORECASE) or []
+		if not message.author.bot and len(emoji_list+custom_emoji_list) > 0 and (is_private_msg(message) or random.random() < prob_react):
+			if (is_private_msg(message) or str(message.channel) in channels) and random.random() < prob_react_as_reply:
+				yield from client.send_typing(message.channel)
+				yield from asyncio.sleep(1)
+				yield from client.send_message(message.channel, random.choice(emoji_list+custom_emoji_list_raw))
+				return
+			else:
+				yield from asyncio.sleep(1)
+				yield from client.add_reaction(message, random.choice(emoji_list+custom_emoji_list))
 	
 	# Lie
 	

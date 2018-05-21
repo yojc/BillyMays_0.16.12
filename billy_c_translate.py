@@ -65,12 +65,14 @@ def translate(text, in_lang='auto', out_lang='en', verify_ssl=True):
 
 
 @asyncio.coroutine
-def mangle(client, channel, text, dest="en", randomize=False):
+def mangle(client, channel, text, dest="en", randomize=False, original=False):
 	langs = ['auto']
 	
 	if randomize:
 		lang_list = "af sq am ar hy az eu bn bs bg ca zh co hr cs da nl eo et fi fr fy gl ka de el gu ht ha iw hi hu is ig id ga it ja jw kn kk km ko ku lo lv lt lb mk mg ms ml mt mi mr mn ne no ny ps fa pt pa ro ru sm gd sr st sn sd si sk sl so es sw sv tl tg ta te th tr uk ur uz vi cy xh yi yo zu".split(" ")
 		langs.extend(random.sample(lang_list, 8))
+	elif original:
+		langs.extend(['en', 'fr', 'de', 'es', 'it'])
 	else:
 		langs.extend(['fr', 'de', 'es', 'it', 'no', 'he', 'la', 'ja'])
 	
@@ -138,6 +140,14 @@ def c_mangler(client, message):
 c_mangler.command = r"mangler"
 c_mangler.params = ["tekst"]
 c_mangler.desc = "najlepsze tłumaczenie na polski (losowo dobierana kolejność tłumaczeń)"
+
+@asyncio.coroutine
+def c_mangleo(client, message):
+	yield from client.send_message(message.channel, sh.mention(message) + (yield from mangle(client, message.channel, sh.get_args(message), "pl", False, True)))
+
+c_mangleo.command = r"mangleo"
+c_mangleo.params = ["tekst"]
+c_mangleo.desc = "najlepsze tłumaczenie na polski (stary algorytm)"
 
 @asyncio.coroutine
 def c_manglew(client, message):
