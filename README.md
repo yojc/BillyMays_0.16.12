@@ -10,7 +10,20 @@ Boty są od siebie niezależne, aczkolwiek współdzielony jest plik *config.py*
 
 ## Wymagania
 
-Ten projekt do uruchomienia wymaga Pythona 3 wraz z jakimiś doinstalowanymi pakietami. Może kiedyś mi się będzie chciało dopisać jakimi, może nie.
+Ten projekt do uruchomienia wymaga Pythona 3 wraz z jakimiś doinstalowanymi pakietami. Jeśli o niczym nie zapomniałem, to poniżej jest lista czego potencjalnie możesz nie mieć:
+
+```
+bs4
+discord
+cleverwrap
+colorama
+emoji
+requests
+unidecode
+wolframalpha
+```
+
+**Ten bot nie zadziała z Pythonem w wersji 3.7**. Przynajmniej mi się nie udało. Zawsze możesz spróbować zrobić osobną instalację 3.6: https://tecadmin.net/install-python-3-6-ubuntu-linuxmint/
 
 ## Klucze do aplikacji
 
