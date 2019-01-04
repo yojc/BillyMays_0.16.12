@@ -6,6 +6,7 @@ import unidecode
 
 import billy_shared as sh
 from billy_antiflood import check_uptime
+from billy_nicknames import get_random_nickname
 
 boruc = "Artur Boruc"
 
@@ -148,7 +149,7 @@ c_cwiercz.desc = "Używać razem z funkcją .martius"
 
 @asyncio.coroutine
 def c_nh(client, message):
-	if random.random() < 0.1:
+	if random.random() < 0.15:
 		yield from client.send_message(message.channel, random.choice(["(much homo wow)", "(extra homo)", "(kiceg tier homo)", "(no hetero)", "(yes homo)", "(ecce homo)"]))
 	else:
 		yield from client.send_message(message.channel, "(no homo)")
@@ -293,7 +294,7 @@ def c_fullwidth(client, message):
 	
 	yield from client.send_message(message.channel, unidecode.unidecode(sh.get_args(message, True)).translate(HALFWIDTH_TO_FULLWIDTH))
 
-c_fullwidth.command = r"fullwidth"
+c_fullwidth.command = r"(fullwidth|fw)"
 
 
 @asyncio.coroutine
@@ -381,8 +382,28 @@ c_letter_emoji.command = r"b"
 
 @asyncio.coroutine
 def c_czy(client, message):
-	nicks = ["Hrabuli", "Turambara", "yojca", "Lorda Nargogha", "Rankina", "Kathajca", "Behemorta", "orgieła", "Stillborna", "Metalusa", "kicka", "podbiela", "Sedinusa", "Hakkena", "Teba", "Sermacieja", "t3trisa", "optiego", "FaceDancera", "Holiego.Deatha", "Ramzesa", "POLIPa", "mateusza(stefana)", "Xysia", "Germanotty", "Berlina", "8azyliszka", "Seekera", "Murezora", "RIPa", "Aidena", " Accouna", "Fela", "Dracii", "Niziołki", "Mavericka", "P_aula", "Brylanta", "deffika", "Deviusa", "Gofra", "JamesaVooa", "Black Shadowa", "emqiego", "nerv4", "Pałkera", "PrincessNua", "Rysi", "Shakera", "Artiusa", "Stefana", "Xerbera", "Elana", "Vodę", "Xardasa", "Abyssa", "Bethezera", "Knight Martiusa", "Mysquffa", "OATa", "Noobirusa", "Osła", "b3rta", "gena", "Śćasa"]
-	yield from client.send_message(message.channel, sh.mention(message) + random.choice(["tak", "nie", "nie wiem", "być może", "na pewno", "to mało prawdopodobne", "nie sądzę", "jeszcze się pytasz?", "tak (żartuję hehe)", "hehe))))))))))))))))))", "tak", "nie", "tak (no homo)", "zaiste", "no chyba cię pambuk opuścił", "raczej nie", "jeszcze nie", "teraz już tak", "może kiedyś", "tak jest panie kapitanie", "panie januszu NIE", "jeszcze nie wiem", "daj mi chwilę to się zastanowię", "nie wiem zarobiony jestem przyjdź Pan jutro", "a czy papież sra w lesie?", "co za debil wymyśla te pytania", "jak najbardziej", "gówno prawda", "jeszcze jak", "jest możliwe", "otóż nie", "nie wiem, spytaj {}".format(random.choice(nicks))]))
+	response = ""
+	responses_yes = ["tak", "tak", "na pewno", "jeszcze się pytasz?", "tak (no homo)", "zaiste", "teraz już tak", "a czy papież sra w lesie?", "jak najbardziej", "jeszcze jak", "jest możliwe", "owszem", "czemu nie", "no w sumie...", "nom", "w rzeczy samej", "na bank", "skoro tak mówisz, to nie będę zaprzeczał"]
+	responses_no = ["nie", "nie", "to mało prawdopodobne", "nie sądzę", "tak (żartuję, hehe)", "no chyba cię pambuk opuścił", "raczej nie", "jeszcze nie", "gówno prawda", "otóż nie", "niep", "akurat", "nawet o tym nie myśl", "bynajmniej", "co ty gadasz", "chyba ty"]
+	responses_dunno = ["nie wiem", "być może", "hehe))))))))))))))))))", "może kiedyś", "jeszcze nie wiem", "daj mi chwilę to się zastanowię", "nie wiem, spytaj {}".format(get_random_nickname(message, "genitive")), "tego nawet najstarsi górale nie wiedzą", "a jebnąć ci ciupaską?", "a co ja jestem, informacja turystyczna?"]
+
+	if sh.is_female(message):
+		responses_yes = responses_yes + ["tak jest pani kapitan", "trafiłaś w sedno"]
+		responses_no = responses_no + ["pani januszko NIE"]
+		responses_dunno = responses_dunno + ["nie wiem zarobiony jestem przyjdź Pani jutro", "co za debilka wymyśla te pytania", "nie jesteś za młoda żeby pytać o takie rzeczy?", "sama sobie odpowiedz"]
+	else:
+		responses_yes = responses_yes + ["tak jest panie kapitanie", "trafiłeś w sedno"]
+		responses_no = responses_no + ["panie januszu NIE"]
+		responses_dunno = responses_dunno + ["nie wiem zarobiony jestem przyjdź Pan jutro", "co za debil wymyśla te pytania", "nie jesteś za młody żeby pytać o takie rzeczy?", "sam sobie odpowiedz"]
+	
+	if random.random() < 0.45:
+		response = random.choice(responses_yes)
+	elif random.random() < (2/3):
+		response = random.choice(responses_no)
+	else:
+		response = random.choice(responses_dunno)
+	
+	yield from client.send_message(message.channel, sh.mention(message) + response)
 
 c_czy.command = r"czy"
 c_czy.params = ["zapytanie"]
@@ -439,64 +460,51 @@ c_abcd.command = r"abcd"
 @asyncio.coroutine
 def c_gdzie(client, message):
 	prefix = ["pod mostem", "w dupie", "na głowie", "na kompie", "w parafii", "w koszu", "w fapfolderze", "na rowerze"]
-	suffix = ["Turambara", "yojca", "Lorda Nargogha", "Rankina", "Kathai", "Behemorta", "orgieła", "Stillborna", "Metalusa", "kicka", "podbiela", "Sedinusa", "Hakkena", "Tebega", "Sermacieja", "t3trisa", "optiego", "Hrabuli", "FaceDancera", "Holiego.Deatha", "Ramzesa", "POLIPa", "mateusza(stefana)", "Xysia", "Germanotty", "Berlina", "8azyliszka", "Seekera", "Murezora", "RIPa", "Aidena", "Accouna", "Fela", "Dracii", "Niziołki", "Mavericka", "P_aula", "Brylanta", "deffika", "Deviusa", "Gofra", "JamesaVooa", "Black Shadowa", "emqiego", "nerv4", "Pałkera", "Princess Nua", "Rysi", "Shakera", "Artiusa", "Stefana", "Xerbera", "gena", "b3rta", "u optiego", "na wydziale elektrycznym", "w Kathowicach", "u Kath w piwnicy", "we Wrocławiu", "w Szczecinie", "w Brwinowie", "w Warszawie", "w Bogatyni", "w Golubiu-Dobrzynie", "w Rzeszowie", "w Krakowie", "w Bydgoszczy", "w Magdalence przy stole z pozostałymi zdrajcami", "tam gdzie stało ZOMO", "na serwerze Interii", "w Gołodupczynie", "w kinie w Berlinie"]
+	suffix = [get_random_nickname(message, "genitive"), "na wydziale elektrycznym", "w Kathowicach", "u Kath w piwnicy", "we Wrocławiu", "w Szczecinie", "w Brwinowie", "w Warszawie", "w Bogatyni", "w Golubiu-Dobrzynie", "w Rzeszowie", "w Krakowie", "w Bydgoszczy", "w Magdalence przy stole z pozostałymi zdrajcami", "tam gdzie stało ZOMO", "na serwerze Interii", "w Gołodupczynie", "w kinie w Berlinie", "w redakcji CD-Action", "naprawdę mnie kusi żeby napisać \"w dupie \"", "w bagażniku Hondy nevki"]
 	yield from client.send_message(message.channel, sh.mention(message) + random.choice(prefix) + " " + random.choice(suffix))
 
 c_gdzie.command = r"gdzie"
 c_gdzie.params = ["zapytanie"]
 
 @asyncio.coroutine
+def c_kiedy(client, message):
+	replies = ["o wpół do dziesiątej rano w Polsce", "wczoraj", "jutro", "jak przyjdą szwedy", "w trzy dni po premierze premierze Duke Nukem Forever", "dzień przed końcem świata", "nigdy", "jak dojdą pieniądze", "za godzinkę", "kiedy tylko sobie życzysz", "gdy przestaniesz zadawać debilne pytania", "jak wybiorą czarnego papieża", "gdy wreszcie znajdziesz dziewczynę", "już za cztery lata, już za cztery lata", "na sylwestrze u P_aula", "o 3:33", "o 21:37", "jak Kath napisze magisterkę", "jak Dracia zrobi wszystko co musi kiedyś zrobić", "jak wróci Kataj", "jak Paul wejdzie do platyny", "jak Fel schudnie", "gdy Aiden zgoli rude kudły", "dzień po wybuchowym debiucie Brylanta", "za 12 lat", "gdy Martius przestanie pierdolić o ptakach", "jak podbiel zje mi dupę", "a co ja jestem, informacja turystyczna?", "jak wreszcie wyjebiemy stąd Nargoga", "jak Debiru awansuje do seniora", "jak kanau_fela zamknie FBI", "już tej nocy w twoim łóżku", "jak Strejlau umrze bo jest stary", "nie"]
+	yield from client.send_message(message.channel, sh.mention(message) + random.choice(replies))
+
+c_kiedy.command = r"kiedy"
+c_kiedy.params = ["zapytanie"]
+
+@asyncio.coroutine
 def c_kim(client, message):
-	word = ["mną", "tobą", "nikim", "Turambarem", "yojecem", "Lordem Nargoghiem", "Rankinem", "Kathajcem", "Behemortem", "orgiełem", "Stillbornem", "Metalusem", "kickiem", "podbielem", "Sedinusem", "Hakkenem", "Tebem", "Sermaciejem", "t3trisem", "optim", "Hrabulą", "FaceDancerem", "Holim.Death", "Ramzesem", "POLIPem", "mateuszem(stefanem)", "Xysiem", "Germanottą", "Berlinem", "8azyliszkiem", "Seekerem", "Murezorem", "RIPem", "Aidenem", "Accounem", "Felem", "Dracią", "Niziołką", "Maverickiem", "P_aulem", "Brylantem", "deffikiem", "Deviusem", "Gofrem", "JamesemVooem", "Black Shadowem", "emqim", "nerv3m", "Pałkerem", "PrincessNuem", "Rysią", "Shakerem", "Artiusem", "Xerberem", "Elanem", "Vodą", "Xardasem", "Abyssem", "Bethezerem", "Knight Martiusem", "Mysquffem", "OATem", "Noobirusem", "Osłem", "b3rtem", "genem", "Śćasem"]
-	yield from client.send_message(message.channel, sh.mention(message) + random.choice(word))
+	yield from client.send_message(message.channel, sh.mention(message) + get_random_nickname(message, "instrumental"))
 
 c_kim.command = r"kim"
 c_kim.params = ["zapytanie"]
 
 @asyncio.coroutine
 def c_kto(client, message):
-	word = ["ja", "ty", "nikt", "Turambar", "yojec", "Lord Nargogh", "Rankin", "Kath", "Behemort", "orgiełe", "Stillborn", "Metalus", "kicek", "podbiel", "Sedinus", "Hakken", "Teb", "Sermaciej", "t3tris", "opti", "Hrabula", "FaceDancer", "Holy.Death", "Ramzes", "POLIP", "mateusz(stefan)", "Xysiu", "Germanotta", "Berlin", "8azyliszek", "Seeker", "Murezor", "RIP", "Aiden", "Accoun", "Fel", "Dracia", "Niziołka", "Maverick", "P_aul", "Brylant", "deffik", "Devius", "Gofer", "JamesVoo", "Black Shadow", "emqi", "nerv0", "Pałker", "PrincessNue", "Rysia", "Shaker", "Artius", "Xerber", "Elano", "Voda", "Xardas", "Abyss", "Bethezer", "Knight Martius", "Mysquff", "OAT", "Noobirus", "Osioł", "b3rt", "gen", "Śćas"]
-	yield from client.send_message(message.channel, sh.mention(message) + random.choice(word))
+	yield from client.send_message(message.channel, sh.mention(message) + get_random_nickname(message, "nominative"))
 
 c_kto.command = r"kto"
 c_kto.params = ["zapytanie"]
 
 @asyncio.coroutine
 def c_kogo(client, message):
-	cmd = sh.get_command(message)
-	if cmd == ".kogo":
-		hrabul = "Hrabulę"
-		ja = "mnie"
-		ty = "ciebie"
-		nikt = "nikogo"
-	else:
-		hrabul = "Hrabuli"
-		if cmd == ".czyim":
-			ja = "moim"
-			ty = "twoim"
-			nikt = "niczyim"
-		elif cmd == ".czyja":
-			ja = "moja"
-			ty = "twoja"
-			nikt = "niczyja"
-		elif cmd == ".czyje":
-			ja = "moje"
-			ty = "twoje"
-			nikt = "niczyje"
-		elif cmd == ".czyj":
-			ja = "mój"
-			ty = "twój"
-			nikt = "niczyj"
-	
-	word = [ja, ty, nikt, "Turambara", "yojca", "Lorda Nargogha", "Rankina", "Kathajca", "Behemorta", "orgieła", "Stillborna", "Metalusa", "kicka", "podbiela", "Sedinusa", "Hakkena", "Teba", "Sermacieja", "t3trisa", "optiego", hrabul, "FaceDancera", "Holiego.Deatha", "Ramzesa", "POLIPa", "mateusza(stefana)", "Xysia", "Germanotty", "Berlina", "8azyliszka", "Seekera", "Murezora", "RIPa", "Aidena", " Accouna", "Fela", "Dracii", "Niziołki", "Mavericka", "P_aula", "Brylanta", "deffika", "Deviusa", "Gofra", "JamesaVooa", "Black Shadowa", "emqiego", "nerv4", "Pałkera", "PrincessNua", "Rysi", "Shakera", "Artiusa", "Stefana", "Xerbera", "Elana", "Vodę", "Xardasa", "Abyssa", "Bethezera", "Knight Martiusa", "Mysquffa", "OATa", "Noobirusa", "Osła", "b3rta", "gena", "Śćasa"]
-	yield from client.send_message(message.channel, sh.mention(message) + random.choice(word))
+	yield from client.send_message(message.channel, sh.mention(message) + get_random_nickname(message, "accusative"))
 
-c_kogo.command = r"(kogo|czyi(m|mi|ch)|czyj(a|e|ą)?) "
+c_kogo.command = r"kogo"
 c_kogo.params = ["zapytanie"]
 
 @asyncio.coroutine
+def c_czyj(client, message):
+	yield from client.send_message(message.channel, sh.mention(message) + get_random_nickname(message, "genitive", sh.get_command(message)))
+
+c_czyj.command = r"(czyi(m|mi|ch)|czyj(a|e|ą|ego|ej)?)"
+c_czyj.params = ["zapytanie"]
+
+@asyncio.coroutine
 def c_komu(client, message):
-	yield from client.send_message(message.channel, sh.mention(message) + random.choice(["mi", "tobie", "nikomu", "Turambarowi", "yojcu", "Lordowi Nargoghowi", "Rankinowi", "Kathajce", "Behemortowi", "orgiełowi", "Stillbornowi", "Metalusowi", "kickowi", "podbielowi", "Sedinusowi", "Hakkenowi", "Tebegowi", "Sermaciejowi", "t3trisowi", "optiemu", "Hrabuli", "FaceDancerowi", "Holiemu.Deathowi", "lghostowi", "POLIPowi", "mateuszowi(stefanowi)", "Xysiowi", "Germanotcie", "Berlinowi", "8azyliszkowi", "Seekerowi", "Murezorowi", "R1Powi", "Aidenowi", "Trepliev", "Accounowi", "Śćasowi"]))
+	yield from client.send_message(message.channel, sh.mention(message) + get_random_nickname(message, "dative"))
 
 c_komu.command = r"komu"
 c_komu.params = ["zapytanie"]

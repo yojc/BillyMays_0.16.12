@@ -271,8 +271,8 @@ def trigger_reactions(message):
 		{"regex" : r'brawo|brawa|poleca', "reaction" : [random.choice(["gato:339849333530689537", "znak:391940544458391565"])], "extra_check" : False, "probability" : prob_react, "might_reply" : False},
 		{"regex" : r'darmo|janusz|polac|polak|promoc|tani', "reaction" : ["janusz:398923553736622107"], "extra_check" : False, "probability" : prob_react, "might_reply" : False},
 		{"regex" : r'pewien|pewn', "reaction" : ["jestespewien:328913959342178304"], "extra_check" : False, "probability" : prob_react, "might_reply" : False},
-		{"regex" : r'xardas|czardas|ściaz|sciaz', "reaction" : [random.choice(["sadpepe:256873871037300736", "sadface:256877855378636810"])], "extra_check" : is_mentioned(message, "Giant Dad#3849"), "probability" : prob_react, "might_reply" : False},
-		{"regex" : r'nargog', "reaction" : [random.choice(["smaglor:328947669676457984", "komarcz:328946510274232330"])], "extra_check" : is_mentioned(message, "Giant Dad#3849"), "probability" : prob_react, "might_reply" : False}
+		{"regex" : r'xardas|czardas|ściaz|sciaz|otwock', "reaction" : [random.choice(["sadpepe:256873871037300736", "sadface:256877855378636810"])], "extra_check" : is_mentioned(message, "Giant Dad#3849"), "probability" : prob_react, "might_reply" : False},
+		{"regex" : r'nargog', "reaction" : [random.choice(["smaglor:328947669676457984", "komarcz:328946510274232330"])], "extra_check" : is_mentioned(message, "Lord Nargogh#8548"), "probability" : prob_react, "might_reply" : False}
 	]
 	
 	for r in r_list:

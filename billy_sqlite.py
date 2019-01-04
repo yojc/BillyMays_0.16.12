@@ -36,18 +36,7 @@ import billy_shared as sh
 # List modules to import here
 # Names must start with billy_c
 
-import billy_c_yojc
-import billy_c_web
-import billy_c_translate
-import billy_c_rhymes
-import billy_c_img
-#import billy_c_stats
-import billy_c_timers
-import billy_c_reactions
-
-import billy_c_sopel_calc
-import billy_c_sopel_dice
-import billy_c_sopel_remind
+import billy_c_stats
 
 # Set up logging
 # import logging
@@ -157,14 +146,14 @@ for e in t_functions:
 
 @asyncio.coroutine
 def parse_message(message, edited=False):
-	#if not edited:
-	#	billy_c_stats.insert_msg(message)
+	if not edited:
+		billy_c_stats.insert_msg(message)
 	
 	# Track used emojis
 	
-	#emoji_list = list(c for c in message.clean_content if c in emoji.UNICODE_EMOJI) or []
-	#custom_emoji_list = re.findall(r"<:\S+?:\d+>", message.clean_content, re.IGNORECASE) or []
-	#billy_c_stats.insert_emojis_post(message, emoji_list, custom_emoji_list, edited)
+	emoji_list = list(c for c in message.clean_content if c in emoji.UNICODE_EMOJI) or []
+	custom_emoji_list = re.findall(r"<:\S+?:\d+>", message.clean_content, re.IGNORECASE) or []
+	billy_c_stats.insert_emojis_post(message, emoji_list, custom_emoji_list, edited)
 	
 	# ignore bot messages
 	
@@ -209,55 +198,7 @@ def parse_message(message, edited=False):
 		
 		# help
 		
-		if re.match(compile_command(r"(help|pomoc)"), content, re.IGNORECASE):
-			sh.debug("What a noob")
-			ret = "Witam witam, z tej strony Billy Mays z kolejnym fantastycznym produktem!\nDozwolone przedrostki funkcji: . , \ / ! ;\n\n"
-			
-			for f in c_functions:
-				desc = getattr(f, "desc", False)
-				
-				if hasattr(f, "rhyme") or desc == "hidden":
-					continue
-					
-				command = getattr(f, "command", False)
-				
-				ret += "." + getattr(f, "command")
-				
-				params = getattr(f, "params", False)
-				
-				if params:
-					for p in params:
-						ret += " [" + p + "]"
-				
-				if desc:
-					ret += " - " + desc
-				
-				ret += "\n"
-			
-			ret += "\nRymy i inne bzdety: .rymy"
-			ret += "\nZadzwoń teraz, a podwoimy ofertę!"
-			
-			if len(ret) > 2000:
-				n = 40
-				groups = ret.split("\n")
-				help = ["\n".join(groups[:n]), "\n".join(groups[n:])]
-			else:
-				help = [ret]
-			
-			for m in help:
-				yield from client.send_message(message.channel, m)
-		
-		elif re.match(compile_command(r"(rymy|rhymes)"), content, re.IGNORECASE):
-			sh.debug("What an utter pillock")
-			ret = "Rymy i inne bzdety:\n"
-			
-			for f in c_functions:
-				if not hasattr(f, "rhyme"):
-					continue
-				command = getattr(f, "command", False)
-				ret += "." + getattr(f, "command") + "\n"
-			
-			yield from client.send_message(message.channel, ret[:-1])
+		# not needed here
 		
 		else:
 			# iterate over functions
@@ -269,7 +210,7 @@ def parse_message(message, edited=False):
 					yield from client.send_typing(message.channel)
 					try:
 						yield from f(client, message)
-						#billy_c_stats.update_msg_function(message, f.__name__)
+						billy_c_stats.update_msg_function(message, f.__name__)
 					except Exception:
 						yield from client.send_message(message.channel, "Oho, chyba jakiś błąd w kodzie. <@307949259658100736> to kiedyś naprawi, jak się skończy bawić pociągami.")
 						print_warning("An error occured in " + f.__name__ + "!!! (" + content + ")")
@@ -298,7 +239,7 @@ def on_ready():
 	print('https://discordapp.com/oauth2/authorize?client_id={}&scope=bot&permissions=8'.format(client.user.id))
 	print('--------')
 	
-	yield from billy_c_sopel_remind.setup(client)
+	#yield from billy_c_sopel_remind.setup(client)
 
 
 # Execute on every reaction
@@ -307,7 +248,7 @@ def on_ready():
 @asyncio.coroutine
 def on_reaction_add(reaction, user):
 	# track used emojis
-	#billy_c_stats.insert_emojis_reaction(reaction.message, user, reaction.emoji, reaction.custom_emoji)
+	billy_c_stats.insert_emojis_reaction(reaction.message, user, reaction.emoji, reaction.custom_emoji)
 	
 	if reaction.me:
 		return
@@ -316,11 +257,11 @@ def on_reaction_add(reaction, user):
 	#	yield from asyncio.sleep(4)
 	#	yield from client.add_reaction(reaction.message, reaction.emoji)
 
-#@client.event
-#@asyncio.coroutine
-#def on_reaction_remove(reaction, user):
+@client.event
+@asyncio.coroutine
+def on_reaction_remove(reaction, user):
 	# track used emojis
-	#billy_c_stats.remove_reaction(reaction.message, user, reaction.emoji, reaction.custom_emoji)
+	billy_c_stats.remove_reaction(reaction.message, user, reaction.emoji, reaction.custom_emoji)
 
 
 # Execute on every msg edit
@@ -345,7 +286,7 @@ def on_message(message):
 @client.event
 @asyncio.coroutine
 def on_message_delete(message):
-	#billy_c_stats.update_msg_deletion(message)
+	billy_c_stats.update_msg_deletion(message)
 	
 	content = sh.rm_leading_quotes(message)
 	
@@ -364,22 +305,6 @@ def on_message_delete(message):
 		return
 	
 	sh.debug("No matching bot response found")
-
-@client.event
-@asyncio.coroutine
-def on_member_join(member):
-	invitation_msg = "Witam witam {} na naszym magicznym serwerze!".format(member.mention)
-	
-	if member.server.id == "174449535811190785":
-		yield from client.send_file(member.server.default_channel, sh.file_path("img/w mcdonalds spotkajmy sie.jpg"), content=invitation_msg)
-		yield from client.send_message(member.server.default_channel, "(lepiej nie pytaj kto to jest)")
-	else:
-		yield from client.send_message(member.server.default_channel, invitation_msg)
-
-@client.event
-@asyncio.coroutine
-def on_member_remove(member):
-	yield from client.send_message(member.server.default_channel, "{} ({}) właśnie se stąd gdzieś polazł <:smaglor:328947669676457984>".format(member.mention, str(member)))
 
 # Bot ID
 client.run(billy_key)

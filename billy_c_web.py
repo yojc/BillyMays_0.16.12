@@ -11,6 +11,9 @@ import billy_shared as sh
 from billy_c_yojc import c_rimshot as rimshot
 from config import wolfram_key, cleverbot_key
 
+# How many times should the bot retry the query in case an error occurs?
+retry_count = 10
+
 cw = CleverWrap(cleverbot_key)
 
 headers_Get = {
@@ -40,7 +43,8 @@ def google(q, image=False):
 	soup = BeautifulSoup(r.text, "html.parser")
 	
 	if image:
-		searchWrapper = soup.find('div', {'jsname':'ik8THc'}) #this line may change in future based on google's web page structure
+		#searchWrapper = soup.find('div', {'jsname':'ik8THc'}) #this line may change in future based on google's web page structure
+		searchWrapper = soup.find('div', {'class':'rg_meta notranslate'})
 		if searchWrapper is None:
 			return False
 		url = json.loads(searchWrapper.text.strip())["ou"]
@@ -133,7 +137,13 @@ def cytat():
 
 @asyncio.coroutine
 def c_google(client, message):
-	result = google(sh.get_args(message, True))
+	for i in range(retry_count):
+		result = google(sh.get_args(message, True))
+		
+		if not result:
+			continue
+		else:
+			break
 	
 	if not result:
 		yield from client.send_message(message.channel, sh.mention(message) + "brak wyników, albo Google się zesrało.")
@@ -146,7 +156,13 @@ c_google.desc = "szukaj w Google"
 
 @asyncio.coroutine
 def c_wyjasnij(client, message):
-	result = google(sh.get_args(message, True))
+	for i in range(retry_count):
+		result = google(sh.get_args(message, True))
+		
+		if not result:
+			continue
+		else:
+			break
 	
 	if not result:
 		yield from client.send_message(message.channel, sh.mention(message) + "brak wyników, albo Google się zesrało.")
@@ -159,7 +175,13 @@ c_wyjasnij.desc = "szukaj w Google, podaje treść"
 
 @asyncio.coroutine
 def c_google_image(client, message):
-	result = google(sh.get_args(message, True), "isch")
+	for i in range(retry_count):
+		result = google(sh.get_args(message, True), "isch")
+		
+		if not result:
+			continue
+		else:
+			break
 	
 	if not result:
 		yield from client.send_message(message.channel, sh.mention(message) + "brak wyników, albo Google się zesrało.")
@@ -173,7 +195,13 @@ c_google_image.desc = "szukaj obrazków w Google"
 
 @asyncio.coroutine
 def c_google_image_clipart(client, message):
-	result = google(sh.get_args(message, True), "itp:clipart")
+	for i in range(retry_count):
+		result = google(sh.get_args(message, True), "itp:clipart")
+		
+		if not result:
+			continue
+		else:
+			break
 	
 	if not result:
 		yield from client.send_message(message.channel, sh.mention(message) + "brak wyników, albo Google się zesrało.")
@@ -187,7 +215,13 @@ c_google_image_clipart.desc = "szukaj clipartów"
 
 @asyncio.coroutine
 def c_google_image_face(client, message):
-	result = google(sh.get_args(message, True), "itp:face")
+	for i in range(retry_count):
+		result = google(sh.get_args(message, True), "itp:face")
+		
+		if not result:
+			continue
+		else:
+			break
 	
 	if not result:
 		yield from client.send_message(message.channel, sh.mention(message) + "brzydal")
@@ -201,7 +235,13 @@ c_google_image_face.desc = "szukaj obrazków zawierających twarz"
 
 @asyncio.coroutine
 def c_google_image_gif(client, message):
-	result = google(sh.get_args(message, True), "itp:animated")
+	for i in range(retry_count):
+		result = google(sh.get_args(message, True), "itp:animated")
+		
+		if not result:
+			continue
+		else:
+			break
 	
 	if not result:
 		yield from client.send_message(message.channel, sh.mention(message) + "brak wyników, albo Google się zesrało.")
@@ -215,7 +255,13 @@ c_google_image_gif.desc = "szukaj animowanych obrazków"
 
 @asyncio.coroutine
 def c_youtube(client, message):
-	result = yt(sh.get_args(message, True))
+	for i in range(retry_count):
+		result = yt(sh.get_args(message, True))
+		
+		if not result:
+			continue
+		else:
+			break
 	
 	if not result:
 		yield from client.send_message(message.channel, sh.mention(message) + "brak wyników, albo jutub się zesrał.")
@@ -229,14 +275,20 @@ c_youtube.desc = "szukaj filmików na YT"
 
 @asyncio.coroutine
 def c_tumblr_r(client, message):
-	result = tumblr_random(sh.get_args(message))
+	for i in range(retry_count):
+		result = tumblr_random(sh.get_args(message))
+		
+		if not result:
+			continue
+		else:
+			break
 	
 	if not result:
 		yield from client.send_message(message.channel, sh.mention(message) + "wszystko tylko nie to")
 	else:
 		yield from client.send_message(message.channel, sh.mention(message) + result)
 
-c_tumblr_r.command = r"tumblrr(andom)?"
+#c_tumblr_r.command = r"tumblrr(andom)?"
 c_tumblr_r.params = ["tumblr"]
 c_tumblr_r.desc = "losowy post z danego Tumblra"
 
@@ -251,7 +303,7 @@ def c_zwierzaki(client, message):
 	else:
 		yield from client.send_message(message.channel, sh.mention(message) + result)
 
-c_zwierzaki.command = r"zwierzaki"
+#c_zwierzaki.command = r"zwierzaki"
 c_zwierzaki.desc = "losowy Tumblr ze zwierzakami"
 
 
@@ -264,7 +316,7 @@ def c_shitpostbot(client, message):
 	else:
 		yield from client.send_message(message.channel, sh.mention(message) + result)
 
-c_shitpostbot.command = r"shitpost(bot)?"
+#c_shitpostbot.command = r"shitpost(bot)?"
 
 
 @asyncio.coroutine

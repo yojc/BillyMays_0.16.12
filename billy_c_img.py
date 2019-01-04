@@ -1,4 +1,4 @@
-import random
+﻿import random
 import asyncio
 
 import billy_shared as sh
@@ -43,7 +43,8 @@ c_cogif.command = r"(co|what)"
 def c_wypierdalaj(client, message):
 	yield from client.send_file(message.channel, sh.file_path("img/comment_yJaXUY8ayZxkMA8s0oLMjNkdj6ajeDLD.gif"))
 
-c_wypierdalaj.command = r"wypierdalaj"
+c_wypierdalaj.desc = "hidden"
+#c_wypierdalaj.command = r"wypierdalaj"
 
 
 @asyncio.coroutine
@@ -115,3 +116,97 @@ def c_afera(client, message):
 	yield from client.send_file(message.channel, sh.file_path("img/comment_5DTDRHYuWYyVyTXzQGs7SvHZtyDz2sF8.gif"))
 
 c_afera.command = r"afera"
+
+
+@asyncio.coroutine
+def c_vnag(client, message):
+	if random.random() < 0.1:
+		yield from client.send_file(message.channel, sh.file_path("img/bruk-teb mountain.png"))
+	else:
+		yield from client.send_file(message.channel, sh.file_path("img/teb.png"))
+
+c_vnag.command = r"(nice|very(nice(and(gay)?)?)?|vnag)"
+
+
+@asyncio.coroutine
+def c_okazja(client, message):
+	yield from client.send_file(message.channel, sh.file_path("img/to_sie_nazywa_antycypowanie_norek.png"))
+
+c_okazja.command = r"okazja"
+
+
+@asyncio.coroutine
+def c_dupie(client, message):
+	yield from client.send_file(message.channel, sh.file_path("img/ASS.png"))
+
+c_dupie.command = r"(dupa|dupie)"
+
+
+@asyncio.coroutine
+def c_ociehuj(client, message):
+	yield from client.send_file(message.channel, sh.file_path("img/nasralem.jpg"))
+
+c_ociehuj.command = r"ociec?huj"
+
+
+@asyncio.coroutine
+def c_zrozumiale(client, message):
+	yield from client.send_file(message.channel, sh.file_path("img/zrozumiale.webm"))
+
+c_zrozumiale.command = r"(zrozumialem?|understandable|understood)"
+
+
+@asyncio.coroutine
+def c_provocative(client, message):
+	yield from client.send_file(message.channel, sh.file_path("img/provo.mp4"))
+
+c_provocative.command = r"(provo(cative)?|prowo)"
+
+
+@asyncio.coroutine
+def c_nasralem(client, message):
+	yield from client.send_file(message.channel, sh.file_path("img/magiczny_napoj_metalusa.jpg"))
+
+c_nasralem.command = r"(nasra(l|ł)em)"
+
+
+@asyncio.coroutine
+def c_uwal(client, message):
+	yield from client.send_file(message.channel, sh.file_path("img/hej kup se klej.jpg"))
+
+c_uwal.command = r"(uwal|pizde|pizdę)"
+
+
+@asyncio.coroutine
+def c_silversurfer(client, message):
+	yield from client.send_file(message.channel, sh.file_path("img/zal.pl.png"))
+
+c_silversurfer.command = r"(silversurfer|ss|rzal|zal)"
+
+
+@asyncio.coroutine
+def c_nawzajem(client, message):
+	yield from client.send_file(message.channel, sh.file_path("img/nawzajem.jpg"))
+
+c_nawzajem.command = r"nawzajem"
+
+
+@asyncio.coroutine
+def c_stop(client, message):
+	yield from client.send_file(message.channel, sh.file_path("img/ELMO.mp4"))
+
+c_stop.command = r"stop"
+
+
+@asyncio.coroutine
+def c_gofapota(client, message):
+	yield from client.send_file(message.channel, sh.file_path("img/gofa_pota.png"))
+
+c_gofapota.command = r"(gofa|pota|gofapota|hari|haripota)"
+
+
+@asyncio.coroutine
+def c_pierdolisz(client, message):
+	yield from client.send_file(message.channel, sh.file_path("img/parmezany.jpg"))
+
+c_pierdolisz.command = r"pierdolisz"

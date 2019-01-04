@@ -109,7 +109,7 @@ f_idberighthappy.prob = 1.0
 
 @asyncio.coroutine
 def f_cogowno(client, message):
-	yield from client.send_message(message.channel, "gówno 1:0")
+	yield from client.send_message(message.channel, random.choice(["gówno 1:0", "chujów sto 1:0"]))
 
 f_cogowno.command = r'^(co|czo)\b'
 f_cogowno.prob = 0.025
@@ -140,20 +140,20 @@ def f_rucha(client, message):
 	yield from client.send_message(message.channel, "ruchasz psa jak sra")
 
 f_rucha.command = r'\.\.\.'
-f_rucha.prob = 0.025
+f_rucha.prob = 0.0125
 
 @asyncio.coroutine
 def f_wulg(client, message):
 	yield from client.send_message(message.channel, random.choice(["może byś tak kurwa nie przeklinał", "co?", "bez wulgaryzmów proszę", "na ten kanał zaglądają dzieci", "ostrożniej z językiem", "to kanał PG13", "czy mam ci język uciąć?", "przestań przeklinać gejasie bo cię stąd wypierdolę dyscyplinarnie", "pambuk płacze jak przeklinasz", "mów do mnie brzydko", "Kath bączy jak przeklinasz", "proszę tu nie przeklinać, to porządna knajpa", "nie ma takiego przeklinania chuju", "блять))))))))))", "zamknij pizdę"]))
 
 f_wulg.command = r'(kurw|chuj|pierdol|pierdal|jeb)'
-f_wulg.prob = 0.025
+f_wulg.prob = 0.0125
 
 @asyncio.coroutine
 def f_witam(client, message):
 	yield from client.send_message(message.channel, random.choice(["witam na kanale i życzę miłej zabawy", "cześć, kopę lat", "siemanko witam na moim kanale", "witam witam również", "no elo", "salam alejkum", "привет", "dzińdybry", "siemaszki", "serwus", "gitara siema", "dobrý den", "pozdrawiam, " + random.choice(["Piotr Gambal", "Mateusz Handzlik"]), "feedlysiemka " + str(message.author).split("#")[0].lower() + "ox"]))
 
-f_witam.command = r'(\bwitam|\bcześć|\bczesc|siema|szalom|\bjoł|shalom|dzi(n|ń)dybry|dzie(n|ń) dobry|siemka)'
+f_witam.command = r'(\bwitam|\bcześć\b|\bczesc\b|siema|szalom|\bjoł|shalom|dzi(n|ń)dybry|dzie(n|ń) dobry|siemka)'
 f_witam.prob = 0.25
 
 @asyncio.coroutine

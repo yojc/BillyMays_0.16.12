@@ -64,29 +64,55 @@ def replace_all(text, dic):
 	return text
 
 def insert_word(c, text):
-	e = text.split(" ")
 	ret = ""
 	dot = True
 	
-	for t in e:
-		changecase = False
-		
-		if random.random() < 0.2:
-			if dot and t[0].isupper():
-				ret += c.title() + " "
-				if t.istitle():
-					changecase = True
-			else:
-				ret += c + " "
-		
-		if t.endswith("."):
-			dot = True
-		else:
-			dot = False
-		
-		if changecase:
-			ret += t.lower() + " "
-		else:
-			ret += t + " "
+	lines = text.split("\n")
+	for line in lines:
+		if (line+" ").isspace():
+			ret += "\n"
+			continue
+
+		insert_flag = False
+		tmp = ""
+		e = line.split(" ")
+
+		for i in range(100):
+			tmp = ""
+
+			for t in e:
+				changecase = False
+				
+				if random.random() < 0.15:
+					if dot and t[0].isupper():
+						tmp += c.title() + " "
+						if t.istitle():
+							changecase = True
+					else:
+						tmp += c + " "
+					
+					insert_flag = True
+				
+				if t.endswith("."):
+					dot = True
+				else:
+					dot = False
+				
+				if changecase:
+					tmp += t.lower() + " "
+				else:
+					tmp += t + " "
+			
+			if insert_flag or i==99:
+				ret += tmp + "\n"
+				break
 	
-	return ret
+	return ret.strip()
+
+def is_female(msg):
+	female_ids = ["227096453552668673", "138007616700809216", "178592536795938818", "352111453169254400", "401821271371022355", "383653815334862858", "388014310359826433", "175879138219917312", "384783502396358658"]
+
+	if msg.author.id in female_ids:
+		return True
+	else:
+		return False
