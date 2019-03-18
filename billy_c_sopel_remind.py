@@ -280,7 +280,7 @@ def c_at(client, message_obj):
 	yield from create_reminder(client, message_obj, duration, message, 'UTC')
 
 c_at.command = r"(o|at)"
-c_at.params = ["data", "godzina", "wiadomość"]
+c_at.params = ["YYYY-MM-DD", "HH:MM", "wiadomość"]
 c_at.desc = "Przypomnij o..."
 
 

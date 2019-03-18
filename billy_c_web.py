@@ -44,18 +44,36 @@ def google(q, image=False):
 	
 	if image:
 		#searchWrapper = soup.find('div', {'jsname':'ik8THc'}) #this line may change in future based on google's web page structure
-		searchWrapper = soup.find('div', {'class':'rg_meta notranslate'})
+		searchWrapper = soup.findAll('div', {'class':'rg_meta notranslate'})
 		if searchWrapper is None:
 			return False
-		url = json.loads(searchWrapper.text.strip())["ou"]
+		
+		url = None
+		for result_img in searchWrapper:
+			tmp = json.loads(result_img.text.strip())["ou"]
+			
+			if "x-raw-image" in tmp:
+				continue
+			else:
+				url = tmp
+				break
+		
+		if not url:
+			return False
+		
+		if ("wikimedia" in url and "thumb" in url):
+			url = re.sub(r"(.+?)(thumb/)(.+)(/.+)", r"\1\3", url)
+		elif "wpimg" in url:
+			url = re.sub(r"(.+\/)(.+\/.+?)", r"https://\2", url)
+		
 		result = {'url': url}
 	else:
 		searchWrapper = soup.find('div', {'class':'rc'}) #this line may change in future based on google's web page structure
 		if searchWrapper is None:
 			return False
 		url = searchWrapper.find('a')["href"] 
-		text = searchWrapper.find('a').text.strip()
-		desc = searchWrapper.find('span', {'class':'st'}).text.strip()
+		text = re.sub(r"https?\S+", "", searchWrapper.find('a').text, flags=re.I).strip()
+		desc = re.sub(r"https?\S+", "", searchWrapper.find('span', {'class':'st'}).text, flags=re.I).strip()
 		result = {'text': text, 'url': url, 'desc' : desc}
 	
 	return result
@@ -115,6 +133,25 @@ def suchar():
 	return result
 
 def cytat():
+	s = requests.Session()
+	url = 'http://www.losowe.pl/'
+	
+	try:
+		r = s.get(url, headers=headers_Get)
+	except:
+		return False
+	
+	soup = BeautifulSoup(r.text, "html.parser")
+	
+	searchWrapperC = soup.find('blockquote')
+	searchWrapperA = soup.find('div', {'id':'autor'})
+	if searchWrapperC is None or searchWrapperA is None:
+		return False
+	result = {'content' : searchWrapperC.text.strip(), 'author' : searchWrapperA.text.strip()[:-22]}
+	
+	return result
+
+def bash():
 	s = requests.Session()
 	url = 'http://www.losowe.pl/'
 	
@@ -251,6 +288,25 @@ def c_google_image_gif(client, message):
 c_google_image_gif.command = r"gif"
 c_google_image_gif.params = ["zapytanie"]
 c_google_image_gif.desc = "szukaj animowanych obrazków"
+
+@asyncio.coroutine
+def c_wikipedia(client, message):
+	for i in range(retry_count):
+		result = google(sh.get_args(message, True) + " site:wikipedia.org")
+		
+		if not result:
+			continue
+		else:
+			break
+	
+	if not result:
+		yield from client.send_message(message.channel, sh.mention(message) + "brak wyników, albo Wiki się zesrało.")
+	else:
+		yield from client.send_message(message.channel, sh.mention(message) + result["text"] + "\n" + result["desc"] + "\n" + result["url"])
+
+c_wikipedia.command = r"(w|wiki?|wikipedia)"
+c_wikipedia.params = ["zapytanie"]
+c_wikipedia.desc = "szukaj w Wikipedii"
 
 
 @asyncio.coroutine

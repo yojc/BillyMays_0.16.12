@@ -210,3 +210,10 @@ def c_pierdolisz(client, message):
 	yield from client.send_file(message.channel, sh.file_path("img/parmezany.jpg"))
 
 c_pierdolisz.command = r"pierdolisz"
+
+
+@asyncio.coroutine
+def c_dzonka(client, message):
+	yield from client.send_file(message.channel, sh.file_path("img/still a better love story than meblosciankalight.JPG"))
+
+c_dzonka.command = r"(dt|dzonka|dżonka|tur)"
