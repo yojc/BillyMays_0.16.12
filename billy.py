@@ -14,6 +14,7 @@ import re
 import sys
 import datetime
 import emoji
+import unidecode
 
 from imp import find_module
 
@@ -179,7 +180,7 @@ def parse_message(message, edited=False):
 		return
 	
 	# strip quotes
-	content = sh.rm_leading_quotes(message)
+	content = unidecode.unidecode(sh.rm_leading_quotes(message))
 	
 	
 	if not edited:
@@ -379,7 +380,9 @@ def on_member_join(member):
 @client.event
 @asyncio.coroutine
 def on_member_remove(member):
-	yield from client.send_message(member.server.default_channel, "{} ({}) właśnie se stąd gdzieś polazł <:smaglor:328947669676457984>".format(member.mention, str(member)))
+	word = "polazła" if sh.is_female(member) else "polazł"
+	
+	yield from client.send_message(member.server.default_channel, "{} ({}) właśnie se stąd gdzieś {} <:smaglor:328947669676457984>".format(member.mention, str(member), word))
 
 # Bot ID
 client.run(billy_key)

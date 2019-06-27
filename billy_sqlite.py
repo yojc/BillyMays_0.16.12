@@ -192,33 +192,33 @@ def parse_message(message, edited=False):
 		
 		# check antiflood
 		
-		if perm["flood"] and ((yield from af.check_flood_channel(client, message)) or (yield from af.check_flood(client, message))):
-			sh.debug("Anti-flood kicked in yo")
-			return
+		#if perm["flood"] and ((yield from af.check_flood_channel(client, message)) or (yield from af.check_flood(client, message))):
+		#	sh.debug("Anti-flood kicked in yo")
+		#	return
 		
 		# help
 		
 		# not needed here
 		
-		else:
-			# iterate over functions
-			for f in c_functions:
-				c = getattr(f, "command", False)
-				r = re.match(compile_command(c), content, re.IGNORECASE)
-				if c and r:
-					sh.debug("Executing " + f.__name__ + "...")
-					yield from client.send_typing(message.channel)
-					try:
-						yield from f(client, message)
-						billy_c_stats.update_msg_function(message, f.__name__)
-					except Exception:
-						yield from client.send_message(message.channel, "Oho, chyba jakiś błąd w kodzie. <@307949259658100736> to kiedyś naprawi, jak się skończy bawić pociągami.")
-						print_warning("An error occured in " + f.__name__ + "!!! (" + content + ")")
-						#CZEMU TY CHUJU NIE DZIALASZ
-						#logging.exception("An error occured in " + f.__name__ + "!!! (" + content + ")")
-						raise
-						continue
-					break
+		#else:
+		# iterate over functions
+		for f in c_functions:
+			c = getattr(f, "command", False)
+			r = re.match(compile_command(c), content, re.IGNORECASE)
+			if c and r:
+				sh.debug("Executing " + f.__name__ + "...")
+				yield from client.send_typing(message.channel)
+				try:
+					yield from f(client, message)
+					billy_c_stats.update_msg_function(message, f.__name__)
+				except Exception:
+					yield from client.send_message(message.channel, "Oho, chyba jakiś błąd w kodzie. <@307949259658100736> to kiedyś naprawi, jak się skończy bawić pociągami.")
+					print_warning("An error occured in " + f.__name__ + "!!! (" + content + ")")
+					#CZEMU TY CHUJU NIE DZIALASZ
+					#logging.exception("An error occured in " + f.__name__ + "!!! (" + content + ")")
+					raise
+					continue
+				break
 		
 		
 

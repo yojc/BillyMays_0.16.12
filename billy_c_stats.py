@@ -504,7 +504,7 @@ def generate_stats(client, message, channel, arguments, stat_limit=5, bot_stats=
 
 @asyncio.coroutine
 def c_stats(client, message):
-	stat_limit = 15 if (str(message.channel).startswith("Direct Message") or str(message.channel) in ["japabocie", "japa_bocie"]) else 5
+	stat_limit = 15 if (str(message.channel).startswith("Direct Message") or message.channel.id in ["319056762814595076", "386148571529084929"]) else 5
 	bot_stats = True if "bot" in sh.get_command(message).lower() else None
 	
 	mmmsmsm = generate_stats(client, message, message.channel, sh.get_args(message), stat_limit, bot_stats)

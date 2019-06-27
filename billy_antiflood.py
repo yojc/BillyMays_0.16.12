@@ -94,8 +94,10 @@ def check_flood_channel(client, message):
 
 def check_channel_whitelist(client, message):
 	deny_all = []
-	allow_all = ["politbiuro", "luzna_jazda"]
-	unlimited = ["japabocie", "japa_bocie", "sesje_rpg"]
+	# pecetgej, politbiuro, luzna_jazda, japabocie, japa_bocie
+	allow_fulltext = ["318733700160290826", "174449535811190785", "316323075622961152", "319056762814595076", "386148571529084929"]
+	# japabocie, japa_bocie, sesje_rpg, sun_world, kanau_fela
+	unlimited = ["316323075622961152", "319056762814595076", "386148571529084929", "174541542923436032", "539154754631106584", "232881423604776960"]
 	
 	# default: disallow fulltext, enable flood control, enable bot
 	permissions = {"fulltext" : False, "flood" : True, "disallow" : False}
@@ -105,21 +107,20 @@ def check_channel_whitelist(client, message):
 		permissions["flood"] = False
 		permissions["fulltext"] = True
 		
-	elif str(message.channel) in deny_all:
-		sh.debug("Blacklisted channel", message)
-		permissions["disallow"] = True
-		
-	elif str(message.channel) in allow_all:
-		sh.debug("Whitelisted channel", message)
-		permissions["fulltext"] = True
-		
-	elif str(message.channel) in unlimited:
-		sh.debug("Flood control inactive", message)
-		permissions["flood"] = False
-		permissions["fulltext"] = True
-		
 	else:
-		sh.debug("Default options", message)
+		if message.channel.id in deny_all:
+			#sh.debug("Blacklisted channel", message)
+			permissions["disallow"] = True
+			
+		if message.channel.id in allow_fulltext:
+			#sh.debug("Whitelisted channel", message)
+			permissions["fulltext"] = True
+			
+		if message.channel.id in unlimited:
+			#sh.debug("Flood control inactive", message)
+			permissions["flood"] = False
+		
+	sh.debug("Received message", message)
 	
 	return permissions
 

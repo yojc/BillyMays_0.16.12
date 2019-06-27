@@ -111,8 +111,12 @@ def insert_word(c, text):
 
 def is_female(msg):
 	female_ids = ["227096453552668673", "138007616700809216", "178592536795938818", "352111453169254400", "401821271371022355", "383653815334862858", "388014310359826433", "175879138219917312", "384783502396358658"]
+	if hasattr(msg, "author"):
+		user_id = msg.author.id
+	else: 
+		user_id = msg.id
 
-	if msg.author.id in female_ids:
+	if user_id in female_ids:
 		return True
 	else:
 		return False

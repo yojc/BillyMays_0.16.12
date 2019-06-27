@@ -143,6 +143,13 @@ c_dupie.command = r"(dupa|dupie)"
 
 
 @asyncio.coroutine
+def c_dupe(client, message):
+	yield from client.send_file(message.channel, sh.file_path("img/your face your ass whats the difference.png"))
+
+c_dupe.command = r"(dupe)"
+
+
+@asyncio.coroutine
 def c_ociehuj(client, message):
 	yield from client.send_file(message.channel, sh.file_path("img/nasralem.jpg"))
 
@@ -216,4 +223,32 @@ c_pierdolisz.command = r"pierdolisz"
 def c_dzonka(client, message):
 	yield from client.send_file(message.channel, sh.file_path("img/still a better love story than meblosciankalight.JPG"))
 
-c_dzonka.command = r"(dt|dzonka|dżonka|tur)"
+c_dzonka.command = r"(dt|dzonka|tur)"
+
+
+@asyncio.coroutine
+def c_epic(client, message):
+	yield from client.send_file(message.channel, sh.file_path("img/oatw10sekund.webm"))
+
+c_epic.command = r"(oat|epic)"
+
+
+@asyncio.coroutine
+def c_rabin(client, message):
+	yield from client.send_file(message.channel, sh.file_path("img/xysiu.webm"))
+
+c_rabin.command = r"(rabin|rabbi)"
+
+
+@asyncio.coroutine
+def c_spierdalaj(client, message):
+	yield from client.send_file(message.channel, sh.file_path("img/wuppertal.png"))
+
+c_spierdalaj.command = r"spierdalaj"
+
+
+@asyncio.coroutine
+def c_klasnij(client, message):
+	yield from client.send_file(message.channel, sh.file_path("img/rubik.png"))
+
+c_klasnij.command = r"klasnij"

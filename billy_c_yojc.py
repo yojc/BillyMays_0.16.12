@@ -73,7 +73,7 @@ def c_slap(client, message):
 	else:
 		who = sh.get_args(message)
 	
-	if who.lower() == "Billy Mays".lower() or who.lower() == "himself":
+	if who.lower() in ["billy mays", "himself", "self", "billy", "<@312862727385251842>"]:
 		who = message.author.display_name
 	
 	if size[0].lower() in ["a", "e", "i", "o", "u"]:
@@ -86,6 +86,23 @@ def c_slap(client, message):
 
 c_slap.command = r"slap"
 c_slap.params = ["nick"]
+
+
+@asyncio.coroutine
+def c_pazdzioch(client, message):
+	if sh.get_args(message) == "":
+		who = message.author.display_name
+	else:
+		who = sh.get_args(message)
+	
+	if who.lower() in ["billy mays", "himself", "self", "billy", "<@312862727385251842>"]:
+		who = message.author.display_name
+	
+	what = random.choice(["alkoholik", "analfabeta", "arbuz", "baran", "bambocel", "bezczelny człowiek", "burak", "bydlak nie człowiek", "cham bezczelny", "cham ze wsi spod Elbląga", "chuderlak", "ciemniak", "cymbał", "człowiek kiełbasa", "człowiek niedorozwinięty", "darmozjad", "defekt", "donosiciel", "dupa z uszami", "dureń jeden", "dziad", "dziad kalwaryjski", "dzieciorób", "dzikus", "Einstein zasrany", "erosoman", "frajer", "gagatek", "Gigi Amoroso zasrany", "gnida", "gnój", "głupi psychopata", "głowonóg", "grubas przebrzydły bez czci i wiary", "grubas erosomański", "grubasz pieprzony", "grubas pogański", "grubas pornograficzny", "horror erotyczny", "idiota", "ignorant", "judasz zasrany", "ludożerca", "łobuz", "kanibal", "kapucyn jeden", "kretyn", "krwiożerczy grubas", "menda", "menel", "nędzna karykatura", "nienormalny", "niedorozwój", "nikt", "niewyselekcjonowany burak", "odpad atomowy", "oszust", "pajac", "pasożyt", "parobas", "parówa", "pederasta", "pierdzimąka", "pijak", "pierdoła", "pokraka", "przygłup", "plackarz charytatywny, zasrany", "regularne bydle", "regularny debil i złodziej", "sadysta", "snowboardzista zasrany", "sprośna świnia", "szmaciarz", "świniak", "świnia przebrzydła", "świnia pornograficzna", "świnia zakamuflowana", "świnia żarłoczna", "świnia erosomańska", "śmieć", "taran opasły", "tuman", "ukryty erosoman", "wsza ludzka", "wieprz", "wypierdek", "zagrożenie dla kościoła", "zboczek pieprzony", "zbrodniarz", "zdrajca", "zdewociały faszysta", "znachor zasrany", "żarłoczny, pasożytniczy wrzód na dupie społeczeństwa ludu pracującego miast i wsi"])
+
+	yield from client.send_message(message.channel, "%s to %s!" % (who, what))
+
+c_pazdzioch.command = r"(pazdzioch|boczek)"
 
 
 @asyncio.coroutine
@@ -289,8 +306,8 @@ c_skryba.command = r"skryba"
 @asyncio.coroutine
 def c_fullwidth(client, message):
 	HALFWIDTH_TO_FULLWIDTH = str.maketrans(
-		'0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!"#$%&()*+,-./:;<=>?@[]^_`{|}~',
-		'０１２３４５６７８９ａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ！゛＃＄％＆（）＊＋、ー。／：；〈＝〉？＠［］＾＿‘｛｜｝～')
+		'0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!"#$%&()*+,-./:;<=>?@[]^_`{|}~ ',
+		'０１２３４５６７８９ａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ！゛＃＄％＆（）＊＋、ー。／：；〈＝〉？＠［］＾＿‘｛｜｝～　')
 	
 	yield from client.send_message(message.channel, unidecode.unidecode(sh.get_args(message, True)).translate(HALFWIDTH_TO_FULLWIDTH))
 
@@ -319,7 +336,7 @@ def c_letter_emoji(client, message):
 		("<3", "❤"),
 		("100", "💯"),
 		("a", "🇦"),
-		("b", "🅱️"),
+		("b", ":b:"),
 		("c", "🇨"),
 		("d", "🇩"),
 		("e", "🇪"),
@@ -428,7 +445,7 @@ def c_ocen(client, message):
 	
 	yield from client.send_message(message.channel, sh.mention(message) + str(ocena) + doda + "/10 " + znak)
 
-c_ocen.command = r"(ocen|oceń)"
+c_ocen.command = r"ocen"
 c_ocen.params = ["zapytanie"]
 
 
@@ -468,7 +485,13 @@ c_gdzie.params = ["zapytanie"]
 
 @asyncio.coroutine
 def c_kiedy(client, message):
-	replies = ["o wpół do dziesiątej rano w Polsce", "wczoraj", "jutro", "jak przyjdą szwedy", "w trzy dni po premierze premierze Duke Nukem Forever", "dzień przed końcem świata", "nigdy", "jak dojdą pieniądze", "za godzinkę", "kiedy tylko sobie życzysz", "gdy przestaniesz zadawać debilne pytania", "jak wybiorą czarnego papieża", "gdy wreszcie znajdziesz dziewczynę", "już za cztery lata, już za cztery lata", "na sylwestrze u P_aula", "o 3:33", "o 21:37", "jak Kath napisze magisterkę", "jak Dracia zrobi wszystko co musi kiedyś zrobić", "jak Teb wróci na Discorda", "jak Paul wejdzie do platyny", "jak Fel schudnie", "gdy Aiden zgoli rude kudły", "dzień po wybuchowym debiucie Brylanta", "za 12 lat", "gdy Martius przestanie pierdolić o ptakach", "jak podbiel zje mi dupę", "a co ja jestem, informacja turystyczna?", "jak wreszcie wyjebiemy stąd Nargoga", "jak Debiru awansuje do seniora", "jak kanau_fela zamknie FBI", "już tej nocy w twoim łóżku", "jak Strejlau umrze bo jest stary", "nie"]
+	replies = ["o wpół do dziesiątej rano w Polsce", "wczoraj", "jutro", "jak przyjdą szwedy", "w trzy dni po premierze premierze Duke Nukem Forever", "dzień przed końcem świata", "nigdy", "jak dojdą pieniądze", "za godzinkę", "kiedy tylko sobie życzysz", "gdy przestaniesz zadawać debilne pytania", "jak wybiorą czarnego papieża", "już za cztery lata, już za cztery lata", "na sylwestrze u P_aula", "o 3:33", "o 21:37", "jak Kath napisze magisterkę", "jak Dracia zrobi wszystko co musi kiedyś zrobić", "jak Teb wróci na Discorda", "jak Paul wejdzie do platyny", "jak Fel schudnie", "gdy Aiden zgoli rude kudły", "dzień po wybuchowym debiucie Brylanta", "za 12 lat", "gdy Martius przestanie pierdolić o ptakach", "jak podbiel zje mi dupę", "a co ja jestem, informacja turystyczna?", "jak wreszcie wyjebiemy stąd Nargoga", "jak Debiru awansuje do seniora", "jak kanau_fela zamknie FBI", "już tej nocy w twoim łóżku", "jak Strejlau umrze bo jest stary", "nie"]
+	
+	if sh.is_female(message):
+		replies = replies + ["gdy wreszcie znajdziesz chłopaka"]
+	else:
+		replies = replies + ["gdy wreszcie znajdziesz dziewczynę"]
+	
 	yield from client.send_message(message.channel, sh.mention(message) + random.choice(replies))
 
 c_kiedy.command = r"kiedy"
@@ -499,7 +522,7 @@ c_kogo.params = ["zapytanie"]
 def c_czyj(client, message):
 	yield from client.send_message(message.channel, sh.mention(message) + get_random_nickname(message, "genitive", sh.get_command(message)))
 
-c_czyj.command = r"(czyi(m|mi|ch)|czyj(a|e|ą|ego|ej)?)"
+c_czyj.command = r"(czyi(m|mi|ch)|czyj(a|e|ego|ej)?)"
 c_czyj.params = ["zapytanie"]
 
 @asyncio.coroutine

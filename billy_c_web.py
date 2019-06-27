@@ -51,8 +51,9 @@ def google(q, image=False):
 		url = None
 		for result_img in searchWrapper:
 			tmp = json.loads(result_img.text.strip())["ou"]
+			banned_terms = ["x-raw-image", "lookaside.fbsbx.com"]
 			
-			if "x-raw-image" in tmp:
+			if any(term in tmp for term in banned_terms):
 				continue
 			else:
 				url = tmp
@@ -64,7 +65,7 @@ def google(q, image=False):
 		if ("wikimedia" in url and "thumb" in url):
 			url = re.sub(r"(.+?)(thumb/)(.+)(/.+)", r"\1\3", url)
 		elif "wpimg" in url:
-			url = re.sub(r"(.+\/)(.+\/.+?)", r"https://\2", url)
+			url = re.sub(r"(.+\/\d+x\d+\/)(.+)", r"https://\2", url)
 		
 		result = {'url': url}
 	else:
@@ -206,7 +207,7 @@ def c_wyjasnij(client, message):
 	else:
 		yield from client.send_message(message.channel, sh.mention(message) + result["desc"] + "\n" + result["url"])
 
-c_wyjasnij.command = r"(wyjasnij|wyjaśnij|explain)"
+c_wyjasnij.command = r"(wyjasnij|explain)"
 c_wyjasnij.params = ["zapytanie"]
 c_wyjasnij.desc = "szukaj w Google, podaje treść"
 
