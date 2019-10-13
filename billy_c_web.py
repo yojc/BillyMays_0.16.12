@@ -445,7 +445,7 @@ def c_bzdur(client, message):
     if not result:
         yield from client.send_message(message.channel, "Reasumując wszystkie aspekty kwintesencji tematu dochodzę do fundamentalnej konkluzji")
     else:
-        yield from client.send_message(message.client, bzdur())
+        yield from client.send_message(message.channel, bzdur())
 c_bzdur.command = r"(jacek|jaca|duptysta)"
 c_bzdur.desc = "Głębokie teksty głębokiego kolegi"
 
