@@ -8,6 +8,7 @@ from bs4 import BeautifulSoup
 from cleverwrap import CleverWrap
 
 import billy_shared as sh
+from billy_c_translate import translate
 from billy_c_yojc import c_rimshot as rimshot
 from config import wolfram_key, cleverbot_key
 
@@ -151,6 +152,39 @@ def cytat():
 	result = {'content' : searchWrapperC.text.strip(), 'author' : searchWrapperA.text.strip()[:-22]}
 	
 	return result
+
+def bzdur():
+    s = requests.Session()
+    def joke():
+        url = "https://geek-jokes.sameerkumar.website/api"
+        try:
+            r = s.get(url, headers = headers_Get)
+        except:
+            return None
+        return r.text.strip()[1:-1]
+    def basically():
+        url = "http://itsthisforthat.com/api.php?text"
+        try:
+            r = s.get(url, headers = headers_Get)
+        except:
+            return None
+        return r.text.strip()
+    def business():
+        url = "https://corporatebs-generator.sameerkumar.website/"
+        try:
+            r = s.get(url, headers = headers_Get)
+        except:
+            return None
+        return json.loads(r.text)["phrase"]
+    def advice():
+        url = "https://api.adviceslip.com/advice"
+        try:
+            r = s.get(url, headers = headers_Get)
+        except:
+            return None
+        return json.loads(r.text)["slip"]["advice"]
+    result = random.choice([joke, basically, business, advice])()
+    print(translate(result, out_lang="pl")[0])
 
 def bash():
 	s = requests.Session()
@@ -405,6 +439,15 @@ def c_suchar(client, message):
 c_suchar.command = r"(suchar|martius)"
 c_suchar.desc = "śmiej się razem z nami!"
 
+@asyncio.coroutine
+def c_bzdur(client, message):
+    result = get_bzdur()
+    if not result:
+        yield from client.send_message(message.channel, "Reasumując wszystkie aspekty kwintesencji tematu dochodzę do fundamentalnej konkluzji")
+    else:
+        yield from client.send_message(message.client, bzdur())
+c_bzdur.command = r"(jacek|jaca|duptysta)"
+c_bzdur.desc = "Głębokie teksty głębokiego kolegi"
 
 @asyncio.coroutine
 def c_cytat(client, message):
