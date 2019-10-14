@@ -36,7 +36,7 @@ c_wiplerine.command = r"(w|v)iplerine"
 def c_cogif(client, message):
 	yield from client.send_file(message.channel, sh.file_path("img/comment_jblSpYCkKHo8hIGeGqLq0xWLjNjfM19j.gif"))
 
-c_cogif.command = r"(co|what)"
+c_cogif.command = r"(co|czo|what)"
 
 
 @asyncio.coroutine
@@ -252,3 +252,38 @@ def c_klasnij(client, message):
 	yield from client.send_file(message.channel, sh.file_path("img/rubik.png"))
 
 c_klasnij.command = r"klasnij"
+
+
+@asyncio.coroutine
+def c_lyj(client, message):
+	yield from client.send_file(message.channel, sh.file_path("img/rudy_szubert.png"))
+
+c_lyj.command = r"l(e|y)j"
+
+
+@asyncio.coroutine
+def c_mydli(client, message):
+	yield from client.send_file(message.channel, sh.file_path("img/mydli.jpg"))
+
+c_mydli.command = r"mydli"
+
+
+@asyncio.coroutine
+def c_dobrze(client, message):
+	yield from client.send_file(message.channel, sh.file_path("img/dobrze.webm"))
+
+c_dobrze.command = r"(dobrze|prawda)"
+
+
+@asyncio.coroutine
+def c_zle(client, message):
+	yield from client.send_file(message.channel, sh.file_path("img/zle.webm"))
+
+c_zle.command = r"(zle|falsz)"
+
+
+@asyncio.coroutine
+def c_debbie(client, message):
+	yield from client.send_file(message.channel, sh.file_path("img/debbie.jpg"))
+
+c_debbie.command = r"(debiru|pierdole)"

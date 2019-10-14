@@ -112,7 +112,7 @@ def f_cogowno(client, message):
 	yield from client.send_message(message.channel, random.choice(["gówno 1:0", "chujów sto 1:0"]))
 
 f_cogowno.command = r'^(co|czo)\b'
-f_cogowno.prob = 0.025
+f_cogowno.prob = 0.00675
 
 @asyncio.coroutine
 def f_czyzby(client, message):
@@ -140,21 +140,21 @@ def f_rucha(client, message):
 	yield from client.send_message(message.channel, "ruchasz psa jak sra")
 
 f_rucha.command = r'\.\.\.'
-f_rucha.prob = 0.0125
+f_rucha.prob = 0.00675
 
 @asyncio.coroutine
 def f_wulg(client, message):
 	yield from client.send_message(message.channel, random.choice(["może byś tak kurwa nie przeklinał", "co?", "bez wulgaryzmów proszę", "na ten kanał zaglądają dzieci", "ostrożniej z językiem", "to kanał PG13", "czy mam ci język uciąć?", "przestań przeklinać gejasie bo cię stąd wypierdolę dyscyplinarnie", "pambuk płacze jak przeklinasz", "mów do mnie brzydko", "Kath bączy jak przeklinasz", "proszę tu nie przeklinać, to porządna knajpa", "nie ma takiego przeklinania chuju", "блять))))))))))", "zamknij pizdę"]))
 
 f_wulg.command = r'(kurw|chuj|pierdol|pierdal|jeb)'
-f_wulg.prob = 0.0125
+f_wulg.prob = 0.00675
 
 @asyncio.coroutine
 def f_witam(client, message):
 	yield from client.send_message(message.channel, random.choice(["witam na kanale i życzę miłej zabawy", "cześć, kopę lat", "siemanko witam na moim kanale", "witam witam również", "no elo", "salam alejkum", "привет", "dzińdybry", "siemaszki", "serwus", "gitara siema", "dobrý den", "pozdrawiam, " + random.choice(["Piotr Gambal", "Mateusz Handzlik"]), "feedlysiemka " + str(message.author).split("#")[0].lower() + "ox"]))
 
 f_witam.command = r'(\bwitam|\bcześć\b|\bczesc\b|siema|szalom|\bjoł|shalom|dzi(n|ń)dybry|dzie(n|ń) dobry|siemka)'
-f_witam.prob = 0.25
+f_witam.prob = 0.125
 
 @asyncio.coroutine
 def f_opti(client, message):
@@ -210,6 +210,22 @@ def f_takiezycie(client, message):
 
 f_takiezycie.command = r"^chamsko"
 f_takiezycie.prob = 0.05
+
+
+@asyncio.coroutine
+def f_wogole(client, message):
+	yield from client.send_message(message.channel, "centralnie\nkamieniem go bez kitu")
+
+f_wogole.command = r"^w og(o|ó)le$"
+f_wogole.prob = 0.1
+
+
+@asyncio.coroutine
+def f_zabenya(client, message):
+	yield from client.send_message(message.channel, "ZABENY" + "A"*random.randrange(5, 16))
+
+f_zabenya.command = r"^a{3,}$"
+f_zabenya.prob = 0.1
 
 
 #@asyncio.coroutine

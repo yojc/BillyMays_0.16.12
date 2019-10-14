@@ -180,7 +180,7 @@ periods = '|'.join(scaling.keys())
 def c_remind(client, message_obj):
 	"""Gives you a reminder in the given amount of time."""
 	if not sh.get_args(message_obj):
-		yield from client.send_message(message_obj.channel, sh.mention(message_obj) + "no i?")
+		#yield from client.send_message(message_obj.channel, sh.mention(message_obj) + "no i?")
 		return NOLIMIT
 	if len(sh.get_args(message_obj).split(" ")) < 2:
 		yield from client.send_message(message_obj.channel, sh.mention(message_obj) + "ale o czym mam przypomnieć?")
@@ -225,7 +225,7 @@ def c_at(client, message_obj):
 	http://sopel.chat/tz . The seconds and timezone are optional.
 	"""
 	if not sh.get_args(message_obj):
-		yield from client.send_message(message_obj.channel, sh.mention(message_obj) + "no i?")
+		#yield from client.send_message(message_obj.channel, sh.mention(message_obj) + "no i?")
 		return NOLIMIT
 	if len(sh.get_args(message_obj).split(" ")) < 2:
 		yield from client.send_message(message_obj.channel, sh.mention(message_obj) + "ale o czym mam przypomnieć?")

@@ -45,7 +45,7 @@ c_behemort.rhyme = True
 def c_brylu(client, message):
 	rhyme = rhymes.ylu
 	ret = "Brylu Brylu ty"
-	custom = ["bezglutenowy chasydzie", "debilu"]
+	custom = ["debilu"]
 	yield from client.send_message(message.channel, ret + rhymes.compose(rhyme, custom))
 
 c_brylu.command = r"brylu"
@@ -61,6 +61,17 @@ def c_deffiku(client, message):
 
 c_deffiku.command = r"deffiku"
 c_deffiku.rhyme = True
+
+
+@asyncio.coroutine
+def c_debilu(client, message):
+	rhyme = rhymes.iru_ilu
+	ret = "debiru debiru ty"
+	custom = ["chory pojebie"]
+	yield from client.send_message(message.channel, ret + rhymes.compose(rhyme, custom))
+
+c_debilu.command = r"debilu"
+c_debilu.rhyme = True
 
 
 @asyncio.coroutine
@@ -130,6 +141,17 @@ c_kicku.rhyme = True
 
 
 @asyncio.coroutine
+def c_komstuchu(client, message):
+	rhyme = rhymes.uchu
+	ret = "Komstuchu Komstuchu ty"
+	custom = ["penisie w uchu", "tamburynie w ruchu"]
+	yield from client.send_message(message.channel, ret + rhymes.compose(rhyme, custom))
+
+c_komstuchu.command = r"komstuchu?"
+c_komstuchu.rhyme = True
+
+
+@asyncio.coroutine
 def c_lghoscie(client, message):
 	rhyme = rhymes.oscie
 	ret = "LaserGhoście ty"
@@ -149,6 +171,17 @@ def c_nargogu(client, message):
 
 c_nargogu.command = r"nargogh?u"
 c_nargogu.rhyme = True
+
+
+@asyncio.coroutine
+def c_nevko(client, message):
+	rhyme = rhymes.ewko
+	ret = "nevko nevko ty"
+	custom = ["kociaro"]
+	yield from client.send_message(message.channel, ret + rhymes.compose(rhyme, custom))
+
+c_nevko.command = r"ne(w|v)ko"
+c_nevko.rhyme = True
 
 
 @asyncio.coroutine

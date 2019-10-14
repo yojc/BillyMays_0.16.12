@@ -55,8 +55,8 @@ def c_dice(client, message):
 			yield from client.send_message(message.channel, sh.mention(message) + msg+" = "+result)
 		else: #dice found, just let the users know what's happening
 			yield from client.send_message(message.channel, sh.mention(message) + "wyrzucono "+msg+" ("+full_string+"): "+result)
-	else: #print illegal warning.
-		yield from client.send_message(message.channel, sh.mention(message) + "coś tu jest nie teges: "+segment)
+#	else: #print illegal warning.
+#		yield from client.send_message(message.channel, sh.mention(message) + "coś tu jest nie teges: "+segment)
 
 c_dice.command = r"(d|dice|roll|rzut|rzuc)"
 c_dice.params = ["XdY / XkY"]

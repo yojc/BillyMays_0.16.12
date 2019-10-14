@@ -7,6 +7,8 @@ import wolframalpha
 from bs4 import BeautifulSoup
 from cleverwrap import CleverWrap
 
+import time
+
 import billy_shared as sh
 from billy_c_yojc import c_rimshot as rimshot
 from config import wolfram_key, cleverbot_key
@@ -89,10 +91,15 @@ def yt(q):
 	except:
 		return False
 	
-	ret = re.search(r'\"videoId\"\:\"(\S+?)\"', r.text)
+	regex = r'\\\"videoId\\\"\:\\\"(\S+?)\\\"'
+	ret = re.search(regex, r.text)
+
+	if ret is None:
+		regex = r'\"videoId\"\:\"(\S+?)\"'
+		ret = re.search(regex, r.text)
 	
 	if ret is not None:
-		result = {'url': 'https://www.youtube.com/watch?v=' + re.search(r'\"videoId\"\:\"(\S+?)\"', r.text).groups()[0]}
+		result = {'url': 'https://www.youtube.com/watch?v=' + ret.groups()[0]}
 	else:
 		return False
 	
@@ -423,7 +430,7 @@ c_cytat.desc = "życiowe maksymy"
 def c_cleverbot(client, message):
 	yield from client.send_message(message.channel, sh.mention(message) + cw.say(sh.get_args(message, True)))
 
-c_cleverbot.command = r"(cb|cleverbot|(od)?powiedz)"
+c_cleverbot.command = r"(cb|cleverbot|(od)?powiedz|why|(dla)?czego|(dla)?czemu)"
 c_cleverbot.params = ["zapytanie"]
 c_cleverbot.desc = "spytaj bota o sens życia"
 
