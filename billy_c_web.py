@@ -184,7 +184,7 @@ def bzdur():
             return None
         return json.loads(r.text)["slip"]["advice"]
     result = random.choice([joke, basically, business, advice])()
-    print(translate(result, out_lang="pl")[0])
+    return translate(result, out_lang="pl")[0]
 
 def bash():
 	s = requests.Session()
@@ -441,11 +441,11 @@ c_suchar.desc = "śmiej się razem z nami!"
 
 @asyncio.coroutine
 def c_bzdur(client, message):
-    result = get_bzdur()
+    result = bzdur()
     if not result:
         yield from client.send_message(message.channel, "Reasumując wszystkie aspekty kwintesencji tematu dochodzę do fundamentalnej konkluzji")
     else:
-        yield from client.send_message(message.channel, bzdur())
+        yield from client.send_message(message.channel, result)
 c_bzdur.command = r"(jacek|jaca|duptysta)"
 c_bzdur.desc = "Głębokie teksty głębokiego kolegi"
 
