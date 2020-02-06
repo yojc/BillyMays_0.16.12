@@ -468,6 +468,15 @@ def c_suchar(client, message):
 c_suchar.command = r"(suchar|martius)"
 c_suchar.desc = "śmiej się razem z nami!"
 
+@asyncio.coroutine
+def c_bzdur(client, message):
+    result = bzdur()
+    if not result:
+        yield from client.send_message(message.channel, "Reasumując wszystkie aspekty kwintesencji tematu dochodzę do fundamentalnej konkluzji")
+    else:
+        yield from client.send_message(message.channel, result)
+c_bzdur.command = r"(jacek|jaca|duptysta)"
+c_bzdur.desc = "Głębokie teksty głębokiego kolegi"
 
 @asyncio.coroutine
 def c_bzdur(client, message):
