@@ -67,7 +67,7 @@ def insert_word(c, text):
 	ret = ""
 	dot = True
 	
-	lines = text.split("\n")
+	lines = re.sub(' +', ' ', text).split("\n")
 	for line in lines:
 		if (line+" ").isspace():
 			ret += "\n"
@@ -75,7 +75,7 @@ def insert_word(c, text):
 
 		insert_flag = False
 		tmp = ""
-		e = line.split(" ")
+		e = line.strip().split(" ")
 
 		for i in range(100):
 			tmp = ""
@@ -84,7 +84,7 @@ def insert_word(c, text):
 				changecase = False
 				
 				if random.random() < 0.15:
-					if dot and t[0].isupper():
+					if dot and len(t) > 0 and t[0].isupper():
 						tmp += c.title() + " "
 						if t.istitle():
 							changecase = True

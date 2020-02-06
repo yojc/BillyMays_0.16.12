@@ -4,12 +4,14 @@ import asyncio
 import json
 import re
 import wolframalpha
+import ftfy
 from bs4 import BeautifulSoup
 from cleverwrap import CleverWrap
 
 import time
 
 import billy_shared as sh
+from billy_c_translate import translate
 from billy_c_yojc import c_rimshot as rimshot
 from config import wolfram_key, cleverbot_key
 
@@ -40,20 +42,41 @@ def google(q, image=False):
 	try:
 		r = s.get(url, headers=headers_Get)
 	except:
+		print("except")
 		return False
-	
+	 
 	soup = BeautifulSoup(r.text, "html.parser")
 	
 	if image:
-		#searchWrapper = soup.find('div', {'jsname':'ik8THc'}) #this line may change in future based on google's web page structure
-		searchWrapper = soup.findAll('div', {'class':'rg_meta notranslate'})
-		if searchWrapper is None:
-			return False
+		searchWrapper = None
+		rules = [{'jsname':'ik8THc'}, {'class':'rg_meta notranslate'}]
+		
+		hack = False
+		
+		for rule in rules:
+			searchWrapper = soup.findAll('div', rule)
+			if len(searchWrapper) != 0:
+				break
+		
+		if len(searchWrapper) == 0:
+			hack = True
+			searchWrapper = soup.findAll('script')
+			json_text = re.sub("AF_initDataCallback.+{return", "", searchWrapper[-2].text).strip()[:-4]
+			searchWrapper = json.loads(json_text)[31][0][12][2]
 		
 		url = None
+		
 		for result_img in searchWrapper:
-			tmp = json.loads(result_img.text.strip())["ou"]
-			banned_terms = ["x-raw-image", "lookaside.fbsbx.com"]
+			tmp = ""
+		
+			if hack:
+				if result_img[0] == 2:
+					continue
+				tmp = result_img[1][3][0]
+			else:
+				tmp = json.loads(result_img.text.strip())["ou"]
+			
+			banned_terms = ["x-raw-image", "lookaside.fbsbx.com", ".svg"]
 			
 			if any(term in tmp for term in banned_terms):
 				continue
@@ -158,6 +181,39 @@ def cytat():
 	result = {'content' : searchWrapperC.text.strip(), 'author' : searchWrapperA.text.strip()[:-22]}
 	
 	return result
+
+def bzdur():
+	s = requests.Session()
+	def joke():
+		url = "https://geek-jokes.sameerkumar.website/api"
+		try:
+			r = s.get(url, headers = headers_Get)
+		except:
+			return None
+		return r.text.strip()[1:-1]
+	def basically():
+		url = "http://itsthisforthat.com/api.php?text"
+		try:
+			r = s.get(url, headers = headers_Get)
+		except:
+			return None
+		return r.text.strip()
+	def business():
+		url = "https://corporatebs-generator.sameerkumar.website/"
+		try:
+			r = s.get(url, headers = headers_Get)
+		except:
+			return None
+		return json.loads(r.text)["phrase"]
+	def advice():
+		url = "https://api.adviceslip.com/advice"
+		try:
+			r = s.get(url, headers = headers_Get)
+		except:
+			return None
+		return json.loads(r.text)["slip"]["advice"]
+	result = random.choice([joke, basically, business, advice])()
+	return translate(result, out_lang="pl")[0]
 
 def bash():
 	s = requests.Session()
@@ -414,6 +470,18 @@ c_suchar.desc = "śmiej się razem z nami!"
 
 
 @asyncio.coroutine
+def c_bzdur(client, message):
+	result = bzdur()
+	if not result:
+		yield from client.send_message(message.channel, "Reasumując wszystkie aspekty kwintesencji tematu dochodzę do fundamentalnej konkluzji")
+	else:
+		yield from client.send_message(message.channel, result)
+
+c_bzdur.command = r"(jacek|jaca|duptysta)"
+c_bzdur.desc = "Głębokie teksty głębokiego kolegi"
+
+
+@asyncio.coroutine
 def c_cytat(client, message):
 	result = cytat()
 	
@@ -428,7 +496,7 @@ c_cytat.desc = "życiowe maksymy"
 
 @asyncio.coroutine
 def c_cleverbot(client, message):
-	yield from client.send_message(message.channel, sh.mention(message) + cw.say(sh.get_args(message, True)))
+	yield from client.send_message(message.channel, ftfy.ftfy(sh.mention(message) + cw.say(sh.get_args(message, True))))
 
 c_cleverbot.command = r"(cb|cleverbot|(od)?powiedz|why|(dla)?czego|(dla)?czemu)"
 c_cleverbot.params = ["zapytanie"]

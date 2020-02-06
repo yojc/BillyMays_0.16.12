@@ -276,7 +276,7 @@ c_sermacieju.rhyme = True
 def c_tebie(client, message):
 	rhyme = rhymes.ebie
 	ret = "Tebie ty"
-	custom = ["kurwo jerychońska"]
+	custom = ["kurwo jerychońska", "特別"]
 	yield from client.send_message(message.channel, ret + rhymes.compose(rhyme, custom))
 
 c_tebie.command = r"tebie"

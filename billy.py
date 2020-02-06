@@ -44,6 +44,7 @@ import billy_c_rhymes
 import billy_c_img
 #import billy_c_stats
 import billy_c_timers
+import billy_c_twitch
 import billy_c_reactions
 
 import billy_c_sopel_calc
@@ -146,7 +147,9 @@ for e in t_functions:
 		while not client.is_closed:
 			now = datetime.datetime.now()
 			
-			if (not fun.__name__ in current_day or current_day[fun.__name__] != now.day) and (not t or (t[0] == now.hour and t[1] == now.minute)):
+			if (not t and interval != 30):
+				yield from fun(client, channels)
+			elif (not fun.__name__ in current_day or current_day[fun.__name__] != now.day) and (not t or (t[0] == now.hour and t[1] == now.minute)):
 				current_day[fun.__name__] = now.day
 				yield from fun(client, channels)
 			

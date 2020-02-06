@@ -272,14 +272,21 @@ c_mydli.command = r"mydli"
 def c_dobrze(client, message):
 	yield from client.send_file(message.channel, sh.file_path("img/dobrze.webm"))
 
-c_dobrze.command = r"(dobrze|prawda)"
+c_dobrze.command = r"(dobrze|prawda|tak)"
 
 
 @asyncio.coroutine
 def c_zle(client, message):
 	yield from client.send_file(message.channel, sh.file_path("img/zle.webm"))
 
-c_zle.command = r"(zle|falsz)"
+c_zle.command = r"(zle|falsz|nie)"
+
+
+@asyncio.coroutine
+def c_zapraszam_wypierdalac(client, message):
+	yield from client.send_file(message.channel, sh.file_path("img/wybamboclaj.jpg"))
+
+c_zapraszam_wypierdalac.command = r"(zapraszam|wypierdalac)"
 
 
 @asyncio.coroutine
@@ -287,3 +294,24 @@ def c_debbie(client, message):
 	yield from client.send_file(message.channel, sh.file_path("img/debbie.jpg"))
 
 c_debbie.command = r"(debiru|pierdole)"
+
+
+@asyncio.coroutine
+def c_uszanowanko(client, message):
+	yield from client.send_file(message.channel, sh.file_path("img/uszanowanko.png"))
+
+c_uszanowanko.command = r"szanuje"
+
+
+@asyncio.coroutine
+def c_hammertime(client, message):
+	yield from client.send_file(message.channel, sh.file_path("img/hammerhead.webm"))
+
+c_hammertime.command = r"hammer(time)?"
+
+
+@asyncio.coroutine
+def c_cicho(client, message):
+	yield from client.send_file(message.channel, sh.file_path("img/bulkowski.webm"))
+
+c_cicho.command = r"cicho"

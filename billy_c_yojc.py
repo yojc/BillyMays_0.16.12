@@ -304,6 +304,28 @@ c_skryba.command = r"skryba"
 
 
 @asyncio.coroutine
+def c_korwin(client, message):
+	components = [
+		["Proszę zwrócić uwagę, że", "I tak mam trzy razy mniej czasu, więc proszę pozwolić mi powiedzieć:", "Państwo się śmieją, ale", "Ja nie potrzebowałem edukacji seksualnej, żeby wiedzieć, że", "No niestety:", "Gdzie leży przyczyna problemu? Ja państwu powiem:", "Państwo chyba nie wiedzą, że", "Oświadczam kategorycznie:", "Powtarzam:", "Powiedzmy to z całą mocą:", "W polsce dzisiaj", "Państwo sobie nie zdają sprawy, że", "To ja przepraszam bardzo:", "Otóż nie wiem, czy pan*** wie, że", "Yyyyy...", "Ja chcę powiedzieć jedną rzecz:", "Trzeba powiedzieć jasno:", "Jak powiedział wybitny krakowianin Stanisław Lem,", "Proszę mnie dobrze zrozumieć:", "Ja chciałem państwu przypomnieć, że", "Niech państwo nie mają złudzeń:", "Powiedzmy to wyraźnie:"],
+		["właściciele niewolników", "związkowcy", "trockiści", "tak zwane dzieci kwiaty", "rozmaici urzędnicy", "federaści", "etatyści", "ci durnie i złodzieje", "ludzie wybrani głosami meneli spod budki z piwem", "socjaliści pobożni", "socjaliści bezbożni", "komuniści z krzyżem w zębach", "agenci obcych służb", "członkowie Bandy Czworga", "pseudo-masoni z Wielkiego Wschodu Francji", "przedstawiciele czerwonej hołoty", "ci wszyscy (tfu!) geje", "funkcjonariusze reżymowej telewizji", "tak zwani ekolodzy", "ci wszyscy (tfu!) demokraci", "agenci bezpieki", "feminazistki"],
+		["po przeczytaniu *Manifestu komunistycznego*", "którymi się brzydzę", "których nienawidzę", "z okolic \"Gazety Wyborczej\"", "- czyli taka żydokomuna -", "odkąd zniesiono karę śmierci", "którymi pogardzam", "których miejsce w normalnym kraju jest w więzieniu", "na polecenie Brukseli", "posłusznie", "bezmyślnie", "z nieprawdopodobną pogardą dla człowieka", "za pieniądze podatników", "zgodnie z ideologią LGBTQZ", "za wszelką cenę", "zupełnie bezkarnie", "całkowicie bezczelnie", "o poglądach na lewo od komunizmu", "celowo i świadomie", "z premedytacją", "od czasów Okrągłego Stołu", "w ramach postępu"],
+		["udają homoseksualistów", "niszczą rodzinę", "idą do polityki", "zakazują góralom robienia oscypków", "organizują paraolimpiady", "wprowadzają ustrój, w którym raz na cztery lata można wybrać sobie pana", "ustawiają fotoradary", "wprowadzają dotacje", "wydzielają buspasy", "podnosza wiek emerytalny", "rżną głupa", "odbierają dzieci rodzicom", "wprowadzają absurdalne przepisy", "umieszczają dzieci w szkołach koedukacyjnych", "wprowadzają parytety", "nawołują do podniesienia podatków", "próbują skłócić Polskę z Rosją", "głoszą brednie o globalnym ociepleniu", "zakazują posiadania broni", "nie dopuszczają prawicy do władzy", "uczą dzieci homoseksualizmu"],
+		["żeby poddawać wszystkich tresurze", "bo taka jest ich natura", "bo chcą wszystko kontrolować", "bo nie rozumieją, że socjalizm nie działa", "żeby wreszcie zapanował socjalizm", "dokładnie tak jak towarzysz Janosik", "zamiast pozwolić ludziom zarabiać", "żeby wyrwać kobiety z domu", "bo to jest w interesie tak zwanych ludzi pracy", "zamiast pozwolić decydować konsumentowi", "żeby nie opłacało się mieć dzieci", "zamiast obniżyć podatki", "bo nie rozumieją, że selekcja naturalna jest czymś dobrym", "żeby mężczyźni przestali być agresywni", "bo dzięki temu mogą brać łapówki", "bo dzięki temu mogą kraść", "bo dostają za to pieniądze", "bo tak się uczy w państwowej szkole", "bo bez tego (tfu!) demokracja nie może istnieć", "bo głupich jest więcej niż mądrych", "bo chcą tworzyć raj na ziemi", "bo chcą niszczyć cywilizację białego człowieka"],
+		["co ma zresztą tyle samo sensu, co zawody w szachach dla debili", "co zostało dokładnie zaplanowane w Magdalence przez śp. generała Kiszcaka", "i trzeba być idiotą, żeby ten system popierać", "- ale nawet ja jeszcze dożyję normalnych czasów", "co dowodzi, że wyskrobano nie tych co trzeba", "a zwykłym ludziom wmawiają, że im coś \"dadzą\"", "- cóż - chcieliście (tfu!) demokracji, to macie", "- dlatego trzeba zlikwidować koryto, a nie zmieniać świnie", "a wystarczyłoby przestać wypłacać zaiłki", "podczas gdy normalni ludzie są uważani za dziwaków", "co w wieku XIX po prostu by wysmiano", "- dlatego w społeczeństwie jest równość, a powinno byc rozwarstwienie", "co prowadzi Polskę do katastrofy", "- dlatego trzeba przywrócić normalność", "ale w wolnej Polsce pójdą siedzieć", "przez kolejne kadencje", "o czym się nie mówi", "- i właśnie dlatego Europa umiera", "- ale przyjdą muzułmanie i zrobią porządek", "- tak samo zresztą jak za Hitlera", "- proszę zobaczyć, co się dzieje na Zachodzie, jesli państwo mi nie wierzą", "co sto lat temu nikomu nie przyszłoby nawet do głowy"]
+	]
+	reply = ""
+
+	for c in components:
+		reply += " " + random.choice(c)
+
+	reply += random.choice([".", "!"])
+
+	yield from client.send_message(message.channel, reply)
+
+c_korwin.command = r"korwin"
+
+
+@asyncio.coroutine
 def c_fullwidth(client, message):
 	HALFWIDTH_TO_FULLWIDTH = str.maketrans(
 		'0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!"#$%&()*+,-./:;<=>?@[]^_`{|}~ ',
@@ -485,7 +507,7 @@ c_gdzie.params = ["zapytanie"]
 
 @asyncio.coroutine
 def c_kiedy(client, message):
-	replies = ["o wpół do dziesiątej rano w Polsce", "wczoraj", "jutro", "jak przyjdą szwedy", "w trzy dni po premierze Duke Nukem Forever 2", "dzień przed końcem świata", "nigdy", "jak dojdą pieniądze", "za godzinkę", "kiedy tylko sobie życzysz", "gdy przestaniesz zadawać debilne pytania", "jak wybiorą czarnego papieża", "już za cztery lata, już za cztery lata", "na sylwestrze u P_aula", "o 3:33", "o 21:37", "jak Kath napisze magisterkę", "jak Dracia zrobi wszystko co musi kiedyś zrobić", "jak Teb wróci na Discorda", "jak Paul wejdzie do platyny", "jak Fel schudnie", "gdy Aiden zgoli rude kudły", "dzień po wybuchowym debiucie Brylanta", "za 12 lat", "gdy Martius przestanie pierdolić o ptakach", "jak podbiel zje mi dupę", "a co ja jestem, informacja turystyczna?", "jak wreszcie wyjebiemy stąd Nargoga", "jak Debiru awansuje do seniora", "jak kanau_fela zamknie FBI", "już tej nocy w twoim łóżku", "jak Strejlau umrze bo jest stary", "nie"]
+	replies = ["o wpół do dziesiątej rano w Polsce", "wczoraj", "jutro", "jak przyjdą szwedy", "w trzy dni po premierze Duke Nukem Forever 2", "dzień przed końcem świata", "nigdy", "jak dojdą pieniądze", "za godzinkę", "kiedy tylko sobie życzysz", "gdy przestaniesz zadawać debilne pytania", "jak wybiorą czarnego papieża", "już za cztery lata, już za cztery lata", "na sylwestrze u P_aula", "o 3:33", "o 21:37", "jak Kath napisze magisterkę", "jak Dracia zrobi wszystko co musi kiedyś zrobić", "jak nevka wróci na Discorda", "jak Paul wejdzie do platyny", "jak Fel schudnie", "gdy Aiden zgoli rude kudły", "dzień po wybuchowym debiucie Brylanta", "za 12 lat", "gdy Martius przestanie pierdolić o ptakach", "jak podbiel zje mi dupę", "a co ja jestem, informacja turystyczna?", "jak wreszcie wyjebiemy stąd Nargoga", "jak Debiru awansuje do seniora", "jak kanau_fela zamknie FBI", "już tej nocy w twoim łóżku", "jak Strejlau umrze bo jest stary", "nie"]
 	
 	if sh.is_female(message):
 		replies = replies + ["gdy wreszcie znajdziesz chłopaka"]

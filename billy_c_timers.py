@@ -29,29 +29,21 @@ def t_pope_time(client, channels):
 t_pope_time.channels = ["174449535811190785"]
 t_pope_time.time = "21:37"
 
+def random_a():
+	return "A"*random.randint(3,7)
 
 @asyncio.coroutine
 def t_trzytrzytrzy(client, channels):
-	#img_count = 5
-	choices = ["https://www.youtube.com/watch?v=WX8ZeZJqOE0"] #, "https://www.youtube.com/watch?v=rRctiUI8pmE"]
-	#images = []
-	#
-	#for i in range(0, img_count):
-	#	images.append("kath" + str(i+1) + ".jpg")
-	#
-	#if random.random() < (len(choices)/float(len(choices)+ len(images))):
-	#	reply = random.choice(choices)
-	#	for ch in channels:
-	#		yield from client.send_message(ch, reply)
-	#else:
-	#	reply = random.choice(images)
-	#	for ch in channels:
-	#		yield from client.send_file(ch, sh.file_path("img/" + reply))
+	
+	choices = ["https://www.youtube.com/watch?v=WX8ZeZJqOE0", "https://www.youtube.com/watch?v=rRctiUI8pmE", "https://www.youtube.com/watch?v=IJKWUTgrE2g", "https://www.youtube.com/watch?v=UskQs90Y2TE", "pac"]
 	
 	reply = random.choice(choices)
 	for ch in channels:
-		if random.random() < 0.05:
-			yield from client.send_message(ch, reply)
+		if random.random() < 0.075:
+			if reply == "pac":
+				yield from client.send_message(ch, "O K{}T{}J\nTO TY MNIE POPAC{}Ł{}Ś".format(random_a(), random_a(), random_a(), random_a()))
+			else:
+				yield from client.send_message(ch, reply)
 
 t_trzytrzytrzy.channels = ["174449535811190785"]
 t_trzytrzytrzy.time = "3:33"

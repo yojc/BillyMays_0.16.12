@@ -74,7 +74,7 @@ nicks_default = [
 
 nicks_politbiuro = [
     ["8azyliszek", "8azyliszka", "8azyliszkowi", "8azyliszka", "8azyliszkiem", "8azyliszku", "8azyli", ""],
-    ["Abyss", "Abyssie", "Abyssowi", "Abyssa", "Abyssem", "Abyssie", "Abyss", ""],
+    ["Abyss", "Abyssa", "Abyssowi", "Abyssa", "Abyssem", "Abyssie", "Abyss", ""],
     ["Accoun", "Accouna", "Accounowi", "Accouna", "Accounem", "Accounie", "Accoun", ""],
     ["Aiden", "Aidena", "Aidenowi", "Aidena", "Aidenem", "Aidenie", "Aiden", ""],
     ["Artius", "Artiusa", "Artiusowi", "Artiusa", "Artiusem", "Artiusie", "Artiusie", ""],
@@ -109,10 +109,11 @@ nicks_politbiuro = [
     ["Lord Nargogh", "Nargogha", "Nargoghowi", "Nargogha", "Nargoghiem", "Nargoghu", "Nargogh", ""],
     ["orgiełe", "orgieła", "orgiełemu", "orgieła", "orgiełem", "orgiełe", "orgu", " <:coolczesc:325367097125502989>"],
     ["opti", "optiego", "optiemu", "optiego", "optim", "optim", "opti", ""],
-    ["MSaint", "MSainta", "MSaintowi", "MSainta", "MSaintem", "MSaincie", "MSaincie", ""],
+    ["Maciek", "Maćka", "Maćkowi", "Maćka", "Maćkiem", "Maćku", "Maćku", ""],
     ["Maverick", "Mavcia", "Mavciowi", "Mavcia", "Mavciem", "Mavciu", "Mavciu", ""],
     ["Metalus", "Metalusa", "Metalusowi", "Metalusa", "Metalusem", "Metalusie", "Metalusie", ""],
  #   ["Murezor", "Murezora", "Murezorowi", "Murezora", "Murezorem", "Murezorze", "Murezorze", ""],
+    ["MSaint", "MSainta", "MSaintowi", "MSainta", "MSaintem", "MSaincie", "MSaincie", ""],
  #   ["Mysquff", "Mysquffa", "Mysquffowi", "Mysquffa", "Mysquffem", "Mysquffie", "Mysquff", ""],
     ["nerv0", "nerv4", "nerv0wi", "nerv4", "nerv3m", "nerv1e", "nerv0", ""],
     ["nevka", "nevki", "nevce", "nevkę", "nevką", "nevce", "nevko", " <:floof:423864029744726016>"],
@@ -145,7 +146,8 @@ nicks_politbiuro = [
     ["Xerber", "Xerbera", "Xerberowi", "Xerbera", "Xerberem", "Xerberze", "Xerber", ""],
     ["Xysiu", "Xysia", "Xysiowi", "Xysia", "Xysiem", "Xysiu", "Xysiu", ""],
     ["yojec", "yojca", "yojcowi", "yojca", "yojcem", "yojcu", "yojcu", ""],
-    ["ziom", "zioma", "ziomowi", "zioma", "ziomem", "ziomie", "ziom", " <:ziom:325882623572443148>"]
+    ["ziom", "zioma", "ziomowi", "zioma", "ziomem", "ziomie", "ziom", " <:ziom:325882623572443148>"],
+    ["Zołza", "Zołzy", "Zołzie", "Zołzę", "Zołzą", "Zołzie", "Zołzo", ""]
 ]
 
 nicks_mpf = [
