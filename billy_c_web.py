@@ -129,6 +129,32 @@ def yt(q):
 	
 	return result
 
+def numerki(q):
+    s = requests.Session()
+    url = 'https://www.nhentai.net/g/' + q + '/'
+	
+    try:
+        r = s.get(url)
+    except:
+        return False
+		
+    parsed = BeautifulSoup(r.text, "html.parser")
+    tagi = []
+	
+    for spa in parsed.findAll('span', {'class': 'tags'}):
+        tagi.append(spa.text.strip())
+
+    while("" in tagi) : 
+        tagi.remove("")
+
+    #prepare msg
+    result = ''
+
+    for tag in tagi :
+        result += '[' + tag + ']\n'
+		
+    return result
+	
 def tumblr_random(q):
 	s = requests.Session()
 	url = 'http://'+q+'.tumblr.com/random'
@@ -392,6 +418,25 @@ c_youtube.command = r"(yt|youtube)"
 c_youtube.params = ["zapytanie"]
 c_youtube.desc = "szukaj filmików na YT"
 
+
+@asyncio.coroutine
+def c_numerki(client, message):
+	for i in range(retry_count):
+		result = numerki(sh.get_args(message, True))
+		
+		if not result:
+			continue
+		else:
+			break
+	
+	if not result:
+		yield from client.send_message(message.channel, sh.mention(message) + "brak hentajca, złe numerki?")
+	else:
+		yield from client.send_message(message.channel, sh.mention(message) + result)
+
+c_numerki.command = r"(numerki)"
+c_numerki.params = ["zapytanie"]
+c_numerki.desc = "wyświetl tagi hentajca po numerkach"
 
 @asyncio.coroutine
 def c_tumblr_r(client, message):
