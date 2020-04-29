@@ -1,8 +1,20 @@
 import os
 import re
 import random
+from imp import find_module
 
 testing = False
+
+try:
+	find_module('colorama')
+	from colorama import Fore, Style, init as colorama_init
+	colorama_init()
+	def print_warning(text):
+		print(Fore.YELLOW + Style.BRIGHT + text + Style.RESET_ALL)
+except ImportError:
+	def print_warning(text):
+		print(text)
+	print_warning("Colorama library not installed, errors won't be colorized")
 
 def debug(msg, obj=False):
 	if testing:
@@ -27,14 +39,14 @@ def rm_leading_quotes(msg, clean = False):
 	else:
 		content = msg.content
 	
-	while re.match(r"^[`'\"<]", content):
+	while re.match(r"^[`'\"<>]", content):
 		oldcontent = content
 		content = re.sub(r"^```[\S\s]+?```", "", content)
 		content = re.sub(r"^``[\S\s]+?``", "", content)
 		content = re.sub(r"^`[\S\s]+?`", "", content)
 		content = re.sub(r"^'[\S\s]+?'", "", content)
 		content = re.sub(r"^\"[\S\s]+?\"", "", content)
-		content = re.sub(r"^\"[\S\s]+?\"", "", content)
+		content = re.sub(r"^>[\S\s]+?\n", "", content)
 		content = re.sub(r"^<[\S\s]+?>", "", content).strip()
 		
 		if oldcontent == content:
@@ -50,7 +62,13 @@ def get_args(msg, clean = False):
 		return ""
 
 def get_command(msg):
-	return rm_leading_quotes(msg).split(None, 1)[0]
+	msg_strip = rm_leading_quotes(msg)[1:]
+
+	if msg_strip.startswith(("o ", "z ", "u ")):
+		tmp = msg_strip.split(None, 2)
+		return tmp[0] + " " + tmp[1]
+	else:
+		return msg_strip.split(None, 2)[0]
 
 def generate_seed(input):
 	return ''.join(ch for ch, _ in itertools.groupby(''.join(sorted(re.sub("[^a-z0-9]", "", replace_all(input, {u'Ą':'A', u'Ę':'E', u'Ó':'O', u'Ś':'S', u'Ł':'L', u'Ż':'Z', u'Ź':'Z', u'Ć':'C', u'Ń':'N', u'ą':'a', u'ę':'e', u'ó':'o', u'ś':'s', u'ł':'l', u'ż':'z', u'ź':'z', u'ć':'c', u'ń':'n'}).lower())[3:]))))

@@ -34,6 +34,7 @@ billy_key = ""
 kathai_key = ""
 cleverbot_key = ""
 wolfram_key = ""
+twitch_key = ""
 ```
 
 Wypełnij puste pola odpowiednimi wartościami. Może sobie poradzisz, może nie.

@@ -11,18 +11,23 @@ from config import twitch_key
 
 
 politbiuro_main_channel = "174449535811190785"
+politbiuro_ograch = "639853618568232982"
+politbiuro_retro = "305100969191014404"
 politbiuro_japabocie = "386148571529084929"
 
 twitch_check_frequency = 5 # minutes
 twitch_announcement_cooldown = 19.5 # minutes
 twitch_start_time = time.time() - (twitch_announcement_cooldown-twitch_check_frequency)*60
 
+# to find out the user ID
+# curl -H "client-id: [twitch-id]" https://api.twitch.tv/helix/users?login=[login]
+
 twitch_streamers = {
 	"44844181" : { 
 		"nickname" : "yojc", 
 		"url" : "https://www.twitch.tv/yojo2", 
 		"last_seen" : twitch_start_time,
-		"discord_channels" : [politbiuro_main_channel],
+		"discord_channels" : [politbiuro_retro],
 		"mention_group" : "<@&672691296091111424>"
 	},
 
@@ -30,7 +35,7 @@ twitch_streamers = {
 		"nickname" : "Komstuch", 
 		"url" : "https://www.twitch.tv/komstuch", 
 		"last_seen" : twitch_start_time,
-		"discord_channels" : [politbiuro_main_channel],
+		"discord_channels" : [politbiuro_ograch],
 		"mention_group" : "<@&674317267198279682>"
 	},
 
@@ -38,7 +43,7 @@ twitch_streamers = {
 		"nickname" : "Artius", 
 		"url" : "https://www.twitch.tv/izdebeth", 
 		"last_seen" : twitch_start_time,
-		"discord_channels" : [politbiuro_main_channel],
+		"discord_channels" : [politbiuro_ograch],
 		"mention_group" : "<@&674317361066803210>"
 	},
 
@@ -46,8 +51,16 @@ twitch_streamers = {
 		"nickname" : "Abyss", 
 		"url" : "https://www.twitch.tv/abyss121", 
 		"last_seen" : twitch_start_time,
-		"discord_channels" : [politbiuro_main_channel],
+		"discord_channels" : [politbiuro_ograch],
 		"mention_group" : "<@&674317320520466433>"
+	},
+
+	"48895107" : { 
+		"nickname" : "kiceg", 
+		"url" : "https://www.twitch.tv/kicegg", 
+		"last_seen" : twitch_start_time,
+		"discord_channels" : [politbiuro_ograch],
+		"mention_group" : "<@&693760408615518209>"
 	}
 
 	#"40426372" : { 
@@ -64,7 +77,7 @@ def t_twitch_announcements(client, channels):
 	global twitch_key
 	global twitch_streamers
 
-	#print("### TWITCH TEST ###")
+	sh.print_warning("### TWITCH TEST ### " + time.strftime("%Y-%m-%d %H:%M:%S"))
 
 	headers = {"client-id": twitch_key}
 	s = requests.Session()
@@ -77,13 +90,18 @@ def t_twitch_announcements(client, channels):
 
 	#print(url)
 
-	r = s.get(url, headers=headers)
+	try:
+		r = s.get(url, headers=headers)
+	except:
+		sh.print_warning("### TWITCH REQUEST FAILED!!!")
+		return
+	
 	#print("Poszło zapytanie - otrzymano " + str(r.status_code))
 	response = json.loads(r.text)
 
 	for playa in response["data"]:
 		if not playa["user_id"] in twitch_streamers:
-			print("Nie znaleziono gracza w db")
+			#print("Nie znaleziono gracza w db")
 			continue
 		else:
 			tmp = twitch_streamers[playa["user_id"]]

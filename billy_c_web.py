@@ -16,7 +16,7 @@ from billy_c_yojc import c_rimshot as rimshot
 from config import wolfram_key, cleverbot_key
 
 # How many times should the bot retry the query in case an error occurs?
-retry_count = 10
+retry_count = 3
 
 cw = CleverWrap(cleverbot_key)
 
@@ -76,7 +76,7 @@ def google(q, image=False):
 			else:
 				tmp = json.loads(result_img.text.strip())["ou"]
 			
-			banned_terms = ["x-raw-image", "lookaside.fbsbx.com", ".svg"]
+			banned_terms = ["x-raw-image", "lookaside.fbsbx.com", ".svg", "cdninstagram"]
 			
 			if any(term in tmp for term in banned_terms):
 				continue
@@ -130,31 +130,32 @@ def yt(q):
 	return result
 
 def numerki(q):
-    s = requests.Session()
-    url = 'https://www.nhentai.net/g/' + q + '/'
+	s = requests.Session()
+	url = 'https://www.nhentai.net/g/' + q + '/'
 	
-    try:
-        r = s.get(url)
-    except:
-        return False
+	try:
+		r = s.get(url)
+	except:
+		return False
 		
-    parsed = BeautifulSoup(r.text, "html.parser")
-    tagi = []
+	parsed = BeautifulSoup(r.text, "html.parser")
+	tagi = []
 	
-    for spa in parsed.findAll('span', {'class': 'tags'}):
-        tagi.append(spa.text.strip())
-
-    while("" in tagi) : 
-        tagi.remove("")
-
-    #prepare msg
-    result = ''
-
-    for tag in tagi :
-        result += '[' + tag + ']\n'
+	for spa in parsed.findAll('span', {'class': 'tags'}):
+		tagi.append(spa.text.strip())
+	
+	while("" in tagi): 
+		print("rem")
+		tagi.remove("")
+	
+	#prepare msg
+	result = ''
+	
+	for tag in tagi :
+		result += '[' + tag + ']\n'
 		
-    return result
-	
+	return result
+
 def tumblr_random(q):
 	s = requests.Session()
 	url = 'http://'+q+'.tumblr.com/random'

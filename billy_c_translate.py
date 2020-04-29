@@ -160,6 +160,15 @@ c_manglew.params = ["słowo", "zdanie"]
 c_manglew.desc = "wstaw + manglep"
 
 @asyncio.coroutine
+def c_manglekn(client, message):
+	text = sh.insert_word("kurwa", sh.get_args(message)).replace("\n", " ")
+	yield from client.send_message(message.channel, sh.mention(message) + (yield from mangle(client, message.channel, text, "pl")))
+
+c_manglekn.command = r"manglekn"
+c_manglekn.params = ["zdanie"]
+c_manglekn.desc = "manglep z ekstra dużymi kawałkami wulgaryzmów i bez enterów"
+
+@asyncio.coroutine
 def c_manglek(client, message):
 	text = sh.insert_word("kurwa", sh.get_args(message))
 	yield from client.send_message(message.channel, sh.mention(message) + (yield from mangle(client, message.channel, text, "pl")))

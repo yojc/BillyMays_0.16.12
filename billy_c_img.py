@@ -113,7 +113,7 @@ c_cisza.command = r"(cisza|silence)"
 
 @asyncio.coroutine
 def c_afera(client, message):
-	yield from client.send_file(message.channel, sh.file_path("img/comment_5DTDRHYuWYyVyTXzQGs7SvHZtyDz2sF8.gif"))
+	yield from client.send_file(message.channel, sh.file_path("img/comment_5DTDRHYuWYyVyTXzQGs7SvHZtyDz2sF8.gif"), filename="dewjusz_nakreca_kserbiego.gif")
 
 c_afera.command = r"afera"
 
@@ -291,7 +291,11 @@ c_zapraszam_wypierdalac.command = r"(zapraszam|wypierdalac)"
 
 @asyncio.coroutine
 def c_debbie(client, message):
-	yield from client.send_file(message.channel, sh.file_path("img/debbie.jpg"))
+	if random.random() < (1/15):
+		yield from client.send_file(message.channel, sh.file_path("img/senkyu.png"))
+	else:
+		yield from client.send_file(message.channel, sh.file_path("img/debbie.jpg"))
+	
 
 c_debbie.command = r"(debiru|pierdole)"
 
@@ -315,3 +319,16 @@ def c_cicho(client, message):
 	yield from client.send_file(message.channel, sh.file_path("img/bulkowski.webm"))
 
 c_cicho.command = r"cicho"
+
+
+@asyncio.coroutine
+def c_memeapproved(client, message):
+	if random.random() < 0.05:
+		if random.random() < 0.5:
+			yield from client.send_file(message.channel, sh.file_path("img/o8y7bAcVvBixP1Nb.webm"), filename="and_not_knuckles.webm")
+		else:
+			yield from client.send_file(message.channel, sh.file_path("img/Fgg4rkk5njffqzPA.webm"), filename="or_knuckles.webm")
+	else:
+		yield from client.send_file(message.channel, sh.file_path("img/_zL1eQZ5VldbBss2.webm"), filename="and_knuckles.webm")
+
+c_memeapproved.command = r"(approved|knuckles)"

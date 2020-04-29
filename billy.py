@@ -15,19 +15,7 @@ import sys
 import datetime
 import emoji
 import unidecode
-
-from imp import find_module
-
-try:
-	find_module('colorama')
-	from colorama import Fore, Style, init as colorama_init
-	colorama_init()
-	def print_warning(text):
-		print(Fore.YELLOW + Style.BRIGHT + text + Style.RESET_ALL)
-except ImportError:
-	def print_warning(text):
-		print(text)
-	print("Colorama library not installed, errors won't be colorized")
+import signal
 
 # Shared functions
 
@@ -66,6 +54,9 @@ client = Bot(description="Hi, Billy Mays here", command_prefix= r"^[;!\.,\/\\\\]
 
 # Used to run timer-based function once a day
 current_day = {}
+
+# To prevent multiple reminder setup
+sopel_reminder_setup = False
 
 def compile_command(regex):
 	return client.command_prefix + regex + r"\b"
@@ -197,13 +188,13 @@ def parse_message(message, edited=False):
 				try:
 					yield from f(client, message)
 				except Exception:
-					print_warning("An error occured in " + f.__name__ + "!!! (" + content + ")")
+					sh.print_warning("An error occured in " + f.__name__ + "!!! (" + content + ")")
 					raise
 					
 	# commands
 	
 	if re.match(client.command_prefix, content):
-		sh.debug("This seems to be a command: " + sh.get_command(message))
+		sh.debug("This seems to be a command: ." + sh.get_command(message))
 		
 		# check antiflood
 		
@@ -244,7 +235,7 @@ def parse_message(message, edited=False):
 			if len(ret) > 2000:
 				n = 40
 				groups = ret.split("\n")
-				help = ["\n".join(groups[:n]), "\n".join(groups[n:])]
+				help = ["\n".join(groups[:n]), "\n".join(groups[n:n*2]), "\n".join(groups[n*2:])]
 			else:
 				help = [ret]
 			
@@ -276,7 +267,7 @@ def parse_message(message, edited=False):
 						#billy_c_stats.update_msg_function(message, f.__name__)
 					except Exception:
 						yield from client.send_message(message.channel, "Oho, chyba jakiś błąd w kodzie. <@307949259658100736> to kiedyś naprawi, jak się skończy bawić pociągami.")
-						print_warning("An error occured in " + f.__name__ + "!!! (" + content + ")")
+						sh.print_warning("An error occured in " + f.__name__ + "!!! (" + content + ")")
 						#CZEMU TY CHUJU NIE DZIALASZ
 						#logging.exception("An error occured in " + f.__name__ + "!!! (" + content + ")")
 						raise
@@ -294,6 +285,8 @@ print("--------")
 @client.event
 @asyncio.coroutine
 def on_ready():
+	global sopel_reminder_setup
+	
 	print('Logged in as '+client.user.name+' (ID:'+client.user.id+') | Connected to '+str(len(client.servers))+' servers | Connected to '+str(len(set(client.get_all_members())))+' users')
 	print('--------')
 	print('Current Discord.py Version: {} | Current Python Version: {}'.format(discord.__version__, platform.python_version()))
@@ -302,7 +295,13 @@ def on_ready():
 	print('https://discordapp.com/oauth2/authorize?client_id={}&scope=bot&permissions=8'.format(client.user.id))
 	print('--------')
 	
-	yield from billy_c_sopel_remind.setup(client)
+	if not sopel_reminder_setup:
+		sh.print_warning("### CREATED REMINDER TASK " + str(datetime.datetime.now()))
+		sopel_reminder_setup = True
+		yield from billy_c_sopel_remind.setup(client)
+	else:
+		sh.print_warning("### REMINDERS ALREADY ACTIVE")
+		
 
 
 # Execute on every reaction
@@ -389,3 +388,9 @@ def on_member_remove(member):
 
 # Bot ID
 client.run(billy_key)
+
+# Catch SIGINT
+def signal_handler(sig, frame):
+	print("SIGINT CAUGHT MOFO")
+	sys.exit(0)
+signal.signal(signal.SIGINT, signal_handler)

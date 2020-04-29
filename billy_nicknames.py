@@ -29,6 +29,9 @@ def case_name_to_index(case):
     }[unidecode.unidecode(case)]
 
 def get_random_nickname(message, case, cmd=None):
+    def generate_variants(command):
+        return [command, "z " + command, "o " + command, "u " + command]
+    
     nicks = None
 
     if message.server and message.server.id == "318733700160290826":
@@ -41,25 +44,26 @@ def get_random_nickname(message, case, cmd=None):
     index = random.randint(0, len(nicks)-1)
 
     if cmd and (0 <= index <= len(nicks_default)-1):
-        ret = None
-        if cmd == ".czyim":
+        ret = ["mój", "twój", "niczyj"]
+
+        if cmd in generate_variants("czyim"):
             ret = ["moim", "twoim", "niczyim"]
-        if cmd == ".czyimi":
+        if cmd in generate_variants("czyimi"):
             ret = ["moimi", "twoimi", "niczyimi"]
-        if cmd == ".czyich":
+        if cmd in generate_variants("czyich"):
             ret = ["moich", "twoich", "niczyich"]
-        elif cmd == ".czyja":
+        elif cmd in generate_variants("czyja"):
             ret = ["moja", "twoja", "niczyja"]
-        elif cmd == ".czyje":
+        elif cmd in generate_variants("czyje"):
             ret = ["moje", "twoje", "niczyje"]
-        elif cmd == ".czyją":
+        elif cmd in generate_variants("czyją"):
             ret = ["moją", "twoją", "niczyją"]
-        elif cmd == ".czyj":
+        elif cmd in generate_variants("czyj"):
             ret = ["mój", "twój", "niczyj"]
-        elif cmd == ".czyjego":
+        elif cmd in generate_variants("czyjego"):
             ret = ["mojego", "twojego", "niczyjego"]
-        elif cmd == ".czyjej":
-            ret = ["mojej", "twójej", "niczyjej"]
+        elif cmd in generate_variants("czyjej"):
+            ret = ["mojej", "twojej", "niczyjej"]
         
         return ret[index]
     else:

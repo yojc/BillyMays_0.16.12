@@ -225,7 +225,7 @@ def c_at(client, message_obj):
 	http://sopel.chat/tz . The seconds and timezone are optional.
 	"""
 	if not sh.get_args(message_obj):
-		#yield from client.send_message(message_obj.channel, sh.mention(message_obj) + "no i?")
+		yield from client.send_message(message_obj.channel, sh.mention(message_obj) + "no i?")
 		return NOLIMIT
 	if len(sh.get_args(message_obj).split(" ")) < 2:
 		yield from client.send_message(message_obj.channel, sh.mention(message_obj) + "ale o czym mam przypomnieć?")
@@ -279,7 +279,7 @@ def c_at(client, message_obj):
 	
 	yield from create_reminder(client, message_obj, duration, message, 'UTC')
 
-c_at.command = r"(o|at)"
+c_at.command = r"(o\s[\d:-]+|at)"
 c_at.params = ["YYYY-MM-DD", "HH:MM", "wiadomość"]
 c_at.desc = "Przypomnij o..."
 

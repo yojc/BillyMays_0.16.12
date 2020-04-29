@@ -188,7 +188,7 @@ def parse_message(message, edited=False):
 	# commands
 	
 	if re.match(client.command_prefix, content):
-		sh.debug("This seems to be a command: " + sh.get_command(message))
+		sh.debug("This seems to be a command: ." + sh.get_command(message))
 		
 		# check antiflood
 		

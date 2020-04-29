@@ -13,7 +13,7 @@ import billy_shared as sh
 NOT_FOUND = "[nie znaleziono]"
 
 # Channels to hide results from (they are still calculated!)
-CHANNELS_TO_OMIT = str(tuple([326696245684862987, 425724173906870284, 471373220545691661])).rstrip(',)') + ')'
+CHANNELS_TO_OMIT = str(tuple([326696245684862987, 425724173906870284, 471373220545691661, 697179498558259393])).rstrip(',)') + ')'
 
 # Database init strings
 
@@ -171,7 +171,7 @@ def parse_stats_args(client, message, args):
 	# Value replacements
 	repl_values = {
 		"time" : {
-			"today" : r"dzi(s|ś)|dzisiaj",
+			"today" : r"dzisiaj|dzi(s|ś)",
 			"yesterday" : r"wczoraj",
 			"last_month" : r"zesz(l|ł)y_?miesi(a|ą)c",
 			"this_month" : r"ten_?miesi(a|ą)c",
@@ -375,8 +375,8 @@ def stats_users(client, server, rows=5, time=None, channel=None, user=None, bot=
 	i = 1
 	#print("[stats_users] SELECT user, count(*) AS result FROM messages {} GROUP BY user ORDER BY result DESC, user ASC LIMIT 0,?".format(conditions))
 	for row in cursor.execute("SELECT user, count(*) AS result FROM messages {} GROUP BY user ORDER BY result DESC, user ASC LIMIT 0,?".format(conditions), params):
-		user = find(lambda m: m.id == str(row[0]), client.get_all_members())
-		ret += "#{}: {} ({})\n".format(i, user.display_name if user is not None else NOT_FOUND, row[1])
+		user = find(lambda m: m.id == str(row[0]) and m.server.id == server, client.get_all_members()) or find(lambda m: m.id == str(row[0]), client.get_all_members())
+		ret += "#{}: {} ({})\n".format(i, re.sub(r"([~*_`>|])", r"\\\g<1>", user.display_name) if user is not None else NOT_FOUND, row[1])
 		i += 1
 	
 	return ret.strip()
@@ -504,7 +504,7 @@ def generate_stats(client, message, channel, arguments, stat_limit=5, bot_stats=
 
 @asyncio.coroutine
 def c_stats(client, message):
-	stat_limit = 15 if (str(message.channel).startswith("Direct Message") or message.channel.id in ["319056762814595076", "386148571529084929"]) else 5
+	stat_limit = 15 if (str(message.channel).startswith("Direct Message") or message.channel.id in ["319056762814595076", "386148571529084929"]) else 10
 	bot_stats = True if "bot" in sh.get_command(message).lower() else None
 	
 	mmmsmsm = generate_stats(client, message, message.channel, sh.get_args(message), stat_limit, bot_stats)

@@ -3,6 +3,10 @@ import asyncio
 import itertools
 import re
 import unidecode
+import time
+
+import json
+import os
 
 import billy_shared as sh
 from billy_antiflood import check_uptime
@@ -238,7 +242,7 @@ c_esad.desc = "Eat shit and die"
 
 @asyncio.coroutine
 def c_kurwa(client, message):
-	c = sh.get_command(message).lower()[1:]
+	c = sh.get_command(message).lower()
 	yield from client.send_message(message.channel, sh.mention(message) + sh.insert_word(c, sh.get_args(message)))
 
 c_kurwa.command = r"(kurwa|fucking)"
@@ -285,6 +289,70 @@ def c_pair(client, message):
 		yield from client.send_message(message.channel, first + " × " + second)
 
 c_pair.command = r"pair"
+
+
+@asyncio.coroutine
+def c_losu(client, message):
+	if message.server:
+		nicks = []
+		nick = ""
+
+		channel_nev = "697179498558259393"
+		forbidden_all = ["205985469081714698"]
+		forbidden_per_channel = {
+			channel_nev : ["295551521884733440", "307949259658100736", "316150521989824513", "108688393860308992", "316261530859470849"]
+		}
+		
+		for n in message.server.members:
+			# and n.id is not message.author.id
+			if n.bot is not True and n.id not in forbidden_all and message.channel.permissions_for(n).read_messages and (message.channel.id not in forbidden_per_channel or n.id not in forbidden_per_channel[message.channel.id]):
+				if n.nick:
+					nicks.append([n.id, n.display_name + " (" + n.name + ")"])
+				else:
+					nicks.append([n.id, n.name])
+		
+		if message.channel.id in forbidden_per_channel:
+			db_path = sh.file_path("billy_db_losu.db")
+			data = None
+
+			if os.path.exists(db_path):
+				with open(db_path, "r") as db:
+					try:
+						data = json.load(db)
+					except:
+						data = {}
+			else:
+				data = {}
+
+			with open(db_path, "w") as db:
+				key = sh.get_args(message) or "all" #message.author.id
+				err = ""
+				
+				if message.channel.id not in data:
+					data[message.channel.id] = {}
+				
+				if key not in data[message.channel.id]:
+					data[message.channel.id][key] = []
+				
+				nicks_working_copy = [x for x in nicks if not (x[0] in data[channel_nev][key])]
+
+				if len(nicks_working_copy) == 0:
+					nicks_working_copy = nicks
+					data[message.channel.id][key] = []
+					err = " (losowane od początku)"
+
+				
+				person = random.choice(nicks_working_copy)
+				data[message.channel.id][key].append(person[0])
+				nick = person[1] + err
+
+				json.dump(data, db)
+		else: 
+			nick = random.choice(nicks)[1]
+		
+		yield from client.send_message(message.channel, sh.mention(message) + nick)
+
+c_losu.command = r"losu"
 
 
 @asyncio.coroutine
@@ -414,6 +482,19 @@ def c_letter_emoji(client, message):
 c_letter_emoji.command = r"b"
 
 
+@asyncio.coroutine
+def c_memberlist(client, message):
+	ret = ""
+
+	x = message.server.members
+	for member in x:
+		ret += member.name + "\n"
+	
+	yield from client.send_message(message.channel, ret)
+
+c_memberlist.command = r"members"
+
+
 # -------------------------------------
 # funkcje używające seed
 # -------------------------------------
@@ -428,11 +509,11 @@ def c_czy(client, message):
 
 	if sh.is_female(message):
 		responses_yes = responses_yes + ["tak jest pani kapitan", "trafiłaś w sedno"]
-		responses_no = responses_no + ["pani januszko NIE"]
+		responses_no = responses_no + ["pani januszko NIE", "chyba cię pojebało dziewczynko"]
 		responses_dunno = responses_dunno + ["nie wiem zarobiony jestem przyjdź Pani jutro", "co za debilka wymyśla te pytania", "nie jesteś za młoda żeby pytać o takie rzeczy?", "sama sobie odpowiedz"]
 	else:
 		responses_yes = responses_yes + ["tak jest panie kapitanie", "trafiłeś w sedno"]
-		responses_no = responses_no + ["panie januszu NIE"]
+		responses_no = responses_no + ["panie januszu NIE", "chyba cię pojebało"]
 		responses_dunno = responses_dunno + ["nie wiem zarobiony jestem przyjdź Pan jutro", "co za debil wymyśla te pytania", "nie jesteś za młody żeby pytać o takie rzeczy?", "sam sobie odpowiedz"]
 	
 	if random.random() < 0.45:
@@ -498,8 +579,8 @@ c_abcd.command = r"abcd"
 
 @asyncio.coroutine
 def c_gdzie(client, message):
-	prefix = ["pod mostem", "w dupie", "na głowie", "na kompie", "w parafii", "w koszu", "w fapfolderze", "na rowerze"]
-	suffix = [get_random_nickname(message, "genitive"), "na wydziale elektrycznym", "w Kathowicach", "u Kath w piwnicy", "we Wrocławiu", "w Szczecinie", "w Brwinowie", "w Warszawie", "w Bogatyni", "w Golubiu-Dobrzynie", "w Rzeszowie", "w Krakowie", "w Bydgoszczy", "w Magdalence przy stole z pozostałymi zdrajcami", "tam gdzie stało ZOMO", "na serwerze Interii", "w Gołodupczynie", "w kinie w Berlinie", "w redakcji CD-Action", "naprawdę mnie kusi żeby napisać \"w dupie\"", "w bagażniku Hondy nevki"]
+	prefix = ["pod mostem", "w dupie", "na głowie", "na kompie", "w parafii", "w koszu", "w fapfolderze", "na rowerze", "na penisie", "w Hondzie", "w portfelu", "w czipsach", "w brodzie Gofra"]
+	suffix = [get_random_nickname(message, "genitive"), "na wydziale elektrycznym", "w Kathowicach", "w Sosnowcu", "u Kath w piwnicy", "we Wrocławiu", "w Szczecinie", "w Brwinowie", "w Warszawie", "w Bogatyni", "w Golubiu-Dobrzynie", "w Rzeszowie", "w Krakowie", "w Bydgoszczy", "w Magdalence przy stole z pozostałymi zdrajcami", "tam gdzie stało ZOMO", "na serwerze Interii", "w Gołodupczynie", "w kinie w Berlinie", "w redakcji CD-Action", "naprawdę mnie kusi żeby napisać \"w dupie\"", "w bagażniku Hondy nevki", "w Pendolino", "za górami, za lasami, za siedmioma dolinami...", "w bagnie Shreka", "w telezakupach Mango"]
 	yield from client.send_message(message.channel, sh.mention(message) + random.choice(prefix) + " " + random.choice(suffix))
 
 c_gdzie.command = r"gdzie"
@@ -507,7 +588,8 @@ c_gdzie.params = ["zapytanie"]
 
 @asyncio.coroutine
 def c_kiedy(client, message):
-	replies = ["o wpół do dziesiątej rano w Polsce", "wczoraj", "jutro", "jak przyjdą szwedy", "w trzy dni po premierze Duke Nukem Forever 2", "dzień przed końcem świata", "nigdy", "jak dojdą pieniądze", "za godzinkę", "kiedy tylko sobie życzysz", "gdy przestaniesz zadawać debilne pytania", "jak wybiorą czarnego papieża", "już za cztery lata, już za cztery lata", "na sylwestrze u P_aula", "o 3:33", "o 21:37", "jak Kath napisze magisterkę", "jak Dracia zrobi wszystko co musi kiedyś zrobić", "jak nevka wróci na Discorda", "jak Paul wejdzie do platyny", "jak Fel schudnie", "gdy Aiden zgoli rude kudły", "dzień po wybuchowym debiucie Brylanta", "za 12 lat", "gdy Martius przestanie pierdolić o ptakach", "jak podbiel zje mi dupę", "a co ja jestem, informacja turystyczna?", "jak wreszcie wyjebiemy stąd Nargoga", "jak Debiru awansuje do seniora", "jak kanau_fela zamknie FBI", "już tej nocy w twoim łóżku", "jak Strejlau umrze bo jest stary", "nie"]
+	random_date = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time() + random.randint(3600, 31622400)))
+	replies = ["o wpół do dziesiątej rano w Polsce", "wczoraj", "jutro", "jak przyjdą szwedy", "w trzy dni po premierze Duke Nukem Forever 2", "dzień przed końcem świata", "nigdy", "jak dojdą pieniądze", "za godzinkę", "kiedy tylko sobie życzysz", "gdy przestaniesz zadawać debilne pytania", "jak wybiorą czarnego papieża", "już za cztery lata, już za cztery lata", "na sylwestrze u P_aula", "o 3:33", "o 21:37", "jak Kath napisze magisterkę", "jak Dracia zrobi wszystko co musi kiedyś zrobić", "jak KatajNapsika wróci na Discorda", "jak Paul wejdzie do platyny", "jak Fel znowu zgrubnie", "gdy Aiden zgoli rude kudły", "dzień po wybuchowym debiucie Brylanta", "za 12 lat", "gdy Martius przestanie pierdolić o ptakach", "jak podbiel zje mi dupę", "a co ja jestem, informacja turystyczna?", "jak wreszcie wyjebiemy stąd Nargoga", "jak Debiru awansuje do seniora", "jak kanau_fela zamknie FBI", "już tej nocy w twoim łóżku", "jak Strejlau umrze bo jest stary", "nie", "jak się skończy pandemia", "jak Kataj skończy 12 lat", random_date]
 	
 	if sh.is_female(message):
 		replies = replies + ["gdy wreszcie znajdziesz chłopaka"]
@@ -520,18 +602,25 @@ c_kiedy.command = r"kiedy"
 c_kiedy.params = ["zapytanie"]
 
 @asyncio.coroutine
-def c_kim(client, message):
-	yield from client.send_message(message.channel, sh.mention(message) + get_random_nickname(message, "instrumental"))
-
-c_kim.command = r"kim"
-c_kim.params = ["zapytanie"]
-
-@asyncio.coroutine
 def c_kto(client, message):
 	yield from client.send_message(message.channel, sh.mention(message) + get_random_nickname(message, "nominative"))
 
 c_kto.command = r"kto"
 c_kto.params = ["zapytanie"]
+
+@asyncio.coroutine
+def c_czyj(client, message):
+	yield from client.send_message(message.channel, sh.mention(message) + get_random_nickname(message, "genitive", sh.get_command(message)))
+
+c_czyj.command = r"(z\s|u\s|o\s)?(czyi(m|mi|ch)|czyj(a|e|ego|ej)?)"
+c_czyj.params = ["zapytanie"]
+
+@asyncio.coroutine
+def c_komu(client, message):
+	yield from client.send_message(message.channel, sh.mention(message) + get_random_nickname(message, "dative"))
+
+c_komu.command = r"komu"
+c_komu.params = ["zapytanie"]
 
 @asyncio.coroutine
 def c_kogo(client, message):
@@ -541,15 +630,29 @@ c_kogo.command = r"kogo"
 c_kogo.params = ["zapytanie"]
 
 @asyncio.coroutine
-def c_czyj(client, message):
-	yield from client.send_message(message.channel, sh.mention(message) + get_random_nickname(message, "genitive", sh.get_command(message)))
+def c_ukogo(client, message):
+	yield from client.send_message(message.channel, sh.mention(message) + "u " + get_random_nickname(message, "accusative"))
 
-c_czyj.command = r"(czyi(m|mi|ch)|czyj(a|e|ego|ej)?)"
-c_czyj.params = ["zapytanie"]
+c_ukogo.command = r"(u\skogo)"
+c_ukogo.params = ["zapytanie"]
 
 @asyncio.coroutine
-def c_komu(client, message):
-	yield from client.send_message(message.channel, sh.mention(message) + get_random_nickname(message, "dative"))
+def c_kim(client, message):
+	yield from client.send_message(message.channel, sh.mention(message) + get_random_nickname(message, "instrumental"))
 
-c_komu.command = r"komu"
-c_komu.params = ["zapytanie"]
+c_kim.command = r"kim"
+c_kim.params = ["zapytanie"]
+
+@asyncio.coroutine
+def c_zkim(client, message):
+	yield from client.send_message(message.channel, sh.mention(message) + "z " + get_random_nickname(message, "instrumental"))
+
+c_zkim.command = r"(z\skim)"
+c_zkim.params = ["zapytanie"]
+
+@asyncio.coroutine
+def c_okim(client, message):
+	yield from client.send_message(message.channel, sh.mention(message) + "o " + get_random_nickname(message, "locative"))
+
+c_okim.command = r"(o\skim)"
+c_okim.params = ["zapytanie"]
