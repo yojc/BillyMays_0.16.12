@@ -1,6 +1,8 @@
 import random
 import unidecode
 
+import billy_shared as sh
+
 # Mianownik 	M. 	kto? co? (jest) 	            góra 	słońce 	wiatr
 # Dopełniacz 	D. 	kogo? czego? (nie ma) 	        góry 	słońca 	wiatru
 # Celownik      C. 	komu? czemu? (się przyglądam) 	górze 	słońcu 	wiatrowi
@@ -30,7 +32,12 @@ def case_name_to_index(case):
 
 def get_random_nickname(message, case, cmd=None):
     def generate_variants(command):
-        return [command, "z " + command, "o " + command, "u " + command]
+        ret = [command]
+
+        for pr in sh.who_prefixes:
+            ret.append(pr + command)
+
+        return ret
     
     nicks = None
 
@@ -42,8 +49,12 @@ def get_random_nickname(message, case, cmd=None):
         nicks = nicks_default + nicks_politbiuro
     
     index = random.randint(0, len(nicks)-1)
+    prefix = ""
 
-    if cmd and (0 <= index <= len(nicks_default)-1):
+    if cmd and cmd.startswith(sh.who_prefixes):
+        prefix = cmd.split(None)[0] + " "
+
+    if cmd and "czy" in cmd and (0 <= index <= len(nicks_default)-1):
         ret = ["mój", "twój", "niczyj"]
 
         if cmd in generate_variants("czyim"):
@@ -67,7 +78,7 @@ def get_random_nickname(message, case, cmd=None):
         
         return ret[index]
     else:
-        return nicks[index][case_name_to_index(case)] + nicks[index][-1]
+        return prefix + nicks[index][case_name_to_index(case)] + nicks[index][-1]
 
 
 nicks_default = [
@@ -134,7 +145,7 @@ nicks_politbiuro = [
     ["Ramzes", "Ramzesa", "Ramzesowi", "Ramzesa", "Ramzesem", "Ramzesie", "Ramzesie", ""],
     ["rane", "rane", "rane", "rane", "rane", "rane", "rane obsrane i niepozmywane", " <:blini:256876147810369556>"],
  #   ["RIP", "RIPa", "RIPowi", "RIPa", "RIPem", "RIPie", "RIPie", ""],
-    ["Rysia", "Rysi", "Rysi", "Rysi", "Rysią", "Rysi", "Rysiu", ""],
+    ["Rysia", "Rysi", "Rysi", "Rysię", "Rysią", "Rysi", "Rysiu", ""],
  #   ["Seeker", "Seekera", "Seekerowi", "Seekera", "Seekerem", "Seekerze", "Seekerze", ""],
     ["Sermaciej", "Sermacieja", "Sermaciejowi", "Sermacieja", "Sermaciejem", "Sermacieju", "Sermacieju", ""],
     ["Shaker", "Shakera", "Shakerowi", "Shakera", "Shakerem", "Shakerze", "Shaker", ""],

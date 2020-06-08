@@ -6,6 +6,9 @@ import random
 
 import billy_shared as sh
 
+# How many times should the bot retry the query in case an error occurs?
+retry_count = 3
+
 def parse_args(msg):
 	in_lang = "auto"
 	out_lang = "en"
@@ -36,32 +39,44 @@ def translate(text, in_lang='auto', out_lang='en', verify_ssl=True):
 	query = {
 		"client": "gtx",
 		"sl": in_lang,
+		"source": in_lang,
 		"tl": out_lang,
 		"dt": "t",
 		"q": text,
 	}
 	url = "http://translate.googleapis.com/translate_a/single"
-	result = requests.get(url, params=query, timeout=40, headers=headers,
-						  verify=verify_ssl).text
 
-	if result == '[,,""]':
-		return None, in_lang
+	for i in range(retry_count):
+		#print(str(i) + ", " + in_lang + " => " + out_lang)
+		result = requests.get(url, params=query, timeout=9.05, headers=headers,
+							verify=verify_ssl).text
 
-	while ',,' in result:
-		result = result.replace(',,', ',null,')
-		result = result.replace('[,', '[null,')
+		if result == '[,,""]':
+			return None, in_lang
 
-	data = json.loads(result)
+		while ',,' in result:
+			result = result.replace(',,', ',null,')
+			result = result.replace('[,', '[null,')
 
-	if raw:
-		return str(data), 'en-raw'
+		try:
+			data = json.loads(result)
+		except:
+			if i == retry_count-1:
+				sh.print_warning("\"" + text + "\", " + in_lang + " => " + out_lang, date=True)
+				#return -1, result
+				return text, False
+			else:
+				continue
 
-	try:
-		language = data[2]  # -2][0][0]
-	except:
-		language = '?'
+		if raw:
+			return str(data), 'en-raw'
 
-	return ''.join(x[0] for x in data[0]), language
+		try:
+			language = data[2]  # -2][0][0]
+		except:
+			language = '?'
+
+		return ''.join(x[0] for x in data[0]), language
 
 
 @asyncio.coroutine
@@ -79,9 +94,20 @@ def mangle(client, channel, text, dest="en", randomize=False, original=False):
 	langs.append(dest)
 	
 	i = 1
+	last_lang = langs[0]
 	
 	while i < len(langs):
-		text = translate(text, langs[i-1], langs[i])[0]
+		text = translate(text, last_lang, langs[i])
+
+		if text and text[0] is not -1:
+			if text[1]:
+				last_lang = langs[i]
+			text = text[0]
+		else:
+			yield from client.send_message(channel, sh.dump_errlog_msg(text[1]))
+			text = "dupa cycki"
+			break
+		
 		yield from client.send_typing(channel)
 		i += 1
 	
@@ -109,7 +135,7 @@ def c_trp(client, message):
 	result = translate(sh.get_args(message), "auto", "pl")
 	
 	if result[0] is None:
-		yield from client.send_message(message.channel, sh.mention(message) + "brak wyników, albo Google się zesrało.")
+		yield from client.send_message(message.channel, sh.mention(message) + "Google nie zna języka śląskiego, proszę tu takich rzeczy nie wklejać.")
 	else:
 		yield from client.send_message(message.channel, sh.mention(message) + "[" + result[1] + " => pl] " + result[0])
 
@@ -161,8 +187,13 @@ c_manglew.desc = "wstaw + manglep"
 
 @asyncio.coroutine
 def c_manglekn(client, message):
-	text = sh.insert_word("kurwa", sh.get_args(message)).replace("\n", " ")
-	yield from client.send_message(message.channel, sh.mention(message) + (yield from mangle(client, message.channel, text, "pl")))
+	result = translate(sh.get_args(message), "auto", "pl")
+
+	if result[0] is None:
+		yield from client.send_message(message.channel, sh.mention(message) + "Google nie zna języka śląskiego, proszę tu takich rzeczy nie wklejać.")
+	else:
+		text = sh.insert_word("kurwa", result[0]).replace("\n", " ")
+		yield from client.send_message(message.channel, sh.mention(message) + (yield from mangle(client, message.channel, text, "pl")))
 
 c_manglekn.command = r"manglekn"
 c_manglekn.params = ["zdanie"]
@@ -170,8 +201,13 @@ c_manglekn.desc = "manglep z ekstra dużymi kawałkami wulgaryzmów i bez enter�
 
 @asyncio.coroutine
 def c_manglek(client, message):
-	text = sh.insert_word("kurwa", sh.get_args(message))
-	yield from client.send_message(message.channel, sh.mention(message) + (yield from mangle(client, message.channel, text, "pl")))
+	result = translate(sh.get_args(message), "auto", "pl")
+
+	if result[0] is None:
+		yield from client.send_message(message.channel, sh.mention(message) + "Google nie zna języka śląskiego, proszę tu takich rzeczy nie wklejać.")
+	else:
+		text = sh.insert_word("kurwa", result[0])
+		yield from client.send_message(message.channel, sh.mention(message) + (yield from mangle(client, message.channel, text, "pl")))
 
 c_manglek.command = r"manglek"
 c_manglek.params = ["zdanie"]
@@ -179,8 +215,13 @@ c_manglek.desc = "manglep z ekstra dużymi kawałkami wulgaryzmów"
 
 @asyncio.coroutine
 def c_hakan(client, message):
-	text = sh.insert_word("hakan", sh.get_args(message))
-	yield from client.send_message(message.channel, sh.mention(message) + (yield from mangle(client, message.channel, text, "pl")))
+	result = translate(sh.get_args(message), "auto", "pl")
+
+	if result[0] is None:
+		yield from client.send_message(message.channel, sh.mention(message) + "Google nie zna języka śląskiego, proszę tu takich rzeczy nie wklejać.")
+	else:
+		text = sh.insert_word("hakan", result[0])
+		yield from client.send_message(message.channel, sh.mention(message) + (yield from mangle(client, message.channel, text, "pl")))
 
 c_hakan.command = r"(al)?haka(n|m)"
 c_hakan.params = ["zdanie"]

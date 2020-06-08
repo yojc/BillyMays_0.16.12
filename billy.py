@@ -39,6 +39,8 @@ import billy_c_sopel_calc
 import billy_c_sopel_dice
 import billy_c_sopel_remind
 
+print("--------")
+
 # Set up logging
 # import logging
 # import time
@@ -288,19 +290,20 @@ def on_ready():
 	global sopel_reminder_setup
 	
 	print('Logged in as '+client.user.name+' (ID:'+client.user.id+') | Connected to '+str(len(client.servers))+' servers | Connected to '+str(len(set(client.get_all_members())))+' users')
+	print('Connection datetime: ' + str(datetime.datetime.now()))
 	print('--------')
-	print('Current Discord.py Version: {} | Current Python Version: {}'.format(discord.__version__, platform.python_version()))
-	print('--------')
-	print('Use this link to invite {}:'.format(client.user.name))
-	print('https://discordapp.com/oauth2/authorize?client_id={}&scope=bot&permissions=8'.format(client.user.id))
-	print('--------')
+	#print('Current Discord.py Version: {} | Current Python Version: {}'.format(discord.__version__, platform.python_version()))
+	#print('--------')
+	#print('Use this link to invite {}:'.format(client.user.name))
+	#print('https://discordapp.com/oauth2/authorize?client_id={}&scope=bot&permissions=8'.format(client.user.id))
+	#print('--------')
 	
 	if not sopel_reminder_setup:
-		sh.print_warning("### CREATED REMINDER TASK " + str(datetime.datetime.now()))
+		#sh.print_warning("### CREATED REMINDER TASK " + str(datetime.datetime.now()))
 		sopel_reminder_setup = True
 		yield from billy_c_sopel_remind.setup(client)
-	else:
-		sh.print_warning("### REMINDERS ALREADY ACTIVE")
+	#else:
+	#	sh.print_warning("### REMINDERS ALREADY ACTIVE")
 		
 
 

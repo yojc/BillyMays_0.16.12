@@ -332,3 +332,17 @@ def c_memeapproved(client, message):
 		yield from client.send_file(message.channel, sh.file_path("img/_zL1eQZ5VldbBss2.webm"), filename="and_knuckles.webm")
 
 c_memeapproved.command = r"(approved|knuckles)"
+
+
+@asyncio.coroutine
+def c_gamer(client, message):
+	yield from client.send_file(message.channel, sh.file_path("img/So_Heres_Your_Problem.webm"))
+
+c_gamer.command = r"gamer"
+
+
+@asyncio.coroutine
+def c_respects(client, message):
+	yield from client.send_file(message.channel, sh.file_path("img/showmethemoney.gif"))
+
+c_respects.command = r"f"

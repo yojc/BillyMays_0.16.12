@@ -283,12 +283,13 @@ def c_pair(client, message):
 		first = random.choice(nicks)
 		second = random.choice(nicks)
 		
-		while first == second:
-			second = random.choice(nicks)
+		if len(nicks) > 1:
+			while first == second:
+				second = random.choice(nicks)
 		
 		yield from client.send_message(message.channel, first + " × " + second)
 
-c_pair.command = r"pair"
+c_pair.command = r"(pair|ship)"
 
 
 @asyncio.coroutine
@@ -300,7 +301,7 @@ def c_losu(client, message):
 		channel_nev = "697179498558259393"
 		forbidden_all = ["205985469081714698"]
 		forbidden_per_channel = {
-			channel_nev : ["295551521884733440", "307949259658100736", "316150521989824513", "108688393860308992", "316261530859470849"]
+			channel_nev : ["295551521884733440", "316150521989824513", "108688393860308992", "316261530859470849"]
 		}
 		
 		for n in message.server.members:
@@ -530,8 +531,12 @@ c_czy.params = ["zapytanie"]
 
 @asyncio.coroutine
 def c_ile(client, message):
-    zeros = random.randint(1,4)
-    yield from client.send_message(message.channel, sh.mention(message) + str(random.randint(pow(10, zeros-1), pow(10, zeros))))
+	if random.randint(0,50) < 1:
+		replies = ["fafnaście", "szyberdzieści brlndpięć", "czypiendziesiont", "pisiont", "mniej niz zero", "tyle ile Pudzian bierze na klatę jak ma dobry dzień", "sto tysięcy milionów"]
+		yield from client.send_message(message.channel, sh.mention(message) + random.choice(replies))
+	else:
+		zeros = random.randint(1,4)
+		yield from client.send_message(message.channel, sh.mention(message) + str(random.randint(pow(10, zeros-1), pow(10, zeros))))
 
 c_ile.command = r"(ile|ilu)"
 c_ile.params = ["zapytanie"]
@@ -588,7 +593,7 @@ c_gdzie.params = ["zapytanie"]
 
 @asyncio.coroutine
 def c_kiedy(client, message):
-	random_date = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time() + random.randint(3600, 31622400)))
+	random_date = time.strftime("%Y-%m-%d %H:%M", time.localtime(time.time() + random.randint(3600, 31622400)))
 	replies = ["o wpół do dziesiątej rano w Polsce", "wczoraj", "jutro", "jak przyjdą szwedy", "w trzy dni po premierze Duke Nukem Forever 2", "dzień przed końcem świata", "nigdy", "jak dojdą pieniądze", "za godzinkę", "kiedy tylko sobie życzysz", "gdy przestaniesz zadawać debilne pytania", "jak wybiorą czarnego papieża", "już za cztery lata, już za cztery lata", "na sylwestrze u P_aula", "o 3:33", "o 21:37", "jak Kath napisze magisterkę", "jak Dracia zrobi wszystko co musi kiedyś zrobić", "jak KatajNapsika wróci na Discorda", "jak Paul wejdzie do platyny", "jak Fel znowu zgrubnie", "gdy Aiden zgoli rude kudły", "dzień po wybuchowym debiucie Brylanta", "za 12 lat", "gdy Martius przestanie pierdolić o ptakach", "jak podbiel zje mi dupę", "a co ja jestem, informacja turystyczna?", "jak wreszcie wyjebiemy stąd Nargoga", "jak Debiru awansuje do seniora", "jak kanau_fela zamknie FBI", "już tej nocy w twoim łóżku", "jak Strejlau umrze bo jest stary", "nie", "jak się skończy pandemia", "jak Kataj skończy 12 lat", random_date]
 	
 	if sh.is_female(message):
@@ -612,7 +617,7 @@ c_kto.params = ["zapytanie"]
 def c_czyj(client, message):
 	yield from client.send_message(message.channel, sh.mention(message) + get_random_nickname(message, "genitive", sh.get_command(message)))
 
-c_czyj.command = r"(z\s|u\s|o\s)?(czyi(m|mi|ch)|czyj(a|e|ego|ej)?)"
+c_czyj.command = r"(z\s|u\s|o\s|na\s|za\s|od\s)?(czyi(m|mi|ch)|czyj(a|e|ego|ej)?)"
 c_czyj.params = ["zapytanie"]
 
 @asyncio.coroutine
@@ -624,35 +629,28 @@ c_komu.params = ["zapytanie"]
 
 @asyncio.coroutine
 def c_kogo(client, message):
-	yield from client.send_message(message.channel, sh.mention(message) + get_random_nickname(message, "accusative"))
+	yield from client.send_message(message.channel, sh.mention(message) + get_random_nickname(message, "genitive", sh.get_command(message)))
 
-c_kogo.command = r"kogo"
+c_kogo.command = r"(z\s|u\s|od\s)?kogo"
 c_kogo.params = ["zapytanie"]
 
 @asyncio.coroutine
-def c_ukogo(client, message):
-	yield from client.send_message(message.channel, sh.mention(message) + "u " + get_random_nickname(message, "accusative"))
+def c_kogo_bier(client, message):
+	yield from client.send_message(message.channel, sh.mention(message) + get_random_nickname(message, "accusative", sh.get_command(message)))
 
-c_ukogo.command = r"(u\skogo)"
-c_ukogo.params = ["zapytanie"]
+c_kogo_bier.command = r"(o\s|na\s|za\s)?kogo"
+c_kogo_bier.params = ["zapytanie"]
 
 @asyncio.coroutine
 def c_kim(client, message):
-	yield from client.send_message(message.channel, sh.mention(message) + get_random_nickname(message, "instrumental"))
+	yield from client.send_message(message.channel, sh.mention(message) + get_random_nickname(message, "instrumental", sh.get_command(message)))
 
-c_kim.command = r"kim"
+c_kim.command = r"(z\s|za\s)?kim"
 c_kim.params = ["zapytanie"]
 
 @asyncio.coroutine
-def c_zkim(client, message):
-	yield from client.send_message(message.channel, sh.mention(message) + "z " + get_random_nickname(message, "instrumental"))
+def c_kim_msc(client, message):
+	yield from client.send_message(message.channel, sh.mention(message) + get_random_nickname(message, "locative", sh.get_command(message)))
 
-c_zkim.command = r"(z\skim)"
-c_zkim.params = ["zapytanie"]
-
-@asyncio.coroutine
-def c_okim(client, message):
-	yield from client.send_message(message.channel, sh.mention(message) + "o " + get_random_nickname(message, "locative"))
-
-c_okim.command = r"(o\skim)"
-c_okim.params = ["zapytanie"]
+c_kim_msc.command = r"(u\s|o\s|na\s|od\s)?kim"
+c_kim_msc.params = ["zapytanie"]

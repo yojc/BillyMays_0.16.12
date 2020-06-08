@@ -10,42 +10,42 @@ from billy_c_img import c_wypierdalaj as img_wypierd
 
 @asyncio.coroutine
 def f_ohshitimsorry(client, message):
-	yield from client.send_message(message.channel, "sorry for what?")
+	yield from client.send_message(message.channel, "sorry for what? <:podbiel:326424787121602560>")
 
 f_ohshitimsorry.command = r'^oh shit,? I(\')?m sorry'
 f_ohshitimsorry.prob = 1.0
 
 @asyncio.coroutine
 def f_sorryforwhat(client, message):
-	yield from client.send_message(message.channel, "our dad told us not to be ashamed of our dicks")
+	yield from client.send_message(message.channel, "our dad told us not to be ashamed of our dicks <:podbiel:326424787121602560>")
 
 f_sorryforwhat.command = r'^sorry for what'
 f_sorryforwhat.prob = 1.0
 
 @asyncio.coroutine
 def f_nottobeashamed(client, message):
-	yield from client.send_message(message.channel, "especially since they're such good size and all")
+	yield from client.send_message(message.channel, "especially since they're such good size and all <:podbiel:326424787121602560>")
 
 f_nottobeashamed.command = r'our dad told us not to be ashamed of our dicks'
 f_nottobeashamed.prob = 1.0
 
 @asyncio.coroutine
 def f_iseethat(client, message):
-	yield from client.send_message(message.channel, "yeah, I see that, daddy gave you good advice")
+	yield from client.send_message(message.channel, "yeah, I see that, daddy gave you good advice <:mhhhmm:256873687871913984>")
 
 f_iseethat.command = r'specially since (it(\')?s|theyre|they\'re) such good size'
 f_iseethat.prob = 1.0
 
 @asyncio.coroutine
 def f_goodadvice(client, message):
-	yield from client.send_message(message.channel, "daddy gave you good advice")
+	yield from client.send_message(message.channel, "daddy gave you good advice <:mhhhmm:256873687871913984>")
 	
 f_goodadvice.command = r'^yea(h)?(,)? i see that$'
 f_goodadvice.prob = 1.0
 
 @asyncio.coroutine
 def f_itgetsbigger(client, message):
-	yield from client.send_message(message.channel, "it gets bigger when I pull on it")
+	yield from client.send_message(message.channel, "it gets bigger when I pull on it <:podbiel:326424787121602560>")
 
 f_itgetsbigger.command = r'daddy gave you good advice'
 f_itgetsbigger.prob = 1.0
@@ -63,42 +63,42 @@ def f_mmmm(client, message):
 		ret += 'M'
 	for x in range(0, random.randint(4, 13)):
 		ret += 'm'
-	yield from client.send_message(message.channel, ret)
+	yield from client.send_message(message.channel, ret + " <:mhhhmm:256873687871913984>")
 
 f_mmmm.command = r'^it gets bigger when I pull'
 f_mmmm.prob = 1.0
 
 @asyncio.coroutine
 def f_iriptheskin(client, message):
-	yield from client.send_message(message.channel, "sometimes I pull it on so hard, I rip the skin!")
+	yield from client.send_message(message.channel, "sometimes I pull it on so hard, I rip the skin! <:podbiel:326424787121602560>")
 
 f_iriptheskin.command = r'^m[mh]{9,}'
 f_iriptheskin.prob = 1.0
 
 @asyncio.coroutine
 def f_mydaddytold(client, message):
-	yield from client.send_message(message.channel, "my daddy told me few things too")
+	yield from client.send_message(message.channel, "my daddy told me few things too <:mhhhmm:256873687871913984>")
 
 f_mydaddytold.command = r'^sometimes I pull it on so hard(,)? I rip the skin'
 f_mydaddytold.prob = 1.0
 
 @asyncio.coroutine
 def f_nottorip(client, message):
-	yield from client.send_message(message.channel, "like, uh, how not to rip the skin by using someone else's mouth")
+	yield from client.send_message(message.channel, "like, uh, how not to rip the skin by using someone else's mouth <:mhhhmm:256873687871913984>")
 
 f_nottorip.command = r'my daddy (told|taught) me few things too'
 f_nottorip.prob = 1.0
 
 @asyncio.coroutine
 def f_willyoushowme(client, message):
-	yield from client.send_message(message.channel, "will you show me?")
+	yield from client.send_message(message.channel, "will you show me? <:podbiel:326424787121602560>")
 
 f_willyoushowme.command = r'how not to rip the skin by using someone else(\')?s mouth'
 f_willyoushowme.prob = 1.0
 
 @asyncio.coroutine
 def f_idberighthappy(client, message):
-	yield from client.send_message(message.channel, "I'd be right happy to!")
+	yield from client.send_message(message.channel, "I'd be right happy to! <:mhhhmm:256873687871913984>")
 
 f_idberighthappy.command = r'^will you show me'
 f_idberighthappy.prob = 1.0

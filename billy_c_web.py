@@ -5,6 +5,7 @@ import json
 import re
 import wolframalpha
 import ftfy
+import datetime
 from bs4 import BeautifulSoup
 from cleverwrap import CleverWrap
 
@@ -40,9 +41,8 @@ def google(q, image=False):
 		url += "&tbm=isch&tbs=" + image
 	
 	try:
-		r = s.get(url, headers=headers_Get)
+		r = s.get(url, headers=headers_Get, timeout=12.05)
 	except:
-		print("except")
 		return False
 	 
 	soup = BeautifulSoup(r.text, "html.parser")
@@ -61,8 +61,26 @@ def google(q, image=False):
 		if len(searchWrapper) == 0:
 			hack = True
 			searchWrapper = soup.findAll('script')
-			json_text = re.sub("AF_initDataCallback.+{return", "", searchWrapper[-2].text).strip()[:-4]
-			searchWrapper = json.loads(json_text)[31][0][12][2]
+			
+			try:
+				indexes = range(0, -len(searchWrapper), -1)
+
+				for index in indexes:
+					json_text = re.sub("AF_initDataCallback.+{return", "", searchWrapper[index].text).strip()[:-4]
+
+					if sh.is_json(json_text) and len(json.loads(json_text)) > 30:
+						if len(json.loads(json_text)[31]) > 0:
+							searchWrapper = json.loads(json_text)[31][0][12][2]
+							break
+						else:
+							return False
+					else:
+						if index == indexes[-1]:
+							return r.text
+						else:
+							continue
+			except IndexError:
+				return r.text
 		
 		url = None
 		
@@ -110,7 +128,7 @@ def yt(q):
 	url = 'https://www.youtube.com/results?search_query=' + q + '&sp=EgIQAQ%253D%253D'
 	
 	try:
-		r = s.get(url, headers=headers_Get)
+		r = s.get(url, headers=headers_Get, timeout=12.05)
 	except:
 		return False
 	
@@ -134,7 +152,7 @@ def numerki(q):
 	url = 'https://www.nhentai.net/g/' + q + '/'
 	
 	try:
-		r = s.get(url)
+		r = s.get(url, timeout=12.05)
 	except:
 		return False
 		
@@ -161,7 +179,7 @@ def tumblr_random(q):
 	url = 'http://'+q+'.tumblr.com/random'
 	
 	try:
-		r = s.get(url, headers=headers_Get)
+		r = s.get(url, headers=headers_Get, timeout=12.05)
 		if r.url == url:
 			return False
 		else:
@@ -177,7 +195,7 @@ def suchar():
 	url = 'http://piszsuchary.pl/losuj'
 	
 	try:
-		r = s.get(url, headers=headers_Get)
+		r = s.get(url, headers=headers_Get, timeout=12.05)
 	except:
 		return False
 	
@@ -195,7 +213,7 @@ def cytat():
 	url = 'http://www.losowe.pl/'
 	
 	try:
-		r = s.get(url, headers=headers_Get)
+		r = s.get(url, headers=headers_Get, timeout=12.05)
 	except:
 		return False
 	
@@ -214,28 +232,28 @@ def bzdur():
 	def joke():
 		url = "https://geek-jokes.sameerkumar.website/api"
 		try:
-			r = s.get(url, headers = headers_Get)
+			r = s.get(url, headers = headers_Get, timeout=12.05)
 		except:
 			return None
 		return r.text.strip()[1:-1]
 	def basically():
 		url = "http://itsthisforthat.com/api.php?text"
 		try:
-			r = s.get(url, headers = headers_Get)
+			r = s.get(url, headers = headers_Get, timeout=12.05)
 		except:
 			return None
 		return r.text.strip()
 	def business():
 		url = "https://corporatebs-generator.sameerkumar.website/"
 		try:
-			r = s.get(url, headers = headers_Get)
+			r = s.get(url, headers = headers_Get, timeout=12.05)
 		except:
 			return None
 		return json.loads(r.text)["phrase"]
 	def advice():
 		url = "https://api.adviceslip.com/advice"
 		try:
-			r = s.get(url, headers = headers_Get)
+			r = s.get(url, headers = headers_Get, timeout=12.05)
 		except:
 			return None
 		return json.loads(r.text)["slip"]["advice"]
@@ -247,7 +265,7 @@ def bash():
 	url = 'http://www.losowe.pl/'
 	
 	try:
-		r = s.get(url, headers=headers_Get)
+		r = s.get(url, headers=headers_Get, timeout=12.05)
 	except:
 		return False
 	
@@ -306,12 +324,14 @@ def c_google_image(client, message):
 	for i in range(retry_count):
 		result = google(sh.get_args(message, True), "isch")
 		
-		if not result:
+		if not result or isinstance(result, str):
 			continue
 		else:
 			break
 	
-	if not result:
+	if isinstance(result, str):
+		yield from client.send_message(message.channel, sh.dump_errlog_msg(result))
+	elif not result:
 		yield from client.send_message(message.channel, sh.mention(message) + "brak wyników, albo Google się zesrało.")
 	else:
 		yield from client.send_message(message.channel, sh.mention(message) + result["url"])
@@ -326,12 +346,14 @@ def c_google_image_clipart(client, message):
 	for i in range(retry_count):
 		result = google(sh.get_args(message, True), "itp:clipart")
 		
-		if not result:
+		if not result or isinstance(result, str):
 			continue
 		else:
 			break
 	
-	if not result:
+	if isinstance(result, str):
+		yield from client.send_message(message.channel, sh.dump_errlog_msg(result))
+	elif not result:
 		yield from client.send_message(message.channel, sh.mention(message) + "brak wyników, albo Google się zesrało.")
 	else:
 		yield from client.send_message(message.channel, sh.mention(message) + result["url"])
@@ -346,12 +368,14 @@ def c_google_image_face(client, message):
 	for i in range(retry_count):
 		result = google(sh.get_args(message, True), "itp:face")
 		
-		if not result:
+		if not result or isinstance(result, str):
 			continue
 		else:
 			break
 	
-	if not result:
+	if isinstance(result, str):
+		yield from client.send_message(message.channel,sh.dump_errlog_msg(result))
+	elif not result:
 		yield from client.send_message(message.channel, sh.mention(message) + "brzydal")
 	else:
 		yield from client.send_message(message.channel, sh.mention(message) + result["url"])
@@ -366,12 +390,14 @@ def c_google_image_gif(client, message):
 	for i in range(retry_count):
 		result = google(sh.get_args(message, True), "itp:animated")
 		
-		if not result:
+		if not result or isinstance(result, str):
 			continue
 		else:
 			break
 	
-	if not result:
+	if isinstance(result, str):
+		yield from client.send_message(message.channel, sh.dump_errlog_msg(result))
+	elif not result:
 		yield from client.send_message(message.channel, sh.mention(message) + "brak wyników, albo Google się zesrało.")
 	else:
 		yield from client.send_message(message.channel, sh.mention(message) + result["url"])
@@ -454,7 +480,7 @@ def c_tumblr_r(client, message):
 	else:
 		yield from client.send_message(message.channel, sh.mention(message) + result)
 
-#c_tumblr_r.command = r"tumblrr(andom)?"
+c_tumblr_r.command = r"tumblrr(andom)?"
 c_tumblr_r.params = ["tumblr"]
 c_tumblr_r.desc = "losowy post z danego Tumblra"
 
@@ -469,7 +495,7 @@ def c_zwierzaki(client, message):
 	else:
 		yield from client.send_message(message.channel, sh.mention(message) + result)
 
-#c_zwierzaki.command = r"zwierzaki"
+c_zwierzaki.command = r"zwierzaki"
 c_zwierzaki.desc = "losowy Tumblr ze zwierzakami"
 
 
@@ -482,7 +508,7 @@ def c_shitpostbot(client, message):
 	else:
 		yield from client.send_message(message.channel, sh.mention(message) + result)
 
-#c_shitpostbot.command = r"shitpost(bot)?"
+c_shitpostbot.command = r"shitpost(bot)?"
 
 
 @asyncio.coroutine

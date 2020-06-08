@@ -1,19 +1,29 @@
 import os
 import re
 import random
+import json
+import time
 from imp import find_module
 
 testing = False
+
+who_prefixes = ("o ", "z ", "u ", "na ", "za ", "od ")
 
 try:
 	find_module('colorama')
 	from colorama import Fore, Style, init as colorama_init
 	colorama_init()
-	def print_warning(text):
-		print(Fore.YELLOW + Style.BRIGHT + text + Style.RESET_ALL)
+	def print_warning(text, date=False):
+		if date:
+			print(Fore.YELLOW + Style.BRIGHT + time.strftime("%Y-%m-%d %H:%M:%S") + " " + text + Style.RESET_ALL)
+		else:
+			print(Fore.YELLOW + Style.BRIGHT + text + Style.RESET_ALL)
 except ImportError:
-	def print_warning(text):
-		print(text)
+	def print_warning(text, date=False):
+		if date:
+			print(time.strftime("%Y-%m-%d %H:%M:%S") + " " + text)
+		else:
+			print(text)
 	print_warning("Colorama library not installed, errors won't be colorized")
 
 def debug(msg, obj=False):
@@ -22,6 +32,23 @@ def debug(msg, obj=False):
 			print(msg + " [author: {}; channel: {}; time: {}]".format(str(obj.author), str(obj.channel), str(obj.timestamp)))
 		else:
 			print(msg)
+
+def dump_errlog(content):
+	logfilename = time.strftime("%Y-%m-%d_%H-%M-%S.txt")
+	with open(file_path("errlog/" + logfilename), "w") as logfile:
+		logfile.write(content)
+	
+	return logfilename
+
+def dump_errlog_msg(content):
+	return "Ojoj, chyba serwer mi po śląsku odpowiedział. <@307949259658100736> gamoniu sprawdź plik " + dump_errlog(content)
+
+def is_json(myjson):
+	try:
+		json_object = json.loads(myjson)
+	except ValueError as e:
+		return False
+	return True
 
 def check_dest(msg):
 	if str(msg.channel).startswith("Direct Message"):
@@ -64,11 +91,15 @@ def get_args(msg, clean = False):
 def get_command(msg):
 	msg_strip = rm_leading_quotes(msg)[1:]
 
-	if msg_strip.startswith(("o ", "z ", "u ")):
+	if msg_strip.startswith(who_prefixes):
 		tmp = msg_strip.split(None, 2)
 		return tmp[0] + " " + tmp[1]
 	else:
-		return msg_strip.split(None, 2)[0]
+		try:
+			return msg_strip.split(None, 2)[0]
+		except Exception:
+			print_warning(msg_strip)
+			return None
 
 def generate_seed(input):
 	return ''.join(ch for ch, _ in itertools.groupby(''.join(sorted(re.sub("[^a-z0-9]", "", replace_all(input, {u'Ą':'A', u'Ę':'E', u'Ó':'O', u'Ś':'S', u'Ł':'L', u'Ż':'Z', u'Ź':'Z', u'Ć':'C', u'Ń':'N', u'ą':'a', u'ę':'e', u'ó':'o', u'ś':'s', u'ł':'l', u'ż':'z', u'ź':'z', u'ć':'c', u'ń':'n'}).lower())[3:]))))

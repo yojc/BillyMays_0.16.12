@@ -200,7 +200,7 @@ def c_remind(client, message_obj):
 			reminder = reminder + piece
 			stop = True
 	if duration == 0:
-		yield from client.send_message(message_obj.channel, sh.mention(message_obj) + "i może frytki do tego?")
+		yield from client.send_message(message_obj.channel, sh.mention(message_obj) + "chyba zły format, może nie podano liczby (np. .za 1 dzień ...)")
 		return
 
 	if duration % 1:
@@ -211,7 +211,7 @@ def c_remind(client, message_obj):
 		None, None, None, message_obj.author.mention, message_obj.channel.id)
 	yield from create_reminder(client, message_obj, duration, reminder, timezone)
 
-c_remind.command = r"(za|in)"
+c_remind.command = r"(za\s\d|in)"
 c_remind.params = ["za ile czasu", "wiadomość"]
 c_remind.desc = "Przypomnij za..."
 
@@ -233,7 +233,7 @@ def c_at(client, message_obj):
 	regex = re.compile(r'(?:(\d{4})-(\d{1,2})-(\d{1,2}) )?(\d+):(\d+)(?::(\d+))?([^\s\d]+)? (.*)')
 	match = regex.match(sh.get_args(message_obj))
 	if not match:
-		yield from client.send_message(message_obj.channel, sh.mention(message_obj) + "i może frytki do tego?")
+		yield from client.send_message(message_obj.channel, sh.mention(message_obj) + "chyba zły format daty/godziny (HH:MM lub HH:MM:SS, opcjonalnie z datą: RRRR-MM-DD HH:MM)")
 		return NOLIMIT
 	year, month, day, hour, minute, second, tz, message = match.groups()
 	if not second:
