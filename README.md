@@ -1,6 +1,6 @@
 # Billy Mays
 
-This is just a Discord bot written for my personal use. It's very sloppily written - please don't judge. Also lots of hardcoded Polish strings and whatnot. This repo serves mainly as my backup, but maybe you'll find if of some use as well.
+This is just a Discord bot written for my personal use. It's very sloppily written - please don't judge. Also lots of hardcoded Polish strings and whatnot. This repo serves mainly as my backup, but maybe you'll find it of some use as well.
 
 **WARNING**: This bot was written to be used on first-gen Raspberry Pi, thus it relies on outdated technology. **Python 3.6** (or older) **and discord.py 0.16.12 are REQUIRED**.
 
