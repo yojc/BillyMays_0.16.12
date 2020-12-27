@@ -6,7 +6,7 @@ This is just a Discord bot written for my personal use. It's very sloppily writt
 
 My main goal was to sort of port IRC bot Sopel to Discord. Sopel modules can be used here to some extent (a few of these are included in repo), but this will require modifications.
 
-`kathai.py` is an offshoot of Billy that randomly says some weird thing in chat, gives reactions, etc. Not really relevant. If you want to use it, please set `kathai_key` value in the **config.py** file. I haven't this thing in some time, it might not work anymore.
+`kathai.py` is an offshoot of Billy that randomly says some weird thing in chat, gives reactions, etc. Not really relevant. If you want to use it, please set `kathai_key` value in the **config.py** file. I haven't used this thing in some time, it might not work anymore.
 
 ## Requirements
 
@@ -42,7 +42,7 @@ twitch_secret = ""
 bot_owners = [""]
 ```
 
-Please fill in the empty fields accordingly. You can do it!
+Please fill in the empty fields accordingly. You can do it! (the bot should be able to start with just `billy_key` filled in)
 
 ## Command line parameters
 
