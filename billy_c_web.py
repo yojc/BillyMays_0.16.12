@@ -22,7 +22,7 @@ retry_count = 3
 cw = CleverWrap(cleverbot_key)
 
 headers_Get = {
-	'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:49.0) Gecko/20100101 Firefox/49.0',
+	'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36',
 	'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
 	'Accept-Language': 'en-US,en;q=0.5',
 	'Accept-Encoding': 'gzip, deflate',
@@ -46,6 +46,9 @@ def google(q, image=False):
 		return False
 	 
 	soup = BeautifulSoup(r.text, "html.parser")
+	#f = open("logfile", "r", encoding="utf-8")
+	#logtext = f.read()
+	#soup = BeautifulSoup(logtext, "html.parser")
 	
 	if image:
 		searchWrapper = None
@@ -54,8 +57,10 @@ def google(q, image=False):
 		hack = False
 		
 		for rule in rules:
+			sh.debug("Checking rule")
 			searchWrapper = soup.findAll('div', rule)
 			if len(searchWrapper) != 0:
+				sh.debug("Found rule")
 				break
 		
 		if len(searchWrapper) == 0:
@@ -66,20 +71,31 @@ def google(q, image=False):
 				indexes = range(0, -len(searchWrapper), -1)
 
 				for index in indexes:
-					json_text = re.sub("AF_initDataCallback.+{return", "", searchWrapper[index].text).strip()[:-4]
+					sh.debug("Checking index " + str(index))
+					json_text = re.sub("AF_initDataCallback.*?data:(function\(\){return)?", "", searchWrapper[index].text).strip()
+					json_text = re.sub("(, sideChannel.*?)?}.*?$", "", json_text).strip()
 
 					if sh.is_json(json_text) and len(json.loads(json_text)) > 30:
+						sh.debug("First match")
 						if len(json.loads(json_text)[31]) > 0:
+							sh.debug("Second match")
 							searchWrapper = json.loads(json_text)[31][0][12][2]
 							break
 						else:
+							sh.debug("Second match failed")
 							return False
 					else:
 						if index == indexes[-1]:
+							sh.debug("Last element reached")
 							return r.text
+						elif not sh.is_json(json_text):
+							sh.debug("Not a valid JSON")
+							continue
 						else:
+							sh.debug("Too short: " + len(json.loads(json_text)))
 							continue
 			except IndexError:
+				sh.debug("IndexError")
 				return r.text
 		
 		url = None
@@ -94,7 +110,7 @@ def google(q, image=False):
 			else:
 				tmp = json.loads(result_img.text.strip())["ou"]
 			
-			banned_terms = ["x-raw-image", "lookaside.fbsbx.com", ".svg", "cdninstagram"]
+			banned_terms = ["x-raw-image", "lookaside.fbsbx.com", ".svg", "cdninstagram", "archiwum.allegro"]
 			
 			if any(term in tmp for term in banned_terms):
 				continue
@@ -116,8 +132,26 @@ def google(q, image=False):
 		if searchWrapper is None:
 			return False
 		url = searchWrapper.find('a')["href"] 
-		text = re.sub(r"https?\S+", "", searchWrapper.find('a').text, flags=re.I).strip()
-		desc = re.sub(r"https?\S+", "", searchWrapper.find('span', {'class':'st'}).text, flags=re.I).strip()
+
+		desc_tag_defs = [
+			{'class':'st'},
+			{'class':'aCOpRe'}
+		]
+
+		try:
+			text = re.sub(r"https?\S+", "", searchWrapper.find('a').text, flags=re.I).strip()
+
+
+
+			for desc_tag_def in desc_tag_defs:
+				desc_tag = searchWrapper.find('span', desc_tag_def)
+				if desc_tag:
+					break
+
+			desc = re.sub(r"https?\S+", "", desc_tag.text, flags=re.I).strip()
+		except:
+			return r.text
+
 		result = {'text': text, 'url': url, 'desc' : desc}
 	
 	return result
@@ -131,17 +165,22 @@ def yt(q):
 		r = s.get(url, headers=headers_Get, timeout=12.05)
 	except:
 		return False
+
+	sh.dump_errlog(r.text)
 	
 	regex = r'\\\"videoId\\\"\:\\\"(\S+?)\\\"'
 	ret = re.search(regex, r.text)
 
 	if ret is None:
+		sh.debug("First regex failed")
 		regex = r'\"videoId\"\:\"(\S+?)\"'
 		ret = re.search(regex, r.text)
 	
 	if ret is not None:
+		sh.debug("Found vid")
 		result = {'url': 'https://www.youtube.com/watch?v=' + ret.groups()[0]}
 	else:
+		sh.debug("Second regex failed")
 		return False
 	
 	
@@ -291,7 +330,9 @@ def c_google(client, message):
 		else:
 			break
 	
-	if not result:
+	if isinstance(result, str):
+		yield from client.send_message(message.channel, sh.dump_errlog_msg(result))
+	elif not result:
 		yield from client.send_message(message.channel, sh.mention(message) + "brak wyników, albo Google się zesrało.")
 	else:
 		yield from client.send_message(message.channel, sh.mention(message) + result["text"] + "\n" + result["url"])
@@ -310,7 +351,9 @@ def c_wyjasnij(client, message):
 		else:
 			break
 	
-	if not result:
+	if isinstance(result, str):
+		yield from client.send_message(message.channel, sh.dump_errlog_msg(result))
+	elif not result:
 		yield from client.send_message(message.channel, sh.mention(message) + "brak wyników, albo Google się zesrało.")
 	else:
 		yield from client.send_message(message.channel, sh.mention(message) + result["desc"] + "\n" + result["url"])
@@ -421,7 +464,7 @@ def c_wikipedia(client, message):
 	else:
 		yield from client.send_message(message.channel, sh.mention(message) + result["text"] + "\n" + result["desc"] + "\n" + result["url"])
 
-c_wikipedia.command = r"(w|wiki?|wikipedia)"
+c_wikipedia.command = r"(wiki?|wikipedia)"
 c_wikipedia.params = ["zapytanie"]
 c_wikipedia.desc = "szukaj w Wikipedii"
 
@@ -547,17 +590,6 @@ def c_bzdur(client, message):
         yield from client.send_message(message.channel, "Reasumując wszystkie aspekty kwintesencji tematu dochodzę do fundamentalnej konkluzji")
     else:
         yield from client.send_message(message.channel, result)
-c_bzdur.command = r"(jacek|jaca|duptysta)"
-c_bzdur.desc = "Głębokie teksty głębokiego kolegi"
-
-@asyncio.coroutine
-def c_bzdur(client, message):
-	result = bzdur()
-	if not result:
-		yield from client.send_message(message.channel, "Reasumując wszystkie aspekty kwintesencji tematu dochodzę do fundamentalnej konkluzji")
-	else:
-		yield from client.send_message(message.channel, result)
-
 c_bzdur.command = r"(jacek|jaca|duptysta)"
 c_bzdur.desc = "Głębokie teksty głębokiego kolegi"
 

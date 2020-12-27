@@ -1,43 +1,86 @@
-# These are the dependecies. The bot depends on these to function, hence the name. Please do not change these unless your adding to them, because they can break the bot.
-import discord
-import asyncio
+# Modules to import
+python_modules = [
+	"discord", 
+	"asyncio",
+	"platform",
+	
+	"sys",
+	"argparse",
+	"random",
+	"re",
+	"datetime",
+	"emoji",
+	"unidecode",
+	"signal"
+	]
+
+for m in python_modules:
+	globals()[m] = __import__(m)
+
+# Bot dependencies
 from discord.ext.commands import Bot
 from discord.ext import commands
-import platform
+
+# Read command line arguments
+parser = argparse.ArgumentParser(description="Just some Discord bot.")
+parser.add_argument("-b", "--debug", help="enable simple debug messages", action="store_true")
+parser.add_argument("-l", "--list", help="list all imported functions on startup", action="store_true")
+parser.add_argument("-n", "--nostats", help="startup mode: disabled statistics module", action="store_true")
+parser.add_argument("-s", "--stats", help="startup mode: statistics module ONLY", action="store_true")
+parser.add_argument("-d", "--dev", help="startup mode: developer. Disables all modules (except billy_c_dev_*.py) and applies --list and --debug. Accepts commands only from bot owner(s). All functions use dev_ prefix! (eg. .dev_help)", action="store_true")
+
+args = parser.parse_args()
+
+NOSTATS_MODE = args.nostats
+STATS_MODE = args.stats
+DEBUG_MODE = args.debug
+DEV_MODE = args.dev
+LIST_FUNCTIONS = args.list
+
+if DEV_MODE and (NOSTATS_MODE or STATS_MODE):
+	print("Developer mode is meant to be used as a standalone parameter")
+	sys.exit(2)
+elif NOSTATS_MODE and STATS_MODE:
+	print("--nostats and --stats are mutually exclusive")
+	sys.exit(2)
 
 # App keys
-from config import billy_key
-
-# import logging
-import random
-import re
-import sys
-import datetime
-import emoji
-import unidecode
-import signal
+from config import billy_key, bot_owners
 
 # Shared functions
 
 import billy_antiflood as af
 import billy_shared as sh
 
-# List modules to import here
-# Names must start with billy_c
+if DEV_MODE or DEBUG_MODE:
+	sh.set_debug_flag()
 
-import billy_c_yojc
-import billy_c_web
-import billy_c_translate
-import billy_c_rhymes
-import billy_c_img
-#import billy_c_stats
-import billy_c_timers
-import billy_c_twitch
-import billy_c_reactions
+if STATS_MODE:
+	sh.print_warning("Stats collection mode only enabled!")
+elif NOSTATS_MODE:
+	sh.print_warning("Stats module is completely disabled!")
+elif DEV_MODE:
+	# Import all modules starting with billy_c_dev
+	for m in sh.list_modules(dev=True):
+		globals()[m] = __import__(m)
 
-import billy_c_sopel_calc
-import billy_c_sopel_dice
-import billy_c_sopel_remind
+	sh.print_warning("DEVELOPER MODE ENABLED!")
+
+if DEBUG_MODE and not DEV_MODE:
+	sh.print_warning("Debug info enabled!")
+
+# Import all modules starting with billy_c
+
+if not (DEV_MODE or STATS_MODE):
+	for m in sh.list_modules():
+		globals()[m] = __import__(m)
+
+if not (DEV_MODE or NOSTATS_MODE):
+	import billy_c_stats
+else:
+	# Ugly hack, don't look
+	billy_c_stats = None
+
 
 print("--------")
 
@@ -61,7 +104,7 @@ current_day = {}
 sopel_reminder_setup = False
 
 def compile_command(regex):
-	return client.command_prefix + regex + r"\b"
+	return client.command_prefix + ("dev_" if DEV_MODE else "") + regex + r"\b"
 
 # Filling in commands/triggers list
 
@@ -80,42 +123,46 @@ for module_name in modules:
 			if callable(val) and name.startswith(("c_", "f_", "t_")):
 				if name.startswith("t_"):
 					if hasattr(val, "time") and not re.match(r"([0-9]|[0-1][0-9]|2[0-3])\:[0-5][0-9]", getattr(val, "time")):
-						print("Invalid specified time: " + name)
+						sh.print_warning("Invalid specified time: " + name)
 						continue
 					elif not hasattr(val, "channels"):
-						print("No channels specified: " + name)
+						sh.print_warning("No channels specified: " + name)
 						continue
 					else:
 						# Timer functions functions
-						sh.debug("Imported timer: " + name)
+						if (DEV_MODE or LIST_FUNCTIONS):
+							sh.debug("Imported timer: " + name)
 						t_functions.append(val)
 						i += 1
 				
 				elif not hasattr(val, "command"):
 					# Omit functions without specified .command
-					print("Missing command regex: " + name)
+					sh.print_warning("Missing command regex: " + name)
 					continue
 				
 				elif name.startswith("f_") and not hasattr(val, "prob"):
 					# Omit fulltext without specified .prob
-					print("Missing fulltext probability: " + name)
+					sh.print_warning("Missing fulltext probability: " + name)
 					continue
 				
 				elif name.startswith("c_"):
 					# Called functions
-					sh.debug("Imported command: " + name)
+					if (DEV_MODE or LIST_FUNCTIONS):
+						sh.debug("Imported command: " + name)
 					c_functions.append(val)
 					i += 1
 				
 				elif name.startswith("f_"):
 					# Fulltext search
-					sh.debug("Imported fulltext: " + name)
+					if (DEV_MODE or LIST_FUNCTIONS):
+						sh.debug("Imported fulltext: " + name)
 					f_functions.append(val)
 					i += 1
 			
 		print("Loaded " + str(i) + " functions from module " + module_name)
 	else:
-		sh.debug("Probably not a module: " + module_name)
+		if module_name not in python_modules:
+			sh.debug("Probably not a module: " + module_name)
 
 # Start timer tasks
 
@@ -154,33 +201,38 @@ for e in t_functions:
 
 @asyncio.coroutine
 def parse_message(message, edited=False):
-	#if not edited:
-	#	billy_c_stats.insert_msg(message)
+	if DEV_MODE and message.author.id not in bot_owners:
+		#sh.debug("Received and ignored a message")
+		return
+
+	if not (DEV_MODE or NOSTATS_MODE):
+		if not edited:
+			billy_c_stats.insert_msg(message)
+		
+		# Track used emojis
+		
+		emoji_list = list(c for c in message.clean_content if c in emoji.UNICODE_EMOJI) or []
+		custom_emoji_list = re.findall(r"<:\S+?:\d+>", message.clean_content, re.IGNORECASE) or []
+		billy_c_stats.insert_emojis_post(message, emoji_list, custom_emoji_list, edited)
 	
-	# Track used emojis
-	
-	#emoji_list = list(c for c in message.clean_content if c in emoji.UNICODE_EMOJI) or []
-	#custom_emoji_list = re.findall(r"<:\S+?:\d+>", message.clean_content, re.IGNORECASE) or []
-	#billy_c_stats.insert_emojis_post(message, emoji_list, custom_emoji_list, edited)
-	
-	# ignore bot messages
+	# Ignore bot messages
 	
 	if message.author == client.user:
 		return
 	
 	perm = af.check_channel_whitelist(client, message)
 	
-	# channel blacklisted
+	# Channel blacklisted
 	
 	if perm["disallow"]:
 		return
 	
-	# strip quotes
+	# Strip quotes
 	content = unidecode.unidecode(sh.rm_leading_quotes(message))
 	
 	
 	if not edited:
-		# fulltext search
+		# Fulltext search
 		for f in f_functions:
 			c = getattr(f, "command", False)
 			p = getattr(f, "prob", False)
@@ -193,21 +245,20 @@ def parse_message(message, edited=False):
 					sh.print_warning("An error occured in " + f.__name__ + "!!! (" + content + ")")
 					raise
 					
-	# commands
+	# Commands
 	
 	if re.match(client.command_prefix, content):
 		sh.debug("This seems to be a command: ." + sh.get_command(message))
 		
-		# check antiflood
+		# Check antiflood
 		
-		if perm["flood"] and ((yield from af.check_flood_channel(client, message)) or (yield from af.check_flood(client, message))):
+		if not (STATS_MODE or DEV_MODE) and perm["flood"] and ((yield from af.check_flood_channel(client, message)) or (yield from af.check_flood(client, message))):
 			sh.debug("Anti-flood kicked in yo")
 			return
 		
-		# help
+		# Help
 		
-		if re.match(compile_command(r"(help|pomoc)"), content, re.IGNORECASE):
-			sh.debug("What a noob")
+		if not STATS_MODE and re.match(compile_command(r"(help|pomoc)"), content, re.IGNORECASE):
 			ret = "Witam witam, z tej strony Billy Mays z kolejnym fantastycznym produktem!\nDozwolone przedrostki funkcji: . , \ / ! ;\n\n"
 			
 			for f in c_functions:
@@ -244,8 +295,7 @@ def parse_message(message, edited=False):
 			for m in help:
 				yield from client.send_message(message.channel, m)
 		
-		elif re.match(compile_command(r"(rymy|rhymes)"), content, re.IGNORECASE):
-			sh.debug("What an utter pillock")
+		elif not STATS_MODE and re.match(compile_command(r"(rymy|rhymes)"), content, re.IGNORECASE):
 			ret = "Rymy i inne bzdety:\n"
 			
 			for f in c_functions:
@@ -257,33 +307,54 @@ def parse_message(message, edited=False):
 			yield from client.send_message(message.channel, ret[:-1])
 		
 		else:
-			# iterate over functions
+			# Iterate over functions
 			for f in c_functions:
 				c = getattr(f, "command", False)
 				r = re.match(compile_command(c), content, re.IGNORECASE)
 				if c and r:
 					sh.debug("Executing " + f.__name__ + "...")
 					yield from client.send_typing(message.channel)
+
 					try:
 						yield from f(client, message)
-						#billy_c_stats.update_msg_function(message, f.__name__)
+
+						if not (NOSTATS_MODE or DEV_MODE):
+							billy_c_stats.update_msg_function(message, f.__name__)
 					except Exception:
-						yield from client.send_message(message.channel, "Oho, chyba jakiś błąd w kodzie. <@307949259658100736> to kiedyś naprawi, jak się skończy bawić pociągami.")
+						yield from client.send_message(message.channel, "Oho, chyba jakiś błąd w kodzie. <@" + bot_owners[0] + "> to kiedyś naprawi, jak się skończy bawić pociągami.")
 						sh.print_warning("An error occured in " + f.__name__ + "!!! (" + content + ")")
 						#CZEMU TY CHUJU NIE DZIALASZ
 						#logging.exception("An error occured in " + f.__name__ + "!!! (" + content + ")")
 						raise
 						continue
 					break
-		
-		
+			
+			# If stats mode only: import function names from database
+			if STATS_MODE:
+				for f in sh.get_function_names():
+					c = sh.function_list[f]
+					r = re.match(compile_command(c), content, re.IGNORECASE)
+					if c and r:
+						sh.debug("Adding " + f + " to stat database...")
+						try:
+							billy_c_stats.update_msg_function(message, f)
+						except Exception:
+							sh.print_warning("Stat database msg update error " + f + "!!! (" + content + ")")
+							raise
+							continue
+						break
+
 
 # Sort functions alphabetically (for .help)
 c_functions.sort(key=lambda x: x.__name__)
+
+# Dump function names to file
+if not (STATS_MODE or DEV_MODE):
+	sh.dump_function_names(c_functions)
+
 print("--------")
 
-# This is what happens everytime the bot launches. In this case, it prints information like server count, user count the bot is connected to, and the bot id in the console.
-# Do not mess with it because the bot can break, if you wish to do so, please consult me or someone trusted.
+# Start the bot and display startup info
 @client.event
 @asyncio.coroutine
 def on_ready():
@@ -292,18 +363,20 @@ def on_ready():
 	print('Logged in as '+client.user.name+' (ID:'+client.user.id+') | Connected to '+str(len(client.servers))+' servers | Connected to '+str(len(set(client.get_all_members())))+' users')
 	print('Connection datetime: ' + str(datetime.datetime.now()))
 	print('--------')
-	#print('Current Discord.py Version: {} | Current Python Version: {}'.format(discord.__version__, platform.python_version()))
-	#print('--------')
+	sh.debug('Current Discord.py Version: {} | Current Python Version: {}'.format(discord.__version__, platform.python_version()))
+	sh.debug('--------')
 	#print('Use this link to invite {}:'.format(client.user.name))
 	#print('https://discordapp.com/oauth2/authorize?client_id={}&scope=bot&permissions=8'.format(client.user.id))
 	#print('--------')
 	
-	if not sopel_reminder_setup:
-		#sh.print_warning("### CREATED REMINDER TASK " + str(datetime.datetime.now()))
+	if not (DEV_MODE or STATS_MODE) and not sopel_reminder_setup:
+		sh.debug("### CREATED REMINDER TASKS " + str(datetime.datetime.now()))
 		sopel_reminder_setup = True
 		yield from billy_c_sopel_remind.setup(client)
-	#else:
-	#	sh.print_warning("### REMINDERS ALREADY ACTIVE")
+	elif DEV_MODE:
+		sh.debug("### REMINDERS DISABLED IN DEVELOPER MODE")
+	else:
+		sh.debug("### REMINDERS ALREADY ACTIVE")
 		
 
 
@@ -312,21 +385,22 @@ def on_ready():
 @client.event
 @asyncio.coroutine
 def on_reaction_add(reaction, user):
-	# track used emojis
-	#billy_c_stats.insert_emojis_reaction(reaction.message, user, reaction.emoji, reaction.custom_emoji)
-	
 	if reaction.me:
 		return
+	elif not (NOSTATS_MODE or DEV_MODE):
+		# Track used emojis
+		billy_c_stats.insert_emojis_reaction(reaction.message, user, reaction.emoji, reaction.custom_emoji)
 	
 	#if random.random() < 0.001:
 	#	yield from asyncio.sleep(4)
 	#	yield from client.add_reaction(reaction.message, reaction.emoji)
 
-#@client.event
-#@asyncio.coroutine
-#def on_reaction_remove(reaction, user):
-	# track used emojis
-	#billy_c_stats.remove_reaction(reaction.message, user, reaction.emoji, reaction.custom_emoji)
+@client.event
+@asyncio.coroutine
+def on_reaction_remove(reaction, user):
+	if not (NOSTATS_MODE or DEV_MODE):
+		# Track used emojis
+		billy_c_stats.remove_reaction(reaction.message, user, reaction.emoji, reaction.custom_emoji)
 
 
 # Execute on every msg edit
@@ -351,7 +425,8 @@ def on_message(message):
 @client.event
 @asyncio.coroutine
 def on_message_delete(message):
-	#billy_c_stats.update_msg_deletion(message)
+	if not (NOSTATS_MODE or DEV_MODE):
+		billy_c_stats.update_msg_deletion(message)
 	
 	content = sh.rm_leading_quotes(message)
 	
@@ -374,20 +449,22 @@ def on_message_delete(message):
 @client.event
 @asyncio.coroutine
 def on_member_join(member):
-	invitation_msg = "Witam witam {} na naszym magicznym serwerze!".format(member.mention)
-	
-	if member.server.id == "174449535811190785":
-		yield from client.send_file(member.server.default_channel, sh.file_path("img/w mcdonalds spotkajmy sie.jpg"), content=invitation_msg)
-		yield from client.send_message(member.server.default_channel, "(lepiej nie pytaj kto to jest)")
-	else:
-		yield from client.send_message(member.server.default_channel, invitation_msg)
+	if not (NOSTATS_MODE or DEV_MODE):
+		invitation_msg = "Witam witam {} na naszym magicznym serwerze!".format(member.mention)
+		
+		if member.server.id == "174449535811190785":
+			yield from client.send_file(member.server.default_channel, sh.file_path("img/w mcdonalds spotkajmy sie.jpg"), content=invitation_msg)
+			yield from client.send_message(member.server.default_channel, "(lepiej nie pytaj kto to jest)")
+		else:
+			yield from client.send_message(member.server.default_channel, invitation_msg)
 
 @client.event
 @asyncio.coroutine
 def on_member_remove(member):
-	word = "polazła" if sh.is_female(member) else "polazł"
-	
-	yield from client.send_message(member.server.default_channel, "{} ({}) właśnie se stąd gdzieś {} <:smaglor:328947669676457984>".format(member.mention, str(member), word))
+	if not (NOSTATS_MODE or DEV_MODE):
+		word = "polazła" if sh.is_female(member) else "polazł"
+		
+		yield from client.send_message(member.server.default_channel, "{} ({}) właśnie se stąd gdzieś {} <:smaglor:328947669676457984>".format(member.mention, str(member), word))
 
 # Bot ID
 client.run(billy_key)

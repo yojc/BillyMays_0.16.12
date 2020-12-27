@@ -50,7 +50,7 @@ def check_flood(client, message):
 				return True
 			else:
 				# ...but just once
-				sh.debug("Shut him up pls")
+				sh.debug("This user is still spamming!")
 				return False
 
 @asyncio.coroutine
@@ -89,7 +89,7 @@ def check_flood_channel(client, message):
 				return True
 			else:
 				# ...but just once
-				sh.debug("I CAN STILL HEAR VOICES")
+				sh.debug("This channel is still being flooded!")
 				return False
 
 def check_channel_whitelist(client, message):
@@ -103,24 +103,24 @@ def check_channel_whitelist(client, message):
 	permissions = {"fulltext" : False, "flood" : True, "disallow" : False}
 	
 	if str(message.channel).startswith("Direct Message"):
-		sh.debug("Private message", message)
+		sh.debug("Received message (private message):")
 		permissions["flood"] = False
 		permissions["fulltext"] = True
 		
 	else:
 		if message.channel.id in deny_all:
-			#sh.debug("Blacklisted channel", message)
+			sh.debug("Received message (blacklisted channel):")
 			permissions["disallow"] = True
 			
 		if message.channel.id in allow_fulltext:
-			#sh.debug("Whitelisted channel", message)
+			sh.debug("Received message (whitelisted channel):")
 			permissions["fulltext"] = True
 			
 		if message.channel.id in unlimited:
-			#sh.debug("Flood control inactive", message)
+			sh.debug("Received message (flood control inactive):")
 			permissions["flood"] = False
 		
-	sh.debug("Received message", message)
+	sh.debug("", message)
 	
 	return permissions
 

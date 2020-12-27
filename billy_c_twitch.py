@@ -73,7 +73,7 @@ twitch_streamers = {
 		"url" : "https://www.twitch.tv/nevka_", 
 		"last_seen" : twitch_start_time,
 		"discord_channels" : [politbiuro_ograch],
-		"mention_group" : "<@&693760408615518209>"
+		"mention_group" : "<@&718134655945015346>"
 	}
 
 	#"40426372" : { 

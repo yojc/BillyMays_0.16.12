@@ -111,6 +111,8 @@ def insert_emojis_post(msg, emojis, customs, edited=False, db=stats, cursor=stat
 	
 	if not tmp:
 		db.commit()
+	
+	sh.debug("Added emoji from post: {}".format(msg.id))
 
 def insert_emojis_reaction(msg, user, emoji, custom, db=stats, cursor=stats_c, tmp=False):
 	data = (emoji if not custom else str(emoji), msg.server.id if msg.server is not None else 0, msg.channel.id if msg.channel is not None else None, msg.id, user.id, msg.timestamp, 1, 1, 1 if custom else 0, 1 if user.bot else 0)
@@ -119,12 +121,16 @@ def insert_emojis_reaction(msg, user, emoji, custom, db=stats, cursor=stats_c, t
 	
 	if not tmp:
 		db.commit()
+	
+	sh.debug("Added reaction to post: {}".format(msg.id))
 
 def remove_reaction(msg, user, emoji, custom, db=stats, cursor=stats_c):
 	data = (emoji if not custom else str(emoji), msg.server.id if msg.server is not None else 0, msg.channel.id if msg.channel is not None else None, msg.id, user.id, msg.timestamp, 1, 1, 1 if custom else 0, 1 if user.bot else 0)
 	
 	cursor.execute("DELETE FROM emojis WHERE emoji = ? AND server = ? AND channel = ? AND message = ? AND user = ? AND time = ? AND count = ? AND reaction = ? AND custom = ? AND bot = ? LIMIT 1", data)
 	db.commit()
+	
+	sh.debug("Removed reaction to post: {}".format(msg.id))
 
 def remove_emojis(msg, all=False, db=stats, cursor=stats_c):
 	data = (msg.id, )
@@ -136,6 +142,8 @@ def remove_emojis(msg, all=False, db=stats, cursor=stats_c):
 	
 	cursor.execute("DELETE FROM emojis WHERE message = ? {}".format(query), data)
 	db.commit()
+	
+	sh.debug("Removed emojis from post: {}".format(msg.id))
 
 # Helper functions
 
@@ -567,7 +575,7 @@ def t_daily_stats(client, channels):
 		#yield from client.send_message(ch, ret + generate_stats(client, None, ch, "time=yesterday server=politbiuro bot=t", 10, hide_args=True))
 
 t_daily_stats.channels = ["174449535811190785"]
-t_daily_stats.time = "17:14"
+t_daily_stats.time = "00:01"
 
 # Weekly stats
 

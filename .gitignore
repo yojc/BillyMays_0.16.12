@@ -7,6 +7,9 @@ config.py
 # Databases
 billy_db_*.db
 
+# MemePy
+_MemePy/
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

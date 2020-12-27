@@ -617,7 +617,7 @@ c_kto.params = ["zapytanie"]
 def c_czyj(client, message):
 	yield from client.send_message(message.channel, sh.mention(message) + get_random_nickname(message, "genitive", sh.get_command(message)))
 
-c_czyj.command = r"(z\s|u\s|o\s|na\s|za\s|od\s)?(czyi(m|mi|ch)|czyj(a|e|ego|ej)?)"
+c_czyj.command = r"(z\s|u\s|o\s|na\s|za\s|od\s|do\s|w\s)?(czyi(m|mi|ch)|czyj(a|e|ego|ej)?)"
 c_czyj.params = ["zapytanie"]
 
 @asyncio.coroutine
@@ -631,14 +631,14 @@ c_komu.params = ["zapytanie"]
 def c_kogo(client, message):
 	yield from client.send_message(message.channel, sh.mention(message) + get_random_nickname(message, "genitive", sh.get_command(message)))
 
-c_kogo.command = r"(z\s|u\s|od\s)?kogo"
+c_kogo.command = r"(z\s|u\s|od\s|do\s)kogo"
 c_kogo.params = ["zapytanie"]
 
 @asyncio.coroutine
 def c_kogo_bier(client, message):
 	yield from client.send_message(message.channel, sh.mention(message) + get_random_nickname(message, "accusative", sh.get_command(message)))
 
-c_kogo_bier.command = r"(o\s|na\s|za\s)?kogo"
+c_kogo_bier.command = r"(o\s|na\s|za\s|w\s)?kogo"
 c_kogo_bier.params = ["zapytanie"]
 
 @asyncio.coroutine
@@ -652,5 +652,5 @@ c_kim.params = ["zapytanie"]
 def c_kim_msc(client, message):
 	yield from client.send_message(message.channel, sh.mention(message) + get_random_nickname(message, "locative", sh.get_command(message)))
 
-c_kim_msc.command = r"(u\s|o\s|na\s|od\s)?kim"
+c_kim_msc.command = r"(o\s|na\s|w\s)kim"
 c_kim_msc.params = ["zapytanie"]

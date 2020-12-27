@@ -164,6 +164,7 @@ scaling = collections.OrderedDict([
 	('sekundy', 1),
 	('sekunde', 1),
 	('sekundę', 1),
+	('sekund', 1),
 	('secs', 1),
 	('sec', 1),
 	('sek\.', 1),
@@ -211,7 +212,7 @@ def c_remind(client, message_obj):
 		None, None, None, message_obj.author.mention, message_obj.channel.id)
 	yield from create_reminder(client, message_obj, duration, reminder, timezone)
 
-c_remind.command = r"(za\s\d|in)"
+c_remind.command = r"(za\s\d+|in)"
 c_remind.params = ["za ile czasu", "wiadomość"]
 c_remind.desc = "Przypomnij za..."
 
